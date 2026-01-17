@@ -18,5 +18,7 @@ jobs:
         node-version: 22
         cache: npm
     - run: npm install --ver #Change from "npm ci" to "npm install --ver" because it can't work.
+    - run: cd node_modules/scratch-blocks && npm run prepublish #add package
+    - run: cd ../../
     - run: npm run build
     - run: npm run test:unit
