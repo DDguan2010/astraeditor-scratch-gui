@@ -1,3 +1,10 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -8,7 +15,7 @@ jobs:
     - name: Install Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: 20 # 强烈建议降回 20 LTS，22 对于一些老旧 webpack 插件可能有兼容问题
+        node-version: 20
         cache: npm
 
     - name: Install Dependencies
