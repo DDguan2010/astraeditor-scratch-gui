@@ -1,24 +1,30 @@
-name: CI
-
-on:
-  push:
-  pull_request:
-
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
-      with:
-        persist-credentials: false
+    
     - name: Install Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: 22
+        node-version: 20 # 强烈建议降回 20 LTS，22 对于一些老旧 webpack 插件可能有兼容问题
         cache: npm
-    - run: npm install --ver #Change from "npm ci" to "npm install --ver" because it can't work.
-    - run: cd node_modules/scratch-blocks && npm install -ver && npm run prepublish #add package
-    - run: cd ../../
-    - run: npm run build
-    - run: npm run test:unit
+
+    - name: Install Dependencies
+      run: npm install --ignore-scripts
+
+    - name: Build scratch-blocks
+      run: |
+        cd node_modules/scratch-blocks
+        npm install --ignore-scripts
+        node universal-python.js build.py
+
+    - name: Build GUI
+      run: |
+        npm run build
+      env:
+        NODE_OPTIONS: "--max_old_space_size=4096"
+
+    - name: Run Tests
+      run: npm run test:unit

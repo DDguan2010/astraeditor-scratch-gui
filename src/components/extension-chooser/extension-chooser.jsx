@@ -251,10 +251,7 @@ const ExtensionChooser = props => {
                         className={styles.openLibraryButton}
                         onClick={handleOpenLibrary}
                     >
-                        <img src={add} style={{
-                            width: "16px",
-                            height: "16px"
-                        }} />
+                        <img src={add} className={styles.openLibraryButtonIcon} />
                     </button>
                 </Box>
                 <div className={styles.content}>

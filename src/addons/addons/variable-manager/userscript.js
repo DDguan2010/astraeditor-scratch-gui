@@ -280,19 +280,15 @@ export default async function ({ addon, console, msg }) {
   }
 
   function fullReload() {
-    const reduxState = addon.tab.redux.state;
-    const scratchGui = reduxState && reduxState.scratchGui;
-    const editorTab = scratchGui && scratchGui.editorTab;
-    const activeTabIndex = editorTab && editorTab.activeTabIndex;
-    if (activeTabIndex !== 3 || preventUpdate) return;
+    if (addon.tab.redux.state?.scratchGui?.editorTab?.activeTabIndex !== 3 || preventUpdate) return;
 
     const editingTarget = vm.runtime.getEditingTarget();
     const stage = vm.runtime.getTargetForStage();
     localVariables = editingTarget.isStage
       ? []
       : Object.values(editingTarget.variables)
-          .filter((i) => i.type === "" || i.type === "list")
-          .map((i) => new WrappedVariable(i, editingTarget));
+        .filter((i) => i.type === "" || i.type === "list")
+        .map((i) => new WrappedVariable(i, editingTarget));
     globalVariables = Object.values(stage.variables)
       .filter((i) => i.type === "" || i.type === "list")
       .map((i) => new WrappedVariable(i, stage));
@@ -413,6 +409,6 @@ export default async function ({ addon, console, msg }) {
       reduxEvents: ["scratch-gui/mode/SET_PLAYER", "fontsLoaded/SET_FONTS_LOADED", "scratch-gui/locales/SELECT_LOCALE"],
       reduxCondition: (state) => !state.scratchGui.mode.isPlayerOnly,
     });
-    addon.tab.appendToSharedSpace({ space: "afterSoundTab", element: varTab, order: 3 });
+    addon.tab.appendToSharedSpace({ space: "afterTabs", element: varTab, order: 3 });
   }
 }

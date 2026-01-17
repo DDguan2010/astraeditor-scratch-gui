@@ -457,10 +457,12 @@ const GUIComponent = props => {
                                             id="gui.gui.soundsTab"
                                         />
                                     </Tab>
-
+                                        <div className='varM'>
+                                        {/*这里是变量Tab*/}
+                                    </div>
                                     <div className='findBar' style={{
                                         marginTop: "auto",
-                                        marginBottom: "auto" //垂直居中
+                                        marginBottom: "auto",//垂直居中
                                     }}>
                                         {/*这里是搜索栏*/}
                                     </div>
