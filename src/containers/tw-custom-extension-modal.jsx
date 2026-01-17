@@ -149,50 +149,69 @@ class CustomExtensionModal extends React.Component {
     }
     async getSVG() {
         try {
-            this.state.urls = await this.getExtensionURLs();
+            const urls = await this.getExtensionURLs();
             if (this.state.type === 'url') return;
 
-            const Blockly = AddonHooks.blockly;
             const workspace = AddonHooks.blocklyWorkspace;
 
             if (!workspace) {
                 throw new Error('Blockly workspace not available');
             }
 
-            for (const url of this.state.urls) {
-                // 1. 加载扩展
+            const svgs = []; 
+
+            for (const url of urls) {
+                const previousLength = this.props.vm.runtime._blockInfo.length;
+
                 setPersistedUnsandboxed(this.state.unsandboxed);
                 if (this.state.unsandboxed) {
                     manuallyTrustExtension(url);
                 }
+
                 await this.props.vm.extensionManager.loadExtensionURL(url);
 
-                // 2. 
-                const blockInfoList = this.props.vm.runtime._blockInfo[this.props.vm.runtime._blockInfo.length - 1]; //获得最新导入的扩展信息
-                console.log(blockInfoList)
+                const currentBlockInfo = this.props.vm.runtime._blockInfo;
 
-
-                if (blockInfoList.blocks.length === 0) {
-                    throw new Error('No blocks found in extension');
+                if (currentBlockInfo.length === previousLength) {
+                    console.warn("扩展已存在或加载失败喵~");
+                    continue;
                 }
 
-                const svgs = [];
 
-                for (const blockInfo of blockInfoList.blocks) {
-                    if (blockInfo.info.opcode == undefined) {
-                        continue;
+                const newExtensions = [];
+                for (let i = previousLength; i < currentBlockInfo.length; i++) {
+                    newExtensions.push(currentBlockInfo[i]);
+                }
+
+                for (const extInfo of newExtensions) {
+                    console.log(extInfo);
+                    for (const blockInfo of extInfo.blocks) {
+                        if (blockInfo.info.opcode == undefined) {
+                            continue;
+                        }
+                        const fullOpcode = extInfo.id + '_' + blockInfo.info.opcode;
+
+                        try {
+                            const block = workspace.newBlock(fullOpcode);
+                            block.initSvg();
+                            block.render();
+                            const svg = block.getSvgRoot().outerHTML;
+                            svgs.push(svg);
+                            block.dispose();
+                        } catch (e) {
+                            console.warn(`Block render failed: ${fullOpcode}`, e);
+                        }
                     }
-                    const fullOpcode = blockInfoList.id + '_' + blockInfo.info.opcode;
-                    const block = workspace.newBlock(fullOpcode);
-                    block.initSvg();
-                    block.render();
-                    const svg = block.getSvgRoot().outerHTML;
-                    svgs.push(svg);
-                    block.dispose();                }
+                }
 
-                this.props.vm.extensionManager.unloadExtension(blockInfoList.id);
-                this.setState({ svgList: svgs });
+
+                for (const extInfo of newExtensions) {
+                    await this.props.vm.extensionManager.unloadExtension(extInfo.id);
+                }
             }
+
+            this.setState({ svgList: svgs });
+
         } catch (err) {
             log.error(err);
             this.setState({ svgList: [] });

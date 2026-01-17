@@ -30,9 +30,13 @@ jobs:
       run: |
         cd node_modules/scratch-blocks
         
-        npm install --no-save google-closure-compiler java
+        npm install --no-save google-closure-compiler
         
-        export PATH=$(npm bin):$PATH
+        export PATH=$PWD/node_modules/.bin:$PATH
+        
+        echo "Checking compiler path..."
+        ls -l $PWD/node_modules/.bin/google-closure-compiler || echo "Compiler not found!"
+        which google-closure-compiler || echo "Command not in PATH"
         
         node universal-python.js build.py
         

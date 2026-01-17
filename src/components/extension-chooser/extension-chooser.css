@@ -71,7 +71,7 @@
 .Extbg {
     margin: 10px auto;
     width: 90%;
-    height: 105px;
+    min-height: 105px;
     border-radius: 10px;
     display: flex;
     align-items: center;

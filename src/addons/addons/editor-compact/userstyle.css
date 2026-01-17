@@ -519,5 +519,5 @@ body:not(.sa-columns-enabled) [class*="gui_tab-panel"] [class*="gui_extension-bu
   height: 13px;
 }
 [class*="extension-chooser_Extbg"] {
-  max-height: 75px;
+  min-height: 75px;
 }
