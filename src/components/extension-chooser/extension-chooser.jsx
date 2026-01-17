@@ -95,7 +95,6 @@ const ExtensionChooser = props => {
         }
     };
 
-    // 获取网页扩展的元数据
     useEffect(() => {
         const fetchGallery = async () => {
             try {
@@ -119,7 +118,6 @@ const ExtensionChooser = props => {
 
     useEffect(() => {
         if (vm && vm.runtime && vm.runtime._blockInfo) {
-            // 使用 Map 去重，确保每个扩展 ID 只出现一次
             const extensionMap = new Map();
             vm.runtime._blockInfo.forEach(ext => {
                 if (ext.id) {
@@ -136,7 +134,6 @@ const ExtensionChooser = props => {
 
         const updateInfo = () => {
             if (vm.runtime && vm.runtime._blockInfo) {
-                // 使用 Map 去重，确保每个扩展 ID 只出现一次
                 const extensionMap = new Map();
                 vm.runtime._blockInfo.forEach(ext => {
                     if (ext.id) {

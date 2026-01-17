@@ -129,7 +129,7 @@ class CustomExtensionModal extends React.Component {
     async handleLoadExtension() {
         this.handleClose();
         try {
-            if (this.state.urls == '' )this.state.urls = await this.getExtensionURLs();
+            if (this.state.urls == '') this.state.urls = await this.getExtensionURLs();
             if (this.state.type !== 'url') {
                 setPersistedUnsandboxed(this.state.unsandboxed);
                 if (this.state.unsandboxed) {
@@ -167,39 +167,30 @@ class CustomExtensionModal extends React.Component {
                 }
                 await this.props.vm.extensionManager.loadExtensionURL(url);
 
-                // 2. 获取扩展的block信息
-                const blockInfoList = this.props.vm.runtime._blockInfo;
-                const extensionBlockInfo = blockInfoList.filter(info => info.blocks && info.blocks.length > 0);
+                // 2. 
+                const blockInfoList = this.props.vm.runtime._blockInfo[this.props.vm.runtime._blockInfo.length - 1]; //获得最新导入的扩展信息
+                console.log(blockInfoList)
 
-                if (extensionBlockInfo.length === 0) {
+
+                if (blockInfoList.blocks.length === 0) {
                     throw new Error('No blocks found in extension');
                 }
 
                 const svgs = [];
 
-                for (const extInfo of extensionBlockInfo) {
-                    // 3. 导出SVG
-                    for (const blockInfo of extInfo.blocks) {
-                        // 跳过separator和没有info.opcode的block
-                        if (blockInfo.info.opcode == undefined) {
-                            continue;
-                        }
-
-                        const fullOpcode = extInfo.id + '_' + blockInfo.info.opcode;
-                        const block = workspace.newBlock(fullOpcode);
-                        block.initSvg();
-                        block.render();
-                        const svg = block.getSvgRoot().outerHTML;
-                        svgs.push(svg);
-                        block.dispose();
-
-                        // 控制台输出
-                        console.log(svg);
+                for (const blockInfo of blockInfoList.blocks) {
+                    if (blockInfo.info.opcode == undefined) {
+                        continue;
                     }
+                    const fullOpcode = blockInfoList.id + '_' + blockInfo.info.opcode;
+                    const block = workspace.newBlock(fullOpcode);
+                    block.initSvg();
+                    block.render();
+                    const svg = block.getSvgRoot().outerHTML;
+                    svgs.push(svg);
+                    block.dispose();                }
 
-                    // 4. 卸载扩展
-                    this.props.vm.extensionManager.unloadExtension(extInfo.id);
-                }
+                this.props.vm.extensionManager.unloadExtension(blockInfoList.id);
                 this.setState({ svgList: svgs });
             }
         } catch (err) {

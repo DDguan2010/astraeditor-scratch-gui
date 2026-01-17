@@ -4,7 +4,6 @@ on:
   push:
   pull_request:
 
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -12,6 +11,12 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
+    - name: Set up JDK 11
+      uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+
     - name: Install Node.js
       uses: actions/setup-node@v4
       with:
@@ -19,19 +24,21 @@ jobs:
         cache: npm
 
     - name: Install Dependencies
-      run: npm install --ignore-scripts
+      run: npm install --ignore-scripts --legacy-peer-deps
 
-    - name: Build scratch-blocks
+    - name: Build scratch-blocks manually
       run: |
         cd node_modules/scratch-blocks
-        npm install --ignore-scripts
+        
+        npm install --no-save google-closure-compiler java
+        
+        export PATH=$(npm bin):$PATH
+        
         node universal-python.js build.py
-
+        
     - name: Build GUI
       run: |
         npm run build
-      env:
-        NODE_OPTIONS: "--max_old_space_size=4096"
-
+        
     - name: Run Tests
       run: npm run test:unit
