@@ -1,4 +1,4 @@
-import {defineMessages, FormattedMessage, intlShape, injectIntl} from 'react-intl';
+import { defineMessages, FormattedMessage, intlShape, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import React from 'react';
 import Box from '../box/box.jsx';
@@ -17,7 +17,7 @@ import Embed from './embed.jsx';
 import Download from './download.jsx';
 import DelayedMountPropertyHOC from './delayed-mount-property-hoc.jsx';
 import styles from './security-manager-modal.css';
-import {AESettings} from '../../lib/settings.js'
+import { AESettings } from '../../lib/settings.js'
 
 const settings = new AESettings();
 const messages = defineMessages({
@@ -29,7 +29,7 @@ const messages = defineMessages({
     }
 });
 
-const noop = () => {};
+const noop = () => { };
 
 const SecurityManagerModalComponent = props => (
     <Modal
@@ -39,8 +39,8 @@ const SecurityManagerModalComponent = props => (
         id="securitymanagermodal"
     >
         <Box className={styles.body}>
-            {props.type === SecurityModals.LoadExtension? (
-                <LoadExtensionModal {...props.data} onSkip={() => settings.get('skipExtWarn')}  />
+            {props.type === SecurityModals.LoadExtension ? (
+                <LoadExtensionModal {...props.data} onSkip={() => settings.get('skipExtWarn')} />
             ) : props.type === SecurityModals.Fetch ? (
                 <FetchModal {...props.data} />
             ) : props.type === SecurityModals.OpenWindow ? (
@@ -78,21 +78,21 @@ const SecurityManagerModalComponent = props => (
                 <button
                     className={styles.allowButton}
                     onClick={settings.get('skipExtWarn') ?
-                        props.skip:props.onAllowed}
+                        props.skip : props.onAllowed}
                     disabled={!props.enableButtons}
                 >
-                    {settings.get('skipExtWarn')?
+                    {settings.get('skipExtWarn') ?
                         <FormattedMessage
                             defaultMessage="Allow All"
                             description="Button in modal asking user for permission to load extension, access file, etc."
                             id="tw.securityManager.allowall"
                         />
-                    :<FormattedMessage
-                        defaultMessage="Allow"
-                        description="Button in modal asking user for permission to load extension, access file, etc."
-                        id="tw.securityManager.allow"
-                    />}
-                    
+                        : <FormattedMessage
+                            defaultMessage="Allow"
+                            description="Button in modal asking user for permission to load extension, access file, etc."
+                            id="tw.securityManager.allow"
+                        />}
+
                 </button>
             </Box>
         </Box>

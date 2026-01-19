@@ -20,7 +20,9 @@ export class AESettings {
         }
 
         get(id) {
+               
                 const settings = this.getAll();
+                 console.log(settings[id])
                 return settings[id];
         }
 

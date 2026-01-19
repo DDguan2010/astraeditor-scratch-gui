@@ -17,9 +17,9 @@ const LoadExtensionModal = props => (
                     id="tw.loadExtension.multiple"
                 />
                 <ul>
-                    {props.extensions.map((ext, index) => (
-                        <li key={ext.id || index}>
-                            <strong>{ext.id}</strong>
+                    {Object.entries(props.extensions).map(([id, url]) => (
+                        <li key={id}>
+                            <strong>{id}</strong>
                         </li>
                     ))}
                 </ul>
@@ -45,40 +45,40 @@ const LoadExtensionModal = props => (
         ) : null}
 
         {props.extensions && Object.keys(props.extensions).length > 0 ? (
-                <FormattedMessage
-                    defaultMessage="All Extensions will run without sandbox"
-                    description="sandbox is unable all the time"
-                    id="tw.loadExtension.skipsandbox"
-                />
-            ) : props.onChangeUnsandboxed && (
-                <React.Fragment>
-                    <label className={styles.unsandboxedContainer}>
-                        <FancyCheckbox
-                            className={styles.unsandboxedCheckbox}
-                            checked={props.unsandboxed}
-                            onChange={props.onChangeUnsandboxed}
-                        />
+            <FormattedMessage
+                defaultMessage="All Extensions will run without sandbox"
+                description="sandbox is unable all the time"
+                id="tw.loadExtension.skipsandbox"
+            />
+        ) : props.onChangeUnsandboxed && (
+            <React.Fragment>
+                <label className={styles.unsandboxedContainer}>
+                    <FancyCheckbox
+                        className={styles.unsandboxedCheckbox}
+                        checked={props.unsandboxed}
+                        onChange={props.onChangeUnsandboxed}
+                    />
+                    <FormattedMessage
+                        defaultMessage="Run without sandbox"
+                        description="Part of modal asking for permission to automatically load custom extension"
+                        id="tw.loadExtension.unsandboxed"
+                    />
+                </label>
+                {props.unsandboxed && (
+                    <div className={styles.unsandboxedWarning}>
                         <FormattedMessage
-                            defaultMessage="Run without sandbox"
+                            // eslint-disable-next-line max-len
+                            defaultMessage="Loading extensions without the sandbox is dangerous. It will be able to corrupt your project, delete your settings, phish for passwords, and other bad things. The {APP_NAME} developers are not responsible for any resulting issues."
                             description="Part of modal asking for permission to automatically load custom extension"
-                            id="tw.loadExtension.unsandboxed"
+                            id="tw.loadExtension.unsandboxedWarning"
+                            values={{
+                                APP_NAME
+                            }}
                         />
-                    </label>
-                    {props.unsandboxed && (
-                        <div className={styles.unsandboxedWarning}>
-                            <FormattedMessage
-                                // eslint-disable-next-line max-len
-                                defaultMessage="Loading extensions without the sandbox is dangerous. It will be able to corrupt your project, delete your settings, phish for passwords, and other bad things. The {APP_NAME} developers are not responsible for any resulting issues."
-                                description="Part of modal asking for permission to automatically load custom extension"
-                                id="tw.loadExtension.unsandboxedWarning"
-                                values={{
-                                    APP_NAME
-                                }}
-                            />
-                        </div>
-                    )}
-                </React.Fragment>
-            )
+                    </div>
+                )}
+            </React.Fragment>
+        )
         }
         {!props.unsandboxed && (
             <div className={styles.sandboxed}>

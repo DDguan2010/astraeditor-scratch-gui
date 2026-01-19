@@ -284,15 +284,15 @@ class TWSecurityManagerComponent extends React.Component {
             this.hasShownExtensionsList = true;
 
             // 过滤掉受信任的扩展，只显示需要用户确认的扩展
-            const untrustedExtensions = [];
-            for (const ext of this.pendingExtensions.values()) {
-                if (!isTrustedExtension(ext.url)) {
-                    untrustedExtensions.push(ext);
+            const untrustedExtensions = {};
+            for (const [id, extUrl] of this.pendingExtensions) {
+                if (!isTrustedExtension(extUrl)) {
+                    untrustedExtensions[id] = extUrl;
                 }
             }
 
             // 如果所有扩展都是受信任的，直接返回
-            if (untrustedExtensions.length === 0) {
+            if (Object.keys(untrustedExtensions).length === 0) {
                 return true;
             }
 
@@ -308,9 +308,9 @@ class TWSecurityManagerComponent extends React.Component {
             if (allowed) {
                 setPersistedUnsandboxed(this.state.data.unsandboxed);
                 if (this.state.data.unsandboxed) {
-                    for (const ext of this.pendingExtensions.values()) {
-                        if (!isTrustedExtension(ext.url)) {
-                            manuallyTrustExtension(ext.url);
+                    for (const [id, extUrl] of this.pendingExtensions) {
+                        if (!isTrustedExtension(extUrl)) {
+                            manuallyTrustExtension(extUrl);
                         }
                     }
                 }
@@ -342,22 +342,22 @@ class TWSecurityManagerComponent extends React.Component {
     }
 
     /**
-     * @param {Array<{id: string, url: string, name: string}>} extensions Array of extensions to load
+     * @param {Array<{id: string, url: string}>} extensions Array of extensions to load
      * @returns {Promise<boolean>} Whether the extensions can be loaded
      */
     async canLoadMultipleExtensionsFromProject(extensions) {
         console.log('Loading multiple extensions:', extensions);
 
         // 过滤掉受信任的扩展
-        const untrustedExtensions = [];
-        for (const ext of extensions) {
-            if (!isTrustedExtension(ext.url)) {
-                untrustedExtensions.push(ext);
+        const untrustedExtensions = {};
+        for (const { id, url } of extensions) {
+            if (!isTrustedExtension(url)) {
+                untrustedExtensions[id] = url;
             }
         }
 
         // 如果所有扩展都是受信任的，直接返回
-        if (untrustedExtensions.length === 0) {
+        if (Object.keys(untrustedExtensions).length === 0) {
             return true;
         }
 
@@ -366,26 +366,47 @@ class TWSecurityManagerComponent extends React.Component {
         // 检查是否启用了跳过警告
         const skipExtWarn = new AESettings().get('skipExtWarn');
 
-        // 显示需要确认的扩展
-        const allowed = await showModal(SecurityModals.LoadExtension, {
-            extensions: untrustedExtensions,
-            showAll: true,
-            unsandboxed: getPersistedUnsandboxed(),
-            onChangeUnsandboxed: this.handleChangeUnsandboxed.bind(this)
-        });
+        if (skipExtWarn) {
+            // 启用了跳过警告，一次性显示所有扩展
+            const allowed = await showModal(SecurityModals.LoadExtension, {
+                extensions: untrustedExtensions,
+                showAll: true,
+                unsandboxed: getPersistedUnsandboxed(),
+                onChangeUnsandboxed: this.handleChangeUnsandboxed.bind(this)
+            });
 
-        // 如果同意，加载所有扩展
-        if (allowed) {
-            setPersistedUnsandboxed(this.state.data.unsandboxed);
-            if (this.state.data.unsandboxed) {
-                for (const ext of untrustedExtensions) {
-                    manuallyTrustExtension(ext.url);
+            // 如果同意，加载所有扩展
+            if (allowed) {
+                setPersistedUnsandboxed(this.state.data.unsandboxed);
+                if (this.state.data.unsandboxed) {
+                    for (const [id, extUrl] of Object.entries(untrustedExtensions)) {
+                        manuallyTrustExtension(extUrl);
+                    }
+                }
+                this.skipExt = true;
+                return true;
+            }
+            return false;
+        } else {
+            // 未启用跳过警告，逐个询问每个扩展
+            for (const [id, url] of Object.entries(untrustedExtensions)) {
+                const allowed = await showModal(SecurityModals.LoadExtension, {
+                    url,
+                    unsandboxed: getPersistedUnsandboxed(),
+                    onChangeUnsandboxed: this.handleChangeUnsandboxed.bind(this)
+                });
+                if (allowed) {
+                    setPersistedUnsandboxed(this.state.data.unsandboxed);
+                    if (this.state.data.unsandboxed) {
+                        manuallyTrustExtension(url);
+                    }
+                }
+                if (!allowed) {
+                    return false;
                 }
             }
-            this.skipExt = true;
             return true;
         }
-        return false;
     }
 
     /**
