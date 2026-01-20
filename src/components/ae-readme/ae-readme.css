@@ -5,7 +5,9 @@
 .modal-content {
     max-width: 750px;
 }
-
+.Modaltab {
+    height: 35px;
+}
 .body {
     background: $ui-modal-background;
     padding: 0.5rem 2.0rem;

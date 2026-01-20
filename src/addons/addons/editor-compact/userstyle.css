@@ -521,3 +521,9 @@ body:not(.sa-columns-enabled) [class*="gui_tab-panel"] [class*="gui_extension-bu
 [class*="extension-chooser_Extbg"] {
   min-height: 75px;
 }
+[class*="Modaltab"]{
+  height: 25px;
+}
+[class*=tab-button]{
+  line-height: 0.6;
+}

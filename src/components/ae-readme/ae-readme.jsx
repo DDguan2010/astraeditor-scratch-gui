@@ -58,7 +58,7 @@ const CustomModalComponent = (props) => {
         })
 
         const [nowTab, setTab] = useState(0)
-        const [Title, setTitle] = useState("README")
+        const [Title, setTitle] = useState(`README${readMe[0].title != undefined ? readMe[0].title.length < 39 ? ":" + readMe[0].title : ":Title is Too Long" : ""}`)
         const handleClose = () => {
             data = null;
             props.onClose();
@@ -71,29 +71,32 @@ const CustomModalComponent = (props) => {
                 id="readme"
             >
                 <Box>
-                    <div className={styles.tab} style={{
-                        margin: "0"
-                    }}>
-                        {readMe.length > 1 && readMe.map((item, index) => (
-                            <button key={index} className={
-                                nowTab == index ?
-                                    styles.tabButtonEnable : styles.tabButtonUnable
-                            } style={{
-                                display: "inline-block",
-                                width: `calc(100% / ${readMe.length})`,
+                    {readMe.length > 1 &&
+                        <div className={styles.Modaltab} style={{
+                            margin: "0"
+                        }}>
+                            {readMe.length > 1 && readMe.map((item, index) => (
+                                <button key={index} className={
+                                    nowTab == index ?
+                                        styles.tabButtonEnable : styles.tabButtonUnable
+                                } style={{
+                                    display: "inline-block",
+                                    width: `calc(100% / ${readMe.length})`,
+                                    height: '100%'
 
-                            }}
-                                onClick={() => {
-                                    setTitle(`README${readMe[index].title != undefined ? readMe[index].title.length < 39 ? ":" + readMe[index].title : ":Title is Too Long" : ""}`); setTab(index)
                                 }}
+                                    onClick={() => {
+                                        setTitle(`README${readMe[index].title != undefined ? readMe[index].title.length < 39 ? ":" + readMe[index].title : ":Title is Too Long" : ""}`); setTab(index)
+                                    }}
 
-                            >
-                                {readMe[index].title == undefined ? index + 1 : readMe[index].title}
-                            </button>
-                        ))}
-                    </div>
+                                >
+                                    {readMe[index].title == undefined ? index + 1 : readMe[index].title}
+                                </button>
+                            ))}
+                        </div>
+                    }
                     <ReactMarkdown className={styles.body}>
-                        {readMe[nowTab].text.replaceAll('\n','\n\n')}
+                        {readMe[nowTab].text.replaceAll('\n', '\n\n')}
                     </ReactMarkdown>
                 </Box>
 

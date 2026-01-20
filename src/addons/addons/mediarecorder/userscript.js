@@ -30,7 +30,7 @@ export default async ({ addon, console, msg }) => {
     const getOptions = () => {
       const { backdrop, container, content, closeButton, remove } = addon.tab.createModal(msg("option-title"), {
         isOpen: true,
-        useEditorClasses: true,
+        useEditorClasses: true
       });
       container.classList.add("mediaRecorderPopup");
       content.classList.add("mediaRecorderPopupContent");

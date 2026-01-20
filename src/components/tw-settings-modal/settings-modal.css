@@ -23,7 +23,9 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
-
+.Modaltab{
+    height: 35px;
+}
 .tab-button-enable {
     filter: brightness(0.8)
 }

@@ -487,7 +487,7 @@ const SettingsModalComponent = props => {
             contentLabel={props.intl.formatMessage(messages.title)}
             id="settingsModal"
         >
-            <div className={styles.tab} style={{
+            <div className={styles.Modaltab} style={{
                 margin: "0"
             }}>
                 <button
@@ -498,7 +498,7 @@ const SettingsModalComponent = props => {
                     style={{
                         display: "inline-block",
                         width: `50%`,
-
+                        height: '100%',
                     }}
                     onClick={() => setSettingsTab(1)}
                 ><FormattedMessage
@@ -514,7 +514,7 @@ const SettingsModalComponent = props => {
                     style={{
                         display: "inline-block",
                         width: `50%`,
-
+                        height: '100%'
                     }}
                     onClick={() => setSettingsTab(2)}
                 >AstraEditor</button>
