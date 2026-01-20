@@ -647,7 +647,6 @@ class Tab extends EventTargetShim {
                 classes.push(className);
             }
         }
-        console.log(classes.join(' '))
         return classes.join(' ');
     }
 

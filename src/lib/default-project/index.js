@@ -7,93 +7,125 @@ import backdrop from '!raw-loader!./cd21514d0531fdffb22204e0ec5ed84a.svg';
 import { TextEncoder } from '../tw-text-encoder';
 
 import titlesContent from './titles.json'
-const returnRandomText = () => {
-    const userName = localStorage.getItem('tw:username') || '创作者'
 
-    const titles = titlesContent
-    
-    if (!titles || titles.length === 0) {
-        return '你好世界'
-    }
-    
-    const randomTitle = titles[Math.floor(Math.random() * titles.length)]
-    return randomTitle.replace('${UserName}', userName)
+import { ACCENT_MAP } from '../themes/index.js';
+const theme = JSON.parse(localStorage.getItem('tw:theme'))
+
+const returnRandomText = () => {
+	const userName = localStorage.getItem('tw:username') || '创作者'
+
+	const titles = titlesContent
+
+	if (!titles || titles.length === 0) {
+		return '你好世界'
+	}
+
+	const randomTitle = titles[Math.floor(Math.random() * titles.length)]
+	return randomTitle.replace('${UserName}', userName)
 }
 
+
+const getThemeColor = () => {
+    try{
+        if (theme.accent == 'custom') return JSON.parse(localStorage.getItem('constomTheme'))['looks-secondary']
+        return ACCENT_MAP[theme.accent].guiColors['looks-secondary'] || '#0099ff'
+    } catch {
+        return '#0099ff'
+    }
+}
+
+const getBG = () => {
+    try {
+        if (theme.gui == 'light') return '#ffffff'
+        if (theme.gui == 'dark') return '#000000'
+        else return '#000000'
+    } catch {
+        return '#000000'
+    }
+}
+const getTextBG = () => {
+    try {
+        if (theme.gui == 'light') return '#000000'
+        if (theme.gui == 'dark') return '#ffffff'
+        else return '#ffffff'
+    } catch {
+        return '#ffffff'
+    }
+}
 const costume = `
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="593.28489" height="425.66905" viewBox="0,0,593.28489,425.66905">
 	<defs>
 		<radialGradient cx="273.38749" cy="316.85553" r="191.65592" fx="83.54215" fy="290.574" gradientUnits="userSpaceOnUse" id="color-1">
 			<stop offset="0" stop-color="#ffffff" />
-			<stop offset="0.88" stop-color="#66ccff" />
-			<stop offset="1" stop-color="#66ccff" />
+			<stop offset="0.88" stop-color="${getThemeColor()}" />
+			<stop offset="1" stop-color="${getThemeColor()}" />
 		</radialGradient>
 		<radialGradient cx="273.38749" cy="316.85553" r="191.65592" fx="83.54215" fy="290.574" gradientUnits="userSpaceOnUse" id="color-2">
 			<stop offset="0" stop-color="#ffffff" />
-			<stop offset="0.88" stop-color="#66ccff" />
-			<stop offset="1" stop-color="#66ccff" />
+			<stop offset="0.88" stop-color="${getThemeColor()}" />
+			<stop offset="1" stop-color="${getThemeColor()}" />
 		</radialGradient>
 		<radialGradient cx="273.38749" cy="316.85553" r="191.65592" fx="83.54215" fy="290.574" gradientUnits="userSpaceOnUse" id="color-3">
 			<stop offset="0" stop-color="#ffffff" />
-			<stop offset="0.88" stop-color="#66ccff" />
-			<stop offset="1" stop-color="#66ccff" />
+			<stop offset="0.88" stop-color="${getThemeColor()}" />
+			<stop offset="1" stop-color="${getThemeColor()}" />
 		</radialGradient>
 		<radialGradient cx="273.38749" cy="316.85553" r="191.65592" fx="83.54215" fy="290.574" gradientUnits="userSpaceOnUse" id="color-4">
 			<stop offset="0" stop-color="#ffffff" />
-			<stop offset="0.88" stop-color="#66ccff" />
-			<stop offset="1" stop-color="#66ccff" />
+			<stop offset="0.88" stop-color="${getThemeColor()}" />
+			<stop offset="1" stop-color="${getThemeColor()}" />
 		</radialGradient>
 		<radialGradient cx="273.38749" cy="316.85553" r="191.65592" fx="83.54215" fy="290.574" gradientUnits="userSpaceOnUse" id="color-5">
 			<stop offset="0" stop-color="#ffffff" />
-			<stop offset="0.88" stop-color="#66ccff" />
-			<stop offset="1" stop-color="#66ccff" />
+			<stop offset="0.88" stop-color="${getThemeColor()}" />
+			<stop offset="1" stop-color="${getThemeColor()}" />
 		</radialGradient>
 		<radialGradient cx="273.38749" cy="316.85553" r="191.65592" fx="83.54215" fy="290.574" gradientUnits="userSpaceOnUse" id="color-6">
 			<stop offset="0" stop-color="#ffffff" />
-			<stop offset="0.88" stop-color="#66ccff" />
-			<stop offset="1" stop-color="#66ccff" />
+			<stop offset="0.88" stop-color="${getThemeColor()}" />
+			<stop offset="1" stop-color="${getThemeColor()}" />
 		</radialGradient>
 		<radialGradient cx="273.38749" cy="316.85553" r="191.65592" fx="83.54215" fy="290.574" gradientUnits="userSpaceOnUse" id="color-7">
 			<stop offset="0" stop-color="#ffffff" />
-			<stop offset="0.88" stop-color="#66ccff" />
-			<stop offset="1" stop-color="#66ccff" />
+			<stop offset="0.88" stop-color="${getThemeColor()}" />
+			<stop offset="1" stop-color="${getThemeColor()}" />
 		</radialGradient>
 		<radialGradient cx="273.38749" cy="316.85553" r="191.65592" fx="83.54215" fy="290.574" gradientUnits="userSpaceOnUse" id="color-8">
 			<stop offset="0" stop-color="#ffffff" />
-			<stop offset="0.88" stop-color="#66ccff" />
-			<stop offset="1" stop-color="#66ccff" />
+			<stop offset="0.88" stop-color="${getThemeColor()}" />
+			<stop offset="1" stop-color="${getThemeColor()}" />
 		</radialGradient>
 		<radialGradient cx="273.38749" cy="316.85553" r="191.65592" fx="83.54215" fy="290.574" gradientUnits="userSpaceOnUse" id="color-9">
 			<stop offset="0" stop-color="#ffffff" />
-			<stop offset="0.88" stop-color="#66ccff" />
-			<stop offset="1" stop-color="#66ccff" />
+			<stop offset="0.88" stop-color="${getThemeColor()}" />
+			<stop offset="1" stop-color="${getThemeColor()}" />
 		</radialGradient>
 		<radialGradient cx="273.38749" cy="316.85553" r="191.65592" fx="83.54215" fy="290.574" gradientUnits="userSpaceOnUse" id="color-10">
 			<stop offset="0" stop-color="#ffffff" />
-			<stop offset="0.88" stop-color="#66ccff" />
-			<stop offset="1" stop-color="#66ccff" />
+			<stop offset="0.88" stop-color="${getThemeColor()}" />
+			<stop offset="1" stop-color="${getThemeColor()}" />
 		</radialGradient>
 		<radialGradient cx="273.38749" cy="316.85553" r="191.65592" fx="83.54215" fy="290.574" gradientUnits="userSpaceOnUse" id="color-11">
 			<stop offset="0" stop-color="#ffffff" />
-			<stop offset="0.88" stop-color="#66ccff" />
-			<stop offset="1" stop-color="#66ccff" />
+			<stop offset="0.88" stop-color="${getThemeColor()}" />
+			<stop offset="1" stop-color="${getThemeColor()}" />
 		</radialGradient>
 		<radialGradient cx="273.38749" cy="316.85553" r="191.65592" fx="83.54215" fy="290.574" gradientUnits="userSpaceOnUse" id="color-12">
 			<stop offset="0" stop-color="#ffffff" />
-			<stop offset="0.88" stop-color="#66ccff" />
-			<stop offset="1" stop-color="#66ccff" />
+			<stop offset="0.88" stop-color="${getThemeColor()}" />
+			<stop offset="1" stop-color="${getThemeColor()}" />
 		</radialGradient>
 	</defs>
 	<g transform="translate(60.74938,0)">
 		<g stroke="none" stroke-miterlimit="10">
-			<path d="M0,360v-360h480v360z" fill="#000000" fill-rule="nonzero" />
+			<path d="M0,360v-360h480v360z" fill="${getBG()}" fill-rule="nonzero" />
 			<g>
 				<g fill-rule="evenodd">
 					<path d="M-60.74938,250.79089c0,-71.60744 58.04822,-129.65565 129.65565,-129.65565c71.60744,0 129.65565,58.04822 129.65565,129.65565c0,71.60744 -58.04822,129.65565 -129.65565,129.65565c-71.60744,0 -129.65565,-58.04822 -129.65565,-129.65565z" fill-opacity="0.58039"
-						fill="#0099ff" />
-					<path d="M55.3017,293.45976c0,-53.39174 43.23573,-96.67488 96.57182,-96.67488c53.33609,0 96.57182,43.28314 96.57182,96.67488c0,53.39174 -43.23573,96.67488 -96.57182,96.67488c-53.33609,0 -96.57182,-43.28314 -96.57182,-96.67488z" fill-opacity="0.58039" fill="#0099ff" />
+						fill="${getThemeColor()}" />
+					<path d="M55.3017,293.45976c0,-53.39174 43.23573,-96.67488 96.57182,-96.67488c53.33609,0 96.57182,43.28314 96.57182,96.67488c0,53.39174 -43.23573,96.67488 -96.57182,96.67488c-53.33609,0 -96.57182,-43.28314 -96.57182,-96.67488z" fill-opacity="0.58039" fill="${getThemeColor()}" />
 					<path d="M22.67548,299.15925c34.8648,3.13936 60.57949,33.94752 57.44013,68.81025c-3.13936,34.86274 -33.94752,60.57949 -68.81232,57.44013c-34.86212,-3.14142 -60.57867,-33.94958 -57.43848,-68.81232c3.14039,-34.86274 33.94793,-60.57949 68.81067,-57.43807z" fill-opacity="0.58039"
-						fill="#0099ff" />
+						fill="${getThemeColor()}" />
 					<path
 						d="M362.23518,290.57394c1.63461,0 2.93529,0.48441 3.90204,1.45115c0.96675,0.96675 1.45115,2.24681 1.45115,3.83814c0,1.58926 -0.48441,2.85902 -1.45115,3.80516c-0.96675,0.94614 -2.26743,1.41817 -3.90204,1.41817c-1.59132,0 -2.84871,-0.47204 -3.77218,-1.41817c-0.92552,-0.94614 -1.38725,-2.2159 -1.38725,-3.80516c0,-1.63461 0.46173,-2.92498 1.38725,-3.87112c0.92346,-0.94614 2.18085,-1.41817 3.77218,-1.41817z"
 						fill="url(#color-1)" />
@@ -124,7 +156,7 @@ const costume = `
 						d="M462.84508,304.38464h0.38752v8.62035h-0.58129c-4.56784,0 -7.99371,0.87399 -10.27763,2.62403c-2.28392,1.75004 -3.42588,4.1597 -3.42588,7.22691v19.25046h-8.59561v-36.81478h8.59561v6.80641h0.32362c1.37901,-2.46325 3.19913,-4.36377 5.46244,-5.70361c2.26124,-1.33984 4.96567,-2.00977 8.11121,-2.00977z"
 						fill="url(#color-11)" />
 					<path d="M358.1064,306.65207h8.65745v35.45433h-8.65745z" fill="url(#color-12)" />
-				</g><text transform="translate(531.03003,280.99507)" font-size="30" xml:space="preserve" fill="#ffffff" fill-rule="nonzero" font-family="Arial, Helvetica, sans-serif" font-weight="400" text-anchor="end">
+				</g><text transform="translate(531.03003,280.99507)" font-size="30" xml:space="preserve" fill="${getTextBG()}" fill-rule="nonzero" font-family="Arial, Helvetica, sans-serif" font-weight="400" text-anchor="end">
 					<tspan x="-30" dy="0">${returnRandomText()}</tspan>
 				</text>
 			</g>
@@ -135,40 +167,41 @@ const costume = `
 
 
 const defaultProject = translator => {
-    if (overrideDefaultProject.byteLength > 0) {
-        return [{
-            id: 0,
-            assetType: 'Project',
-            dataFormat: 'JSON',
-            data: overrideDefaultProject
-        }];
-    }
+	if (overrideDefaultProject.byteLength > 0) {
+		return [{
+			id: 0,
+			assetType: 'Project',
+			dataFormat: 'JSON',
+			data: overrideDefaultProject
+		}];
+	}
 
-    let _TextEncoder;
-    if (typeof TextEncoder === 'undefined') {
-        _TextEncoder = require('text-encoding').TextEncoder;
-    } else {
-        _TextEncoder = TextEncoder;
-    }
-    const encoder = new _TextEncoder();
+	let _TextEncoder;
+	if (typeof TextEncoder === 'undefined') {
+		_TextEncoder = require('text-encoding').TextEncoder;
+	} else {
+		_TextEncoder = TextEncoder;
+	}
+	const encoder = new _TextEncoder();
 
-    const projectJson = projectData(translator);
-    return [{
-        id: 0,
-        assetType: 'Project',
-        dataFormat: 'JSON',
-        data: JSON.stringify(projectJson)
-    }, {
-        id: 'cd21514d0531fdffb22204e0ec5ed84a',
-        assetType: 'ImageVector',
-        dataFormat: 'SVG',
-        data: encoder.encode(backdrop)
-    }, {
-        id: '927d672925e7b99f7813735c484c6923',
-        assetType: 'ImageVector',
-        dataFormat: 'SVG',
-        data: encoder.encode(costume.replace('\n', ''))
-    }];
+	const projectJson = projectData(translator);
+
+	return [{
+		id: 0,
+		assetType: 'Project',
+		dataFormat: 'JSON',
+		data: JSON.stringify(projectJson)
+	}, {
+		id: 'cd21514d0531fdffb22204e0ec5ed84a',
+		assetType: 'ImageVector',
+		dataFormat: 'SVG',
+		data: encoder.encode(backdrop)
+	}, {
+		id: '927d672925e7b99f7813735c484c6923',
+		assetType: 'ImageVector',
+		dataFormat: 'SVG',
+		data: encoder.encode(costume)
+	}];
 }
 
 export default defaultProject;
