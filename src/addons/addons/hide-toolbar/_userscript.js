@@ -34,6 +34,7 @@ export default async function ({ addon, msg, Window }) {
         let topBarHeight = topBar.offsetHeight //插件可以更改
         let isTouchingAnyMenu = false;
         let isToolbarVisible = false;
+        let oldCheck = isTouching;
 
         button.className = "hide-switch"
         text.className = "hide-text"
@@ -43,7 +44,7 @@ export default async function ({ addon, msg, Window }) {
         topBar.style.transition = 'top 0.5s ease'
         button.style.setProperty('--traslate', `-10px`);
         button.style.opacity = '50%'
-
+        
         text.style.setProperty('--rotate', '0')
 
         updateWorkSpace()
@@ -53,19 +54,13 @@ export default async function ({ addon, msg, Window }) {
                 text.style.setProperty('--rotate', '180deg');
                 button.style.setProperty('--traslate', `${40 + (topBarHeight - 48)}px`);
                 topBar.style.top = '0';
-                updateWorkSpace()
+                
         }
         
         function updateWorkSpace(){
                 window.dispatchEvent(new Event('resize'));
         }
-        function checkThenUpdate(){
-                const newIsToolbarVisible = topBar.style.top === '0px' || topBar.style.top === '0';
-                if (newIsToolbarVisible !== isToolbarVisible) {
-                        isToolbarVisible = newIsToolbarVisible;
-                        updateWorkSpace()
-                }
-        }
+
         function update(e) {
                 const toolBar = document.querySelectorAll("[class*='menu_right']")
                 if (toolBar.length == 0) isTouchingAnyMenu = false;
@@ -91,8 +86,11 @@ export default async function ({ addon, msg, Window }) {
                         button.style.opacity = '50%'
                         isTouching = false;
                 }
+                if (oldCheck != isTouching) updateWorkSpace()
 
-                checkThenUpdate()
+                oldCheck = isTouching
+
+                
 
         }
         document.addEventListener('mouseenter', (e) => {
@@ -104,8 +102,8 @@ export default async function ({ addon, msg, Window }) {
         button.addEventListener('mousedown', (e) => {
                 isLock = !isLock //锁定
                 setToolBarLock()
-                update(e)
                 updateWorkSpace()
+                update(e)
         });
 
         const buttonImg = require('./button.svg')
