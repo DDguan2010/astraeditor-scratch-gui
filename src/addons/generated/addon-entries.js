@@ -82,5 +82,6 @@ export default {
   "tw-disable-compiler": () => import(/* webpackChunkName: "addon-entry-tw-disable-compiler" */ "../addons/tw-disable-compiler/_runtime_entry.js"),
   "editor-stepping": () => import(/* webpackChunkName: "addon-entry-editor-stepping" */ "../addons/editor-stepping/_runtime_entry.js"),
   "tw-comment-markdown-editor": () => import(/* webpackChunkName: "addon-entry-tw-comment-markdown-editor" */ "../addons/tw-comment-markdown-editor/_runtime_entry.js"),
+  "simple-project-analyzer": () => import(/* webpackChunkName: "addon-entry-simple-project-analyzer" */ "../addons/simple-project-analyzer/_runtime_entry.js"),
   "hide-toolbar": () => import(/* webpackChunkName: "addon-entry-tw-hide-toolbar" */ "../addons/hide-toolbar/_runtime_entry.js")
 };

@@ -2,7 +2,7 @@
     "cat-blocks/@description": "重新获取2020年愚人节首次推出的编辑器猫猫帽子积木。",
     "cat-blocks/@info-watch": "当编辑器打开时，“看向鼠标”设置可能会影响性能。",
     "cat-blocks/@name": "猫积木",
-    "cat-blocks/@settings-name-watch": "跟随鼠标",
+    "cat-blocks/@settings-name-watch": "看向鼠标",
     "editor-devtools/@description": "为编辑器添加了新的菜单选项：复制/粘贴积木，更好的积木整理，以及更多功能！",
     "editor-devtools/@name": "开发者工具",
     "editor-devtools/@settings-name-enableCleanUpPlus": "增强“整理积木”",
@@ -402,6 +402,11 @@
     "editor-stepping/@description": "项目运行时高亮正在运行的积木",
     "editor-stepping/@name": "给运行中的积木显示边框",
     "editor-stepping/@settings-name-highlight-color": "高亮色",
+    "tw-straighten-comments/@name": "保持注释直连接",
+    "tw-straighten-comments/@description": "确保注释始终通过一条水平的直线与其对应的源代码块相连，而不产生任何角度。",
+    "simple-project-analyzer/@name": "SPA 简易作品分析器",
+    "simple-project-analyzer/@description": "使用简单的算法在编辑器中分析你的作品！",
+    "simple-project-analyzer/@info-warning":"此插件仍在开发中，某些功能可能无法正常工作。",
     "hide-toolbar/@name":"隐藏工具栏",
     "hide-toolbar/@description": "工具栏默认为隐藏，当鼠标靠近时将自动弹出。您也可将其锁定，恢复为常驻显示。"
 }

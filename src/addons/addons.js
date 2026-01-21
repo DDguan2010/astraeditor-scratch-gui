@@ -86,7 +86,8 @@ const addons = [
 ];
 
 const newAddons = [
-    'expanded-backpack'
+    'expanded-backpack',
+    'simple-project-analyzer'
 ];
 
 // eslint-disable-next-line import/no-commonjs
