@@ -39,7 +39,7 @@ export default async function ({ addon, console }) {
       // 创建切换按钮
       const toggleButton = document.createElement('button');
       toggleButton.className = 'tw-md-toggle-button';
-      toggleButton.innerHTML = '📝 编辑';
+      toggleButton.innerHTML = '编辑';
       toggleButton.dataset.mode = 'edit';
       toggleButton.title = '切换到预览模式 (Ctrl+M)';
 
@@ -96,7 +96,7 @@ export default async function ({ addon, console }) {
         if (mode === 'edit') {
           // 切换到预览模式
           toggleButton.dataset.mode = 'preview';
-          toggleButton.innerHTML = '🐟 预览';
+          toggleButton.innerHTML = '预览';
           toggleButton.title = '切换到编辑模式 (Ctrl+M)';
           modeIndicator.textContent = '预览模式';
           modeIndicator.classList.add('preview-mode');
@@ -108,7 +108,7 @@ export default async function ({ addon, console }) {
         } else {
           // 切换到编辑模式
           toggleButton.dataset.mode = 'edit';
-          toggleButton.innerHTML = '📝 编辑';
+          toggleButton.innerHTML = '编辑';
           toggleButton.title = '切换到预览模式 (Ctrl+M)';
           modeIndicator.textContent = '编辑模式';
           modeIndicator.classList.remove('preview-mode');

@@ -48,12 +48,12 @@ const options = defineMessages({
         id: 'tw.accent.cybere'
     },
     [ACCENT_MIKU]:{
-        defaultMessage: 'Miku',
+        defaultMessage: 'Miku Green',
         description: 'Name of the Miku color',
         id: 'tw.accent.miku'
     },
     [ACCENT_TY]:{
-        defaultMessage: 'Tianyi',
+        defaultMessage: 'Tianyi Blue',
         description: 'Name of the tianyi color',
         id: 'tw.accent.tianyi'
     },
