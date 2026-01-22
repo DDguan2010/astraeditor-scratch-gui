@@ -4,14 +4,15 @@ export default async function ({ addon, msg, safeMsg, console }) {
     constructor() {
       this.analyzeButton = null;
       this.analyzeModal = null;
+      this.removeModal = null;
     }
 
     // 创建分析按钮
     async createAnalyzeButton() {
       // 尝试查找 find-bar 插件的位置
-      const findBar = document.querySelector('.sa-find-bar');
+      const findBar = document.querySelector('.react-tabs');
       let targetElement;
-      
+
       if (findBar) {
         // 如果 find-bar 存在，在其右边添加按钮
         targetElement = findBar.parentElement;
@@ -31,16 +32,16 @@ export default async function ({ addon, msg, safeMsg, console }) {
       });
       this.analyzeButton.textContent = msg('analyze-button');
       this.analyzeButton.title = msg('analyze-tooltip');
-      
+
       // 设置透明背景
       this.analyzeButton.style.backgroundColor = 'transparent';
       this.analyzeButton.style.border = '1px solid rgba(0,0,0,0.1)';
-      
+
       // 禁用时隐藏按钮
       addon.tab.displayNoneWhileDisabled(this.analyzeButton);
-      
+
       this.analyzeButton.addEventListener('click', () => this.showAnalysisModal());
-      
+
       // 将按钮添加到目标位置
       if (findBar) {
         // 在 find-bar 右边添加
@@ -59,17 +60,22 @@ export default async function ({ addon, msg, safeMsg, console }) {
       }
 
       // 使用 addon.tab.createModal 创建模态框
-      const modal = addon.tab.createModal(msg('modal-title'), {
+      const { backdrop, container, content, closeButton, remove } = addon.tab.createModal(msg('modal-title'), {
         isOpen: true
       });
 
-      this.analyzeModal = modal.backdrop;
-      
+      this.analyzeModal = backdrop;
+      this.removeModal = remove;
+
+      // 添加自定义 CSS 类
+      container.classList.add('sa-analyze-modal-popup');
+      content.classList.add('sa-analyze-modal-content');
+
       // 生成分析结果HTML
       const analysisHTML = this.generateAnalysisHTML();
-      
+
       // 设置模态框内容
-      modal.content.innerHTML = `
+      content.innerHTML = `
         <div class="sa-analyze-loading" id="saAnalyzeLoading">
           <div class="sa-analyze-spinner"></div>
           <p>${msg('analyzing')}</p>
@@ -79,87 +85,29 @@ export default async function ({ addon, msg, safeMsg, console }) {
         </div>
       `;
 
-      // 添加样式
-      const styleElement = document.createElement('style');
-      styleElement.textContent = `
-        .sa-analyze-modal {
-          max-width: 600px;
-        }
-        .sa-analyze-loading {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          padding: 40px;
-        }
-        .sa-analyze-spinner {
-          width: 40px;
-          height: 40px;
-          border: 4px solid rgba(0, 0, 0, 0.1);
-          border-radius: 50%;
-          border-top-color: #4d97ff;
-          animation: sa-analyze-spin 1s ease-in-out infinite;
-          margin-bottom: 16px;
-        }
-        @keyframes sa-analyze-spin {
-          to { transform: rotate(360deg); }
-        }
-        .sa-analyze-stats {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 16px;
-          margin-bottom: 24px;
-        }
-        .sa-analyze-stat {
-          background: #f5f5f5;
-          border-radius: 8px;
-          padding: 16px;
-          text-align: center;
-        }
-        .sa-analyze-stat-value {
-          font-size: 24px;
-          font-weight: bold;
-          color: #4d97ff;
-          margin-bottom: 8px;
-        }
-        .sa-analyze-stat-label {
-          font-size: 14px;
-          color: #575e75;
-        }
-        .sa-analyze-details {
-          margin-top: 24px;
-        }
-        .sa-analyze-details h3 {
-          font-size: 16px;
-          color: #575e75;
-          margin-bottom: 12px;
-        }
-        .sa-analyze-chart {
-          margin-top: 16px;
-          height: 200px;
-          background: #f5f5f5;
-          border-radius: 8px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: #575e75;
-        }
-      `;
-      document.head.appendChild(styleElement);
+      // 添加关闭事件监听器
+      backdrop.addEventListener('click', () => this.closeModal());
+      closeButton.addEventListener('click', () => this.closeModal());
 
       // 异步分析项目
       this.analyzeProject();
     }
-
+    closeModal() {
+      if (this.removeModal) {
+        this.removeModal();
+        this.analyzeModal = null;
+        this.removeModal = null;
+      }
+    }
     // 分析项目
     async analyzeProject() {
       try {
         // 获取项目JSON - 使用 addon.tab.traps.vm.toJSON()
         const projectJSON = addon.tab.traps.vm.toJSON();
-        
+
         // 分析项目数据
         const analysis = this.performAnalysis(projectJSON);
-        
+
         // 更新UI
         this.updateAnalysisResults(analysis);
       } catch (error) {
@@ -175,11 +123,11 @@ export default async function ({ addon, msg, safeMsg, console }) {
       const targets = projectData.targets || [];
       const sprites = targets.filter(t => !t.isStage);
       const stage = targets.find(t => t.isStage);
-      
+
       let totalBlocks = 0;
       let blockTypes = {};
       let extensions = new Set(projectData.extensions || []);
-      
+
       // 统计舞台数据
       if (stage && stage.blocks) {
         const stageBlocks = Object.values(stage.blocks);
@@ -198,7 +146,7 @@ export default async function ({ addon, msg, safeMsg, console }) {
 
       // 计算Dr.Scratch评分
       const drScratchScore = this.calculateDrScratchScore(projectData);
-      
+
       return {
         spriteCount: sprites.length,
         blockCount: totalBlocks,
@@ -237,9 +185,9 @@ export default async function ({ addon, msg, safeMsg, console }) {
 
       targets.forEach(target => {
         if (!target.blocks) return;
-        
+
         const blocks = Object.values(target.blocks);
-        
+
         // 抽象和问题分解
         if (blocks.some(b => b.opcode && b.opcode.includes('procedures'))) {
           score.abstraction = Math.max(score.abstraction, 2);
@@ -249,7 +197,7 @@ export default async function ({ addon, msg, safeMsg, console }) {
         } else if (target.isSprite === false && targets.length > 1) {
           score.abstraction = Math.max(score.abstraction, 1);
         }
-        
+
         // 并行性
         const eventBlocks = blocks.filter(b => b.opcode && b.opcode.startsWith('event_when'));
         if (eventBlocks.length >= 2) {
@@ -260,7 +208,7 @@ export default async function ({ addon, msg, safeMsg, console }) {
             score.parallelism = Math.max(score.parallelism, 2);
           }
         }
-        
+
         // 逻辑思维
         if (blocks.some(b => b.opcode === 'control_if')) {
           score.logic = Math.max(score.logic, 1);
@@ -271,7 +219,7 @@ export default async function ({ addon, msg, safeMsg, console }) {
         if (blocks.some(b => b.opcode && b.opcode.includes('operator'))) {
           score.logic = Math.max(score.logic, 3);
         }
-        
+
         // 同步
         if (blocks.some(b => b.opcode === 'control_wait')) {
           score.synchronization = Math.max(score.synchronization, 1);
@@ -282,7 +230,7 @@ export default async function ({ addon, msg, safeMsg, console }) {
         if (blocks.some(b => b.opcode === 'control_wait_until')) {
           score.synchronization = Math.max(score.synchronization, 3);
         }
-        
+
         // 流程控制
         if (blocks.some(b => b.opcode && b.opcode.includes('control'))) {
           score.flowControl = Math.max(score.flowControl, 1);
@@ -293,7 +241,7 @@ export default async function ({ addon, msg, safeMsg, console }) {
         if (blocks.some(b => b.opcode === 'control_repeat_until')) {
           score.flowControl = Math.max(score.flowControl, 3);
         }
-        
+
         // 用户交互
         if (blocks.some(b => b.opcode === 'event_whenflagclicked')) {
           score.userInteractivity = Math.max(score.userInteractivity, 1);
@@ -304,7 +252,7 @@ export default async function ({ addon, msg, safeMsg, console }) {
         if (blocks.some(b => b.opcode && (b.opcode.includes('video') || b.opcode.includes('sensing')))) {
           score.userInteractivity = Math.max(score.userInteractivity, 3);
         }
-        
+
         // 数据表示
         if (blocks.some(b => b.opcode && (b.opcode.includes('motion') || b.opcode.includes('looks') || b.opcode.includes('sound')))) {
           score.dataRepresentation = Math.max(score.dataRepresentation, 1);
@@ -382,19 +330,19 @@ export default async function ({ addon, msg, safeMsg, console }) {
       document.getElementById('saSoundCount').textContent = analysis.soundCount;
       document.getElementById('saVariableCount').textContent = analysis.variableCount;
       document.getElementById('saListCount').textContent = analysis.listCount;
-      
+
       // 更新Dr.Scratch评分
       const drScratchHTML = this.createDrScratchChart(analysis.drScratchScore);
       document.getElementById('saDrScratchChart').innerHTML = drScratchHTML;
-      
+
       // 更新积木分布
       const blockChartHTML = this.createBlockChart(analysis.blockTypes);
       document.getElementById('saBlockChart').innerHTML = blockChartHTML;
-      
+
       // 更新扩展列表
       const extensionHTML = this.createExtensionList(analysis.extensions);
       document.getElementById('saExtensionList').innerHTML = extensionHTML;
-      
+
       // 显示结果，隐藏加载
       document.getElementById('saAnalyzeLoading').style.display = 'none';
       document.getElementById('saAnalyzeResults').style.display = 'block';
@@ -404,9 +352,9 @@ export default async function ({ addon, msg, safeMsg, console }) {
     createDrScratchChart(score) {
       const totalScore = Object.values(score).reduce((sum, val) => sum + val, 0);
       const maxScore = Object.keys(score).length * 3;
-      
+
       let html = '<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">';
-      
+
       const scoreNames = {
         abstraction: msg('abstraction'),
         parallelism: msg('parallelism'),
@@ -416,7 +364,7 @@ export default async function ({ addon, msg, safeMsg, console }) {
         userInteractivity: msg('user-interactivity'),
         dataRepresentation: msg('data-representation')
       };
-      
+
       Object.entries(score).forEach(([key, value]) => {
         const percentage = (value / 3) * 100;
         html += `
@@ -431,19 +379,19 @@ export default async function ({ addon, msg, safeMsg, console }) {
           </div>
         `;
       });
-      
+
       html += '</div>';
       html += `<div style="margin-top: 16px; text-align: center; font-weight: bold;">${msg('total-score')}: ${totalScore}/${maxScore}</div>`;
-      
+
       return html;
     }
 
     // 创建积木分布图表
     createBlockChart(blockTypes) {
       const totalBlocks = Object.values(blockTypes).reduce((sum, count) => sum + count, 0);
-      
+
       let html = '<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">';
-      
+
       Object.entries(blockTypes).forEach(([category, count]) => {
         const percentage = totalBlocks > 0 ? (count / totalBlocks) * 100 : 0;
         html += `
@@ -458,9 +406,9 @@ export default async function ({ addon, msg, safeMsg, console }) {
           </div>
         `;
       });
-      
+
       html += '</div>';
-      
+
       return html;
     }
 
@@ -469,15 +417,15 @@ export default async function ({ addon, msg, safeMsg, console }) {
       if (extensions.length === 0) {
         return `<p>${msg('no-extensions')}</p>`;
       }
-      
+
       let html = '<div style="display: flex; flex-wrap: wrap; gap: 8px;">';
-      
+
       extensions.forEach(extension => {
         html += `<span style="background: #e0e0e0; padding: 4px 8px; border-radius: 4px;">${extension}</span>`;
       });
-      
+
       html += '</div>';
-      
+
       return html;
     }
 
@@ -489,7 +437,7 @@ export default async function ({ addon, msg, safeMsg, console }) {
 
   // 创建并初始化分析器
   const analyzer = new SimpleProjectAnalyzer();
-  
+
   // 等待编辑器加载完成
   addon.tab.waitForElement('[class*="menu-bar_menu-bar"], [class*="react-tabs_react-tabs__tab-list"]', {
     markAsSeen: true

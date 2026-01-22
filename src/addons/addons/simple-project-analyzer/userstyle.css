@@ -25,18 +25,26 @@
 }
 
 /* 模态框样式 */
-.sa-analyze-modal .[class*="modal_modal-content"] {
-  max-width: 600px;
+.sa-analyze-modal-popup {
+  max-width: 60%;
   max-height: 80vh;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
-.sa-analyze-modal .[class*="modal_header"] {
+.sa-analyze-modal-popup [class*="modal_header"] {
   padding: 16px;
+  flex-shrink: 0;
 }
 
-.sa-analyze-modal .[class*="modal_header-item-title"] {
+.sa-analyze-modal-popup [class*="modal_header-item-title"] {
   font-size: 16px;
+}
+
+.sa-analyze-modal-content {
+  padding: 16px;
+  overflow-y: auto;
+  flex-grow: 1;
 }
 
 .sa-analyze-loading {
