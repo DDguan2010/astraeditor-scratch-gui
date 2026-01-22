@@ -23,11 +23,11 @@
 }
 
 /* Menu bar */
-[class*="menu-bar_file-group_"] [class*="menu-bar_hoverable_"] > img,
+/* [class*="menu-bar_file-group_"] [class*="menu-bar_hoverable_"] > img,
 [class*="menu-bar_divider"],
 [class*="menu-bar_help-icon"] {
   display: none;
-}
+} */
 [class*="menu-bar_collapsible-label_"],
 [dir="rtl"] [class*="menu-bar_collapsible-label_"],
 [class*="settings-menu_dropdown-label_"],
@@ -265,9 +265,9 @@ button[class*="action-menu_more-button"] {
   padding-right: 1rem;
   border-radius: 0.5rem 0.5rem 0 0;
 }
-[class*="gui_tab_"] > img {
+/* [class*="gui_tab_"] > img {
   display: none;
-}
+} */
 
 .sa-find-bar {
   align-self: center;

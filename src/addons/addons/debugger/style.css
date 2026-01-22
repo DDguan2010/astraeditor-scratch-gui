@@ -26,6 +26,7 @@
   height: 6px;
   background-color: var(--editorDarkMode-highlightText, #855cd6);
   border-radius: 50%;
+
 }
 
 .sa-debugger-interface {
@@ -38,11 +39,13 @@
   height: 25rem;
   resize: both;
   padding-bottom: 10px;
+  min-width: 350px;
+  min-height: 120px;
 }
 
 .sa-debugger-interface [class*="card_header-buttons_"] {
-  background-color: #29beb8;
-  border-color: #3aa8a4;
+  background-color: var(--looks-secondary);
+  border-color:var(--looks-transparent);
 }
 
 .sa-debugger-interface h1 {
