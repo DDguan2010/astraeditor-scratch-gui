@@ -408,5 +408,5 @@
     "simple-project-analyzer/@description": "使用简单的算法在编辑器中分析你的作品！",
     "simple-project-analyzer/@info-warning":"此插件仍在开发中，某些功能可能无法正常工作。",
     "hide-toolbar/@name":"隐藏工具栏",
-    "hide-toolbar/@description": "工具栏默认为隐藏，当鼠标靠近时将自动弹出。您也可将其锁定，恢复为常驻显示。"
+    "hide-toolbar/@description": "将工具栏隐藏，且当鼠标靠近时可自动弹出。您也可将其锁定，恢复为常驻显示。"
 }

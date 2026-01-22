@@ -41,7 +41,7 @@ import TWWindChimeSubmitter from '../../containers/tw-windchime-submitter.jsx';
 import CustomThemeModal from '../../containers/tw-custom-theme-modal.jsx';
 import AEReadMe from '../../containers/ae-readme.jsx'
 import { loadData } from '../ae-readme/ae-readme.jsx'
-// 你根本不知道看到这原本是个绝对路径有多好笑
+
 import ExtensionManager from '../extension-chooser/extension-chooser.jsx';
 import PreviewExt from '../../containers/ae-preview-ext.jsx';
 

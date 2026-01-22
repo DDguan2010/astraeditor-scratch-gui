@@ -2,12 +2,12 @@
 const manifest = {
   "editorOnly": true,
   "name": "Hide Toolbar",
-  "description": "The toolbar is hidden by default and will automatically appear when you hover nearby. You may also choose to lock it in place for persistent display.",
+  "description": "The toolbar will hidden and can automatically appear when you hover nearby. You may also choose to lock it in place for persistent display.",
   "tags": ["new","recommended"],
   "credits": [
     {
       "name": "KOSHINO",
-      "link": "https://space.bilibili.com/520948922"
+      "link": "https://github.com/KOSHINOawa"
     }
   ],
   "enabledByDefault": true,
