@@ -33,9 +33,6 @@ export default async function ({ addon, msg, safeMsg, console }) {
       this.analyzeButton.textContent = msg('analyze-button');
       this.analyzeButton.title = msg('analyze-tooltip');
 
-      // 设置透明背景
-      this.analyzeButton.style.backgroundColor = 'transparent';
-      this.analyzeButton.style.border = '1px solid rgba(0,0,0,0.1)';
 
       // 禁用时隐藏按钮
       addon.tab.displayNoneWhileDisabled(this.analyzeButton);
@@ -102,11 +99,9 @@ export default async function ({ addon, msg, safeMsg, console }) {
     // 分析项目
     async analyzeProject() {
       try {
-        // 获取项目JSON - 使用 addon.tab.traps.vm.toJSON()
-        const projectJSON = addon.tab.traps.vm.toJSON();
-
-        // 分析项目数据
-        const analysis = this.performAnalysis(projectJSON);
+        // 使用 vm.runtime.targets 获取项目数据，与 block-count 插件保持一致
+        const vm = addon.tab.traps.vm;
+        const analysis = this.performAnalysisFromVM(vm);
 
         // 更新UI
         this.updateAnalysisResults(analysis);
@@ -157,6 +152,97 @@ export default async function ({ addon, msg, safeMsg, console }) {
         blockTypes: blockTypes,
         extensions: Array.from(extensions),
         drScratchScore: drScratchScore
+      };
+    }
+
+    // 从 VM 执行分析（与 block-count 插件保持一致）
+    performAnalysisFromVM(vm) {
+      const targets = vm.runtime.targets || [];
+      const sprites = targets.filter(t => !t.isStage);
+      const stage = targets.find(t => t.isStage);
+
+      let totalBlocks = 0;
+      let effectiveBlocks = 0;
+      let functionDefinitions = 0;
+      let blockTypes = {};
+      let extensions = new Set();
+
+      // 统计所有目标（包括舞台和精灵）
+      targets.forEach(target => {
+        if (!target.sprite || !target.sprite.blocks || !target.sprite.blocks._blocks) return;
+
+        const blocks = Object.values(target.sprite.blocks._blocks);
+
+        blocks.forEach(block => {
+          if (typeof block !== 'object' || !block.opcode) return;
+
+          // 统计总积木数（包括 shadow）
+          totalBlocks++;
+
+          // 统计有效积木（非 shadow）
+          if (!block.shadow) {
+            effectiveBlocks++;
+          }
+
+          // 统计函数定义
+          if (block.opcode === 'procedures_definition') {
+            functionDefinitions++;
+          }
+
+          // 统计积木类型
+          const category = block.opcode.split('_')[0];
+          blockTypes[category] = (blockTypes[category] || 0) + 1;
+        });
+      });
+
+      // 获取扩展列表
+      if (vm.runtime.extensionManager && vm.runtime.extensionManager._loadedExtensions) {
+        extensions = new Set(Object.keys(vm.runtime.extensionManager._loadedExtensions));
+      }
+
+      // 计算Dr.Scratch评分（使用 toJSON 数据）
+      let drScratchScore = {};
+      try {
+        const projectJSON = JSON.parse(vm.toJSON());
+        drScratchScore = this.calculateDrScratchScore(projectJSON);
+      } catch (e) {
+        drScratchScore = {
+          abstraction: 0,
+          parallelism: 0,
+          logic: 0,
+          synchronization: 0,
+          flowControl: 0,
+          userInteractivity: 0,
+          dataRepresentation: 0
+        };
+      }
+
+      // 计算数学运算评估（使用 toJSON 数据）
+      let mathLogicScores = {};
+      try {
+        const projectJSON = JSON.parse(vm.toJSON());
+        mathLogicScores = this.calculateMathLogicScores(projectJSON);
+      } catch (e) {
+        mathLogicScores = {
+          '运算复杂度': 0,
+          '逻辑深度': 0,
+          '数据量级': 0
+        };
+      }
+
+      return {
+        spriteCount: sprites.length,
+        blockCount: effectiveBlocks, // 使用有效积木数与 block-count 一致
+        effectiveBlocks: effectiveBlocks,
+        functionDefinitions: functionDefinitions,
+        costumeCount: targets.reduce((sum, t) => sum + (t.costumes ? t.costumes.length : 0), 0),
+        soundCount: targets.reduce((sum, t) => sum + (t.sounds ? t.sounds.length : 0), 0),
+        variableCount: targets.reduce((sum, t) => sum + (t.variables ? Object.keys(t.variables).length : 0), 0),
+        listCount: targets.reduce((sum, t) => sum + (t.lists ? Object.keys(t.lists).length : 0), 0),
+        blockTypes: blockTypes,
+        extensions: Array.from(extensions),
+        drScratchScore: drScratchScore,
+        mathLogicScores: mathLogicScores
       };
     }
 
@@ -373,7 +459,7 @@ export default async function ({ addon, msg, safeMsg, console }) {
               <span>${scoreNames[key] || key}</span>
               <span>${value}/3</span>
             </div>
-            <div style="height: 8px; background: #e0e0e0; border-radius: 4px; overflow: hidden;">
+            <div style="height: 8px; border-radius: 4px; overflow: hidden;">
               <div style="height: 100%; width: ${percentage}%; background: #4d97ff; transition: width 0.3s;"></div>
             </div>
           </div>
@@ -421,7 +507,7 @@ export default async function ({ addon, msg, safeMsg, console }) {
       let html = '<div style="display: flex; flex-wrap: wrap; gap: 8px;">';
 
       extensions.forEach(extension => {
-        html += `<span style="background: #e0e0e0; padding: 4px 8px; border-radius: 4px;">${extension}</span>`;
+        html += `<span class="extension" style="padding: 4px 8px; border-radius: 4px;">${extension}</span>`;
       });
 
       html += '</div>';
