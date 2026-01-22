@@ -6,6 +6,10 @@ const manifest = {
     {
       name: "Cyberexplorer",
       link: "https://github.com/LanwyWriteXU"
+    },
+    {
+      name: "KOSHINO",
+      link: "https://github.com/KOSHINOawa"
     }
   ],
   "info": [

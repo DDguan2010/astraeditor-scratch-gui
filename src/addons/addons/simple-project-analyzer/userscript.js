@@ -159,7 +159,8 @@ export default async function ({ addon, msg, safeMsg, console }) {
     performAnalysisFromVM(vm) {
       const targets = vm.runtime.targets || [];
       const sprites = targets.filter(t => !t.isStage);
-      const stage = targets.find(t => t.isStage);
+      const stage = targets.find(t => t.isStage);      
+      console.log('项目JSON:', vm.runtime.targets);
 
       let totalBlocks = 0;
       let effectiveBlocks = 0;
