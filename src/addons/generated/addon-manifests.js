@@ -83,6 +83,7 @@ import _editor_stepping from "../addons/editor-stepping/_manifest_entry.js";
 import _comment_markdown from "../addons/tw-comment-markdown-editor/_manifest_entry.js"
 import _simple_project_analyzer from "../addons/simple-project-analyzer/_manifest_entry.js";
 import _hide_toolbar from "../addons/hide-toolbar/_manifest_entry.js";
+import _show_fps from "../addons/show-fps/_manifest_entry.js"
 export default {
   "cat-blocks": _cat_blocks,
   "editor-devtools": _editor_devtools,
@@ -168,4 +169,5 @@ export default {
   "tw-comment-markdown-editor": _comment_markdown,
   "simple-project-analyzer": _simple_project_analyzer,
   "hide-toolbar": _hide_toolbar,
+  "show-fps": _show_fps
 };

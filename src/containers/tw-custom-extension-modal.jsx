@@ -127,7 +127,6 @@ class CustomExtensionModal extends React.Component {
     }
 
     async handleLoadExtension() {
-        this.handleClose();
         try {
             if (this.state.urls == '') this.state.urls = await this.getExtensionURLs();
             if (this.state.type !== 'url') {
@@ -138,14 +137,29 @@ class CustomExtensionModal extends React.Component {
                     }
                 }
             }
+
+            const TIMEOUT_MS = 1000; // 1秒超时
+            const loadedExtensions = [];
+
             for (const url of this.state.urls) {
-                await this.props.vm.extensionManager.loadExtensionURL(url);
+                try {
+                    const loadPromise = this.props.vm.extensionManager.loadExtensionURL(url);
+                    const timeoutPromise = new Promise((_, reject) => {
+                        setTimeout(() => reject(new Error("Timeout")),TIMEOUT_MS);
+                    });
+
+                    await Promise.race([loadPromise, timeoutPromise]);
+                    loadedExtensions.push(url);
+                } catch (err) {
+                    alert(`Failed to load extension(s): ${url}.`);
+                    console.error('Failed to load extension(s):', url, err);
+                }
             }
         } catch (err) {
-            log.error(err);
-            // eslint-disable-next-line no-alert
-            alert(err);
+            alert(`Failed to load extension(s)`);
+            console.error('Error:', err);
         }
+        this.handleClose();
     }
     async getSVG() {
         try {
@@ -158,7 +172,7 @@ class CustomExtensionModal extends React.Component {
                 throw new Error('Blockly workspace not available');
             }
 
-            const svgs = []; 
+            const svgs = [];
 
             for (const url of urls) {
                 const previousLength = this.props.vm.runtime._blockInfo.length;
@@ -185,19 +199,40 @@ class CustomExtensionModal extends React.Component {
 
                 for (const extInfo of newExtensions) {
                     console.log(extInfo);
+                    const color = extInfo.color1;
                     for (const blockInfo of extInfo.blocks) {
+                        let fullOpcode = "";
                         if (blockInfo.info.opcode == undefined) {
                             continue;
                         }
-                        const fullOpcode = extInfo.id + '_' + blockInfo.info.opcode;
-
+                        if (blockInfo.info.blockType == "label") {
+                            fullOpcode = {
+                                isSVG: true,
+                                data: `
+                                <svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+                                    <g>
+                                        <text xml:space="preserve" text-anchor="start" font-family="Consolas, 'Courier New', monospace, 'MiSans'" font-size="24" id="svg_1" y="20" x="-590" stroke-width="0" stroke="#888" fill=${color}>
+                                            ${blockInfo.info.text}
+                                        </text>
+                                        <line  y2="30" x2="0" y1="30" x1="255" stroke=${color} fill="none"/>
+                                    </g>
+                                </svg>
+                                `
+                            }
+                        } else {
+                            fullOpcode = extInfo.id + '_' + blockInfo.info.opcode;
+                        }
                         try {
-                            const block = workspace.newBlock(fullOpcode);
-                            block.initSvg();
-                            block.render();
-                            const svg = block.getSvgRoot().outerHTML;
-                            svgs.push(svg);
-                            block.dispose();
+                            if (fullOpcode.isSVG) {
+                                svgs.push(fullOpcode.data)
+                            } else {
+                                const block = workspace.newBlock(fullOpcode);
+                                block.initSvg();
+                                block.render();
+                                const svg = block.getSvgRoot().outerHTML;
+                                svgs.push(svg);
+                                block.dispose();
+                            }
                         } catch (e) {
                             console.warn(`Block render failed: ${fullOpcode}`, e);
                         }

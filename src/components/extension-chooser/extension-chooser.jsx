@@ -213,24 +213,50 @@ const ExtensionChooser = props => {
 
     const getOpcodefromExt = (Ext) => {
         const AllOpcode = [];
-
+        const color = Ext.color1 || '#0099ff'
         Ext.blocks.forEach((item, index) => {
             if (item.info.opcode == undefined) return;
+            if (item.info.blockType == "label") {AllOpcode.push({
+                isSVG: true,
+                data: `
+                <svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+                    <g>
+                        <text xml:space="preserve" text-anchor="start" font-family="Consolas, 'Courier New', monospace, 'MiSans'" font-size="24" id="svg_1" y="20" x="-380" stroke-width="0" stroke="#888" fill=${color}>
+                            ${item.info.text}
+                        </text>
+                        <line  y2="30" x2="0" y1="30" x1="255" stroke=${color} fill="none"/>
+                    </g>
+                </svg>
+                `
+            });return};
             AllOpcode.push(Ext.id + "_" + item.info.opcode) //获取完整的opcode
         });
 
-        return AllOpcode
+        return {
+            AllOpcode
+        }
     }
 
     const getSVGfromOpcodes = (Opcodes) => {
         const blocksSVG = [];
-        Opcodes.forEach((item, index) => {
-            const blockSVGgen = AddonHooks.blocklyWorkspace.newBlock(item);
-            blockSVGgen.initSvg();
-            blockSVGgen.render();
-            blocksSVG.push(blockSVGgen.getSvgRoot().innerHTML);
-            // 删除积木
-            blockSVGgen.dispose();
+        const opcodes = Opcodes.AllOpcode;
+        opcodes.forEach((item, index) => {
+            console.log(item)
+            try{
+                if (item.isSVG) {
+                    blocksSVG.push(item.data);
+                } else {
+                    const blockSVGgen = AddonHooks.blocklyWorkspace.newBlock(item);
+                    blockSVGgen.initSvg();
+                    blockSVGgen.render();
+                    blocksSVG.push(blockSVGgen.getSvgRoot().innerHTML);
+                    // 删除积木
+                    blockSVGgen.dispose();
+                };
+            } catch(e) {
+                console.warn("Can't spawn blocks")
+            }
+            
         })
         console.log(blocksSVG)
         return blocksSVG
