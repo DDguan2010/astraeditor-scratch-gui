@@ -12,7 +12,7 @@ import DocumentationLink from '../tw-documentation-link/documentation-link.jsx';
 import styles from './settings-modal.css';
 import helpIcon from './help-icon.svg';
 import { APP_NAME } from '../../lib/brand.js';
-import {AESettings} from '../../lib/settings.js'
+import { AESettings } from '../../lib/settings.js'
 
 /* eslint-disable react/no-multi-comp */
 
@@ -432,7 +432,7 @@ const Header = props => (
 Header.propTypes = {
     children: PropTypes.node
 };
-const AutoDisplayREADME= props => (
+const AutoDisplayREADME = props => (
     <BooleanSetting
         {...props}
         label={
@@ -468,6 +468,26 @@ const SkipCustomExtWarn = props => (
                 defaultMessage="When the project loads, you do not need to agree to each custom extension request sequentially. You only need to click 'Agree All' once."
                 description="Skip custom extension warning help"
                 id="tw.settingsModal.skipcustomextwarnhelp"
+            />
+        }
+    />
+);
+const EnableExtensionPreview = props => (
+    <BooleanSetting
+        {...props}
+        label={
+            <FormattedMessage
+                defaultMessage="Enable extension preview when load extension"
+                description="extension preview label"
+                id="tw.settingsModal.enableextensionpreview"
+            />
+        }
+        help={
+            <FormattedMessage
+                // eslint-disable-next-line max-len
+                defaultMessage="Before loading custom extensions, you can preview the extensions you want to load."
+                description="extension preview help"
+                id="tw.settingsModal.enableextensionpreviewhelp"
             />
         }
     />
@@ -587,28 +607,39 @@ const SettingsModalComponent = props => {
                         />
                     )}
                 </>}
-                { settingsTab == 2 &&
-                <>
-                    <Header>
-                       README
-                    </Header>
-                    <AutoDisplayREADME 
-                        value={AEsettings.get('enableREADMEAutoDisplay')}
-                        onChange={(e) => {AEsettings.set("enableREADMEAutoDisplay",e.target.checked);update()}}
-                    />
-                    <Header>
-                        <FormattedMessage
-                            defaultMessage="Safe Settings"
-                            description="Settings modal safe settings"
-                            id="tw.settingsModal.safeSetings"
+                {settingsTab == 2 &&
+                    <>
+                        <Header>
+                            README
+                        </Header>
+                        <AutoDisplayREADME
+                            value={AEsettings.get('enableREADMEAutoDisplay')}
+                            onChange={(e) => { AEsettings.set("enableREADMEAutoDisplay", e.target.checked); update() }}
                         />
-                    </Header>
-                    <SkipCustomExtWarn
-                        value={AEsettings.get('skipExtWarn')}
-                        onChange={(e) => { AEsettings.set("skipExtWarn", e.target.checked); update() }}
-                    />
-                </>}
-                
+                        <Header>
+                            <FormattedMessage
+                                defaultMessage="Safe Settings"
+                                description="Settings modal safe settings"
+                                id="tw.settingsModal.safeSetings"
+                            />
+                        </Header>
+                        <SkipCustomExtWarn
+                            value={AEsettings.get('skipExtWarn')}
+                            onChange={(e) => { AEsettings.set("skipExtWarn", e.target.checked); update() }}
+                        />
+                        <Header>
+                            <FormattedMessage
+                                defaultMessage="Extensions Settings"
+                                description="Settings modal Extensions settings"
+                                id="tw.settingsModal.extSetings"
+                            />
+                        </Header>
+                        <EnableExtensionPreview
+                            value={AEsettings.get('EnableExtensionPreview')}
+                            onChange={(e) => { AEsettings.set("EnableExtensionPreview", e.target.checked); update() }}
+                        />
+                    </>}
+
             </Box>
         </Modal>
     )

@@ -21,7 +21,7 @@ const messages = defineMessages({
 const CustomExtensionModal = props => {
     return (
         <Modal
-            className={props.svgList && props.svgList.length > 0 ? styles.modalContent : styles.modalContentMin}
+            className={props.svgList && props.svgList.length > 0 && props.showPreview ? styles.modalContent : styles.modalContentMin}
             onRequestClose={props.onClose}
             contentLabel={props.intl.formatMessage(messages.title)}
             id="customExtensionModal"
@@ -198,7 +198,7 @@ const CustomExtensionModal = props => {
                         </button>
                     </div>
                 </div>
-                {props.svgList && props.svgList.length > 0 && (
+                {props.svgList && props.svgList.length > 0 && props.showPreview && (
                     <>
                         <div className={styles.split} />
                         <div className={styles.viewUI}>

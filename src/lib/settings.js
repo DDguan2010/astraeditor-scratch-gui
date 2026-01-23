@@ -1,15 +1,18 @@
+
 export class AESettings {
         constructor() {
                 this.storageKey = "AESettings";
                 this.init();
+                this.initset = {
+                        enableREADMEAutoDisplay: true,
+                        skipExtWarn: false,
+                        EnableExtensionPreview: false
+                };
         }
 
         init() {
                 if (!localStorage.getItem(this.storageKey)) {
-                        const defaultSettings = {
-                                enableREADMEAutoDisplay: true,
-                                skipExtWarn: false
-                        };
+                        const defaultSettings = this.initset
                         this.save(defaultSettings);
                 }
         }
@@ -20,9 +23,8 @@ export class AESettings {
         }
 
         get(id) {
-               
+
                 const settings = this.getAll();
-                 console.log(settings[id])
                 return settings[id];
         }
 
@@ -37,10 +39,7 @@ export class AESettings {
                 localStorage.setItem(this.storageKey, JSON.stringify(settings));
         }
         reset() {
-                const defaultSettings = {
-                        enableREADMEAutoDisplay: true,
-                        skipExtWarn: false
-                };
+                const defaultSettings = this.initset;
                 this.save(defaultSettings);
                 return defaultSettings;
         }

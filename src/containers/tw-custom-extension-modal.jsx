@@ -9,6 +9,7 @@ import { setPreviewExtData } from '../reducers/ae-preview-ext-data';
 import { manuallyTrustExtension, isTrustedExtension } from './tw-security-manager.jsx';
 import { getPersistedUnsandboxed, setPersistedUnsandboxed } from '../lib/tw-persisted-unsandboxed.js';
 import AddonHooks from '../addons/hooks';
+import { AESettings } from '../lib/settings.js'
 /**
  * @param {Blob} blob Blob
  * @returns {Promise<string>} data: uri
@@ -19,6 +20,8 @@ const readAsDataURL = blob => new Promise((resolve, reject) => {
     reader.onerror = () => reject(new Error(`Could not read extension as data URL: ${reader.error}`));
     reader.readAsDataURL(blob);
 });
+const AEsettings = new AESettings();
+
 class CustomExtensionModal extends React.Component {
     constructor(props) {
         super(props);
@@ -138,14 +141,14 @@ class CustomExtensionModal extends React.Component {
                 }
             }
 
-            const TIMEOUT_MS = 1000; // 1秒超时
+            const TIMEOUT_MS = 3000; // 3秒超时
             const loadedExtensions = [];
 
             for (const url of this.state.urls) {
                 try {
                     const loadPromise = this.props.vm.extensionManager.loadExtensionURL(url);
                     const timeoutPromise = new Promise((_, reject) => {
-                        setTimeout(() => reject(new Error("Timeout")),TIMEOUT_MS);
+                        setTimeout(() => reject(new Error("Timeout")), TIMEOUT_MS);
                     });
 
                     await Promise.race([loadPromise, timeoutPromise]);
@@ -182,7 +185,12 @@ class CustomExtensionModal extends React.Component {
                     manuallyTrustExtension(url);
                 }
 
-                await this.props.vm.extensionManager.loadExtensionURL(url);
+                try {
+                    await this.props.vm.extensionManager.loadExtensionURL(url);
+                } catch (err) {
+                    console.warn(`扩展加载失败: ${url}`, err);
+                    continue;
+                }
 
                 const currentBlockInfo = this.props.vm.runtime._blockInfo;
 
@@ -254,11 +262,13 @@ class CustomExtensionModal extends React.Component {
     }
 
     async updatePreview() {
+        if (!AEsettings.get('showPreview')) return
         if (!this.hasValidInput()) {
             this.setState({ svgList: [] });
             return;
         }
         await this.getSVG();
+
     }
 
 
@@ -354,6 +364,7 @@ class CustomExtensionModal extends React.Component {
                 dispatch={this.props.dispatch}
                 onClose={this.handleClose}
                 svgList={this.state.svgList}
+                showPreview={AEsettings.get('EnableExtensionPreview')}
             />
         );
     }
