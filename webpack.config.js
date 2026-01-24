@@ -255,8 +255,9 @@ module.exports = [
             new CopyWebpackPlugin({
                 patterns: [
                     {
-                        from: 'src/lib/version-check/**',
-                        to: 'lib/version-check'
+                        from: 'version-check/**',
+                        to: 'lib/version-check',
+                        context: 'src/lib'
                     }
                 ]
             })
