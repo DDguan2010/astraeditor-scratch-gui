@@ -256,8 +256,7 @@ module.exports = [
                 patterns: [
                     {
                         from: 'src/lib/version-check/**',
-                        to: 'lib/version-check',
-                        context: 'src/lib'
+                        to: 'lib/version-check'
                     }
                 ]
             })
