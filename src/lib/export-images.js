@@ -93,6 +93,7 @@ export const exportAllImagesAsPNG = async (vm, convertSvgToPng = false) => {
     const zip = new JSZip();
     const targets = vm.runtime.targets;
     const imageCount = { count: 0 };
+    const convertedCount = { count: 0 }; // Track converted PNGs
     const imageInfoList = [];
     
     console.log('Exporting images. Targets found:', targets.length);
@@ -146,6 +147,9 @@ export const exportAllImagesAsPNG = async (vm, convertSvgToPng = false) => {
                     const md5Hash = costume.assetId;
                     console.log('Using costume assetId as MD5:', md5Hash);
                     
+                    // Increment converted count
+                    convertedCount.count++;
+                    
                     // Add image info to list (only for converted PNGs)
                     imageInfoList.push({
                         fileName: fileName,
@@ -190,6 +194,7 @@ export const exportAllImagesAsPNG = async (vm, convertSvgToPng = false) => {
     const metadata = {
         exportDate: new Date().toISOString(),
         totalImages: imageCount.count,
+        convertedToPng: convertedCount.count,
         images: imageInfoList
     };
     zip.file('metadata.json', JSON.stringify(metadata, null, 2));

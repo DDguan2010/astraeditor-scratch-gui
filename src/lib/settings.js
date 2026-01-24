@@ -18,8 +18,17 @@ export class AESettings {
         }
 
         getAll() {
-                const stored = localStorage.getItem(this.storageKey) || false;
-                return stored ? JSON.parse(stored) : {};
+                const stored = localStorage.getItem(this.storageKey);
+                if (!stored || stored === 'undefined' || stored === 'null') {
+                        return {};
+                }
+                try {
+                        return JSON.parse(stored);
+                } catch (e) {
+                        console.warn('Failed to parse settings from localStorage:', e);
+                        // If parsing fails, return default settings
+                        return {};
+                }
         }
 
         get(id) {

@@ -9,7 +9,20 @@ import { TextEncoder } from '../tw-text-encoder';
 import titlesContent from './titles.json'
 
 import { ACCENT_MAP } from '../themes/index.js';
-const theme = JSON.parse(localStorage.getItem('tw:theme'))
+
+// Safely parse theme from localStorage
+const theme = (() => {
+    try {
+        const themeStr = localStorage.getItem('tw:theme');
+        if (!themeStr || themeStr === 'undefined' || themeStr === 'null') {
+            return { gui: 'dark', accent: 'purple' };
+        }
+        return JSON.parse(themeStr);
+    } catch (e) {
+        console.warn('Failed to parse theme from localStorage:', e);
+        return { gui: 'dark', accent: 'purple' };
+    }
+})();
 
 const returnRandomText = () => {
 	const userName = localStorage.getItem('tw:username') || '创作者'
@@ -27,10 +40,18 @@ const returnRandomText = () => {
 
 const getThemeColor = () => {
     try{
-        if (theme.accent == 'custom') return JSON.parse(localStorage.getItem('constomTheme'))['looks-secondary']
-        return ACCENT_MAP[theme.accent].guiColors['looks-secondary'] || '#0099ff'
-    } catch {
-        return '#0099ff'
+        if (theme.accent == 'custom') {
+            const customThemeStr = localStorage.getItem('constomTheme');
+            if (!customThemeStr || customThemeStr === 'undefined' || customThemeStr === 'null') {
+                return '#0099ff';
+            }
+            const customTheme = JSON.parse(customThemeStr);
+            return customTheme && customTheme['looks-secondary'] ? customTheme['looks-secondary'] : '#0099ff';
+        }
+        return ACCENT_MAP[theme.accent]?.guiColors?.['looks-secondary'] || '#0099ff';
+    } catch (e) {
+        console.warn('Failed to get theme color:', e);
+        return '#0099ff';
     }
 }
 
