@@ -20,6 +20,8 @@ export default async function ({ addon, msg, Window }) {
                 reduxCondition: (state) => !state.scratchGui.mode.isPlayerOnly,
         });
         
+        const hind = document.getElementsByClassName('HindToolBar')[0];
+        hind.style.width = '40px';
 
 
         const CHECK_AREA_HEIGHT = 60;
@@ -73,9 +75,9 @@ export default async function ({ addon, msg, Window }) {
                         topBar.style.position = 'absolute';
                         text.style.setProperty('--rotate', '0');
                 }
-                const isTouchArea = e.clientY < BACK_AREA_HEIGHT && e.clientX < window.innerWidth * 0.2;
+                const isTouchArea = e.clientY < BACK_AREA_HEIGHT;
                 const isExitArea = isTouching && !(e.clientY < CHECK_AREA_HEIGHT)
-                if (isTouchArea) { //在屏幕右上角
+                if (isTouchArea) { //在屏幕上边
                         topBar.style.top = '0';
                         button.style.setProperty('--traslate', `${40 + (topBarHeight - 48)}px`);
                         button.style.opacity = '100%'

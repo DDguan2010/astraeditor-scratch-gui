@@ -18,7 +18,7 @@ export class AESettings {
         }
 
         getAll() {
-                const stored = localStorage.getItem(this.storageKey);
+                const stored = localStorage.getItem(this.storageKey) || false;
                 return stored ? JSON.parse(stored) : {};
         }
 

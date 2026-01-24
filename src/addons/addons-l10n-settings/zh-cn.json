@@ -218,6 +218,8 @@
     "variable-manager/@name": "变量管理器",
     "search-sprites/@description": "在角色面板内增加一个搜索框，以按名字搜索角色",
     "search-sprites/@name": "角色面板的搜索框",
+    "show-fps/@description": "在舞台上方显示当前帧率（FPS）。",
+    "show-fps/@name": "显示 FPS",
     "sprite-properties/@description": "默认情况下隐藏角色属性面板，就像在Scratch 2.0中一样。点击选定角色上的信息按钮或双击角色，可以显示属性面板。若要再次隐藏面板，点击面板中的折叠按钮或双击角色。",
     "sprite-properties/@name": "折叠角色属性",
     "sprite-properties/@settings-name-autoCollapse": "当鼠标离开时自动收起角色面板",

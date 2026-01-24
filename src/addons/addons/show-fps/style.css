@@ -1,32 +1,26 @@
-.hide-text{
-        --rotate: 0deg
+.fps-container-container {
+  display: flex;
+  align-items: center;
+  padding: 0.25rem;
+  user-select: none;
+  width: 60px;
+  justify-content: center;
+  position: relative;
 }
-.hide-text{
-        transform: rotate(var(--rotate));
-        width: 10px;
+
+.fps-container {
+  font-size: 0.6rem;
+  font-weight: bold;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #82c1ff;
+  white-space: nowrap;
 }
-.hide-area{
-        background-color: #00000000;
-        z-index: 9999; /*置于顶层*/
-        width: 100%;
-        height: 40px;
-        position: absolute;;
+
+/* Use pseudo elements to avoid firing mutation observers by just moving the cursor */
+.fps-container > span::after {
+  content: attr(data-content);
 }
-.hide-switch{
-        --traslate: 40px
-}
-.hide-switch {
-        position: absolute;
-        left: 0;
-        width: 30px;
-        height: 30px;
-        background-color: var(--editor-menu-background);
-        transform: translateY(var(--traslate));
-        transition: transform 0.5s ease;
-        border-radius: 10px;
-        border: 0;
-        z-index: 480;
-}
-.hide-switch:hover{
-        filter:brightness(1.2);
+
+.sa-small-stage .fps-container-container {
+  display: none !important;
 }
