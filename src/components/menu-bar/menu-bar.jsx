@@ -936,64 +936,65 @@ class MenuBar extends React.Component {
                                 </span>
                             </div>
                         )}
-                    </div>
-                    <MenuLabel
-                        open={this.props.toolsMenuOpen}
-                        onOpen={this.props.onClickTools}
-                        onClose={this.props.onRequestCloseTools}
-                    >
-                        <img
-                            src={toolsIcon}
-                            draggable={false}
-                            width={20}
-                            height={20}
-                        />
-                        <span className={styles.collapsibleLabel}>
-                            <FormattedMessage
-                                defaultMessage="Tools"
-                                description="Tools for AE"
-                                id="gui.menuBar.tools"
-                            />
-                        </span>
-                        <img
-                            src={dropdownCaret}
-                            draggable={false}
-                            width={8}
-                            height={5}
-                        />
-                        <MenuBarMenu
-                            className={classNames(styles.menuBarMenu)}
+                        <MenuLabel
                             open={this.props.toolsMenuOpen}
-                            place={this.props.isRtl ? 'left' : 'right'}
+                            onOpen={this.props.onClickTools}
+                            onClose={this.props.onRequestCloseTools}
                         >
-                            <MenuItem
-                                isRtl={this.props.isRtl}
-                                onClick={() => {
-                                    this.props.onExportImage(this.props.vm, false);
-                                    this.props.onRequestCloseTools();
-                                }}
-                            >
+                            <img
+                                src={toolsIcon}
+                                draggable={false}
+                                width='auto'
+                                height={20}
+                            />
+                            <span className={styles.collapsibleLabel}>
                                 <FormattedMessage
-                                    defaultMessage="Export all images of the project"
-                                    description="Menu bar item for export image"
-                                    id="gui.menuBar.exportImage"
+                                    defaultMessage="Tools"
+                                    description="Tools for AE"
+                                    id="gui.menuBar.tools"
                                 />
-                            </MenuItem>
-                            <MenuItem
-                                isRtl={this.props.isRtl}
-                                onClick={() => {
-                                    this.props.onExportImage(this.props.vm, true);
-                                    this.props.onRequestCloseTools();
-                                }}
+                            </span>
+                            <img
+                                src={dropdownCaret}
+                                draggable={false}
+                                width={8}
+                                height={5}
+                            />
+                            <MenuBarMenu
+                                className={classNames(styles.menuBarMenu)}
+                                open={this.props.toolsMenuOpen}
+                                place={this.props.isRtl ? 'left' : 'right'}
                             >
-                                <FormattedMessage
-                                    defaultMessage="Export all images of the project as PNG"
-                                    description="Menu bar item for export all images as PNG"
-                                    id="gui.menuBar.exportImageAllAsPng"
-                                />
-                            </MenuItem>
-                        </MenuBarMenu>
-                    </MenuLabel>
+                                <MenuItem
+                                    isRtl={this.props.isRtl}
+                                    onClick={() => {
+                                        this.props.onExportImage(this.props.vm, false);
+                                        this.props.onRequestCloseTools();
+                                    }}
+                                >
+                                    <FormattedMessage
+                                        defaultMessage="Export all images of the project"
+                                        description="Menu bar item for export image"
+                                        id="gui.menuBar.exportImage"
+                                    />
+                                </MenuItem>
+                                <MenuItem
+                                    isRtl={this.props.isRtl}
+                                    onClick={() => {
+                                        this.props.onExportImage(this.props.vm, true);
+                                        this.props.onRequestCloseTools();
+                                    }}
+                                >
+                                    <FormattedMessage
+                                        defaultMessage="Export all images of the project as PNG"
+                                        description="Menu bar item for export all images as PNG"
+                                        id="gui.menuBar.exportImageAllAsPng"
+                                    />
+                                </MenuItem>
+                            </MenuBarMenu>
+                        </MenuLabel>
+                    </div>
+                    
                     <Divider className={styles.divider} />
 
                     {this.props.canEditTitle ? (
