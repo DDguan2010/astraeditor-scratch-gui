@@ -7,7 +7,7 @@
     'use strict';
 
     // GitHub raw URL for version.js - replace with your actual GitHub repository URL
-    const GITHUB_VERSION_URL = 'https://raw.githubusercontent.com/AstraEditor/scratch-gui/src/lib/version-check/version.js';
+    const GITHUB_VERSION_URL = 'https://raw.githubusercontent.com/AstraEditor/scratch-gui/refs/heads/develop/src/lib/version-check/version.js';
     
     // Storage key for last checked version
     const STORAGE_KEY = 'ae_last_checked_version';
