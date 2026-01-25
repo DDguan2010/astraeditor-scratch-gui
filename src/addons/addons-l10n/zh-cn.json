@@ -295,5 +295,18 @@
     "simple-project-analyzer/synchronization": "同步",
     "simple-project-analyzer/flow-control": "流程控制",
     "simple-project-analyzer/user-interactivity": "用户交互",
-    "simple-project-analyzer/data-representation": "数据表示"
-}
+    "simple-project-analyzer/data-representation": "数据表示",
+    "bookmark/bookmark": "书签",
+    "bookmark/bookmark-title": "书签管理器",
+    "bookmark/bookmark-manager": "书签管理器",
+    "bookmark/add-current-bookmark": "添加当前位置书签",
+    "bookmark/bookmark-name-prompt": "请输入书签名称:",
+    "bookmark/bookmark-name-placeholder": "书签名称",
+    "bookmark/add": "添加",
+    "bookmark/save-to-project": "将书签保存到作品中",
+    "bookmark/load-from-project": "从作品加载",
+    "bookmark/no-bookmarks": "暂无书签",
+    "bookmark/go-to": "跳转",
+    "bookmark/delete": "删除",
+    "bookmark/close": "关闭",
+    "bookmark/delete-confirm": "确定要删除书签 \"{name}\" 吗？"}

@@ -303,5 +303,18 @@
     "simple-project-analyzer/synchronization": "Synchronization",
     "simple-project-analyzer/flow-control": "Flow Control",
     "simple-project-analyzer/user-interactivity": "User Interactivity",
-    "simple-project-analyzer/data-representation": "Data Representation"
-}
+    "simple-project-analyzer/data-representation": "Data Representation",
+    "bookmark/bookmark": "Bookmarks",
+    "bookmark/bookmark-title": "Bookmark Manager",
+    "bookmark/bookmark-manager": "Bookmark Manager",
+    "bookmark/add-current-bookmark": "Add Current Position Bookmark",
+    "bookmark/bookmark-name-prompt": "Enter bookmark name:",
+    "bookmark/bookmark-name-placeholder": "Bookmark name",
+    "bookmark/add": "Add",
+    "bookmark/save-to-project": "Save bookmarks to project",
+    "bookmark/load-from-project": "Load from Project",
+    "bookmark/no-bookmarks": "No bookmarks",
+    "bookmark/go-to": "Go To",
+    "bookmark/delete": "Delete",
+    "bookmark/close": "Close",
+    "bookmark/delete-confirm": "Are you sure you want to delete bookmark \"{name}\"?"}
