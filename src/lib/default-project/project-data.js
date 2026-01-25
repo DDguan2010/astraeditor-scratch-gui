@@ -51,7 +51,7 @@ const projectData = translateFunction => {
             },
             {
                 isStage: false,
-                name: translator(messages.sprite, {index: 1}),
+                name: "LOGO",
                 variables: {},
                 lists: {},
                 broadcasts: {},
@@ -61,7 +61,7 @@ const projectData = translateFunction => {
                 costumes: [
                     {
                         assetId: '927d672925e7b99f7813735c484c6923',
-                        name: translator(messages.costume, {index: 1}),
+                        name: "Logo",
                         bitmapResolution: 1,
                         md5ext: '927d672925e7b99f7813735c484c6923.svg',
                         dataFormat: 'svg',
