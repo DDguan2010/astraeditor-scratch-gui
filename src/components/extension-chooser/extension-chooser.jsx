@@ -86,11 +86,8 @@ const ExtensionChooser = props => {
     const handleRemoveExtension = (extensionId) => {
         if (!vm || !vm.extensionManager) return;
 
-        // 先更新本地状态，确保界面立即响应
-        setExtensions(prev => prev.filter(ext => ext.id !== extensionId));
-
-        // 调用 VM 的卸载扩展方法
         vm.extensionManager.unloadExtension(extensionId);
+
     };
 
     useEffect(() => {

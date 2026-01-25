@@ -1,6 +1,5 @@
 @import "../../css/colors.css";
 
-/* 阻止 Modal 组件本身的滚动 */
 .modal-content.full-screen {
     overflow-y: hidden !important;
 }
@@ -52,7 +51,7 @@
     justify-content: flex-start;
     align-items: center;
     overflow-y: auto;
-    max-height: 87vh;   
+    max-height: calc(100vh - 115px);   
     width: 100%;
 }
 
