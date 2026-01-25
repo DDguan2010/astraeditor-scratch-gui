@@ -82,7 +82,7 @@ const addons = [
     'tw-disable-cloud-variables',
     'tw-disable-compiler',
     'editor-stepping',
-    'hide-toolbar'
+    'hide-menubar'
 ];
 
 const newAddons = [
