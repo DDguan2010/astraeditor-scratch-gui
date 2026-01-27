@@ -40,7 +40,11 @@ import TWInvalidProjectModal from '../../containers/tw-invalid-project-modal.jsx
 import TWWindChimeSubmitter from '../../containers/tw-windchime-submitter.jsx';
 import CustomThemeModal from '../../containers/tw-custom-theme-modal.jsx';
 import AEReadMe from '../../containers/ae-readme.jsx'
+import ExtensionEditorSettings from '../../containers/extension-editor-settings.jsx';
+import ExtensionEditorTabs from '../../components/extension-editor-tabs/extension-editor-tabs.jsx';
 import { loadData } from '../ae-readme/ae-readme.jsx'
+import { openExtensionEditorSettings } from '../../reducers/modals.js';
+import { updateFontSize } from '../../reducers/extension-editor.js';
 
 import ExtensionManager from '../extension-chooser/extension-chooser.jsx';
 import PreviewExt from '../../containers/ae-preview-ext.jsx';
@@ -56,6 +60,7 @@ import addExtensionIcon from './icon--extensions.svg';
 import codeIcon from '!../../lib/tw-recolor/build!./icon--code.svg';
 import costumesIcon from '!../../lib/tw-recolor/build!./icon--costumes.svg';
 import soundsIcon from '!../../lib/tw-recolor/build!./icon--sounds.svg';
+import extensionIcon from '!../../lib/tw-recolor/build!./icon--code.svg'
 import { openReadme } from '../../reducers/modals.js';
 
 import { AESettings } from '../../lib/settings.js'
@@ -65,6 +70,11 @@ const messages = defineMessages({
         id: 'gui.gui.addExtension',
         description: 'Button to add an extension in the target pane',
         defaultMessage: 'Add Extension'
+    },
+    extensionEditorTab: {
+        id: 'gui.gui.extensionEditorTab',
+        description: 'Button to get to the extension editor panel',
+        defaultMessage: 'Extension Editor'
     }
 });
 
@@ -141,6 +151,7 @@ const GUIComponent = props => {
         onClickLogo,
         onExtensionButtonClick,
         onOpenCustomExtensionModal,
+        onOpenExtensionEditorSettings,
         onProjectTelemetryEvent,
         onRequestCloseBackdropLibrary,
         onRequestCloseCostumeLibrary,
@@ -176,6 +187,9 @@ const GUIComponent = props => {
         onRequestCloseExtensionManager,
         onOpenExtensionLibrary,
         previewExtVisible,
+        extensionEditorSettingsVisible,
+        extensionEditorFontSize,
+        onExtensionEditorFontSizeChange,
         dispatch,
         ...componentProps
     } = omit(props, '');
@@ -194,9 +208,9 @@ const GUIComponent = props => {
         return readMe.length != 0;
     };
     const [canShowReadme, setCanShowReadme] = useState(() => { updateCanShowReadme })
+    const [onOpenExtensionEditor, setOpenExtensionEditor] = useState(false)
     useEffect(() => {
         if (!vm) return;
-
 
         const handleCommentEvent = (e) => {
             setCanShowReadme(updateCanShowReadme)
@@ -222,6 +236,17 @@ const GUIComponent = props => {
         };
     }, [vm]);
 
+    useEffect(() => {
+        // 当切换标签时，检查是否是扩展编辑器标签
+        // 扩展编辑器是第4个标签（索引3）
+        console.log('activeTabIndex:', activeTabIndex);
+        if (activeTabIndex === 3) {
+            setOpenExtensionEditor(true);
+        } else {
+            setOpenExtensionEditor(false);
+        }
+    }, [activeTabIndex]);
+
     if (children) {
         return <Box {...componentProps}>{children}</Box>;
     }
@@ -240,6 +265,24 @@ const GUIComponent = props => {
         FIXED_WIDTH +
         Math.max(0, customStageSize.width - FIXED_WIDTH)
     );
+
+    const editorTheme = () => {
+        let theme = 'dark'
+        switch (JSON.parse(localStorage.getItem('tw:theme')).gui) {
+            case undefined:
+                theme = 'dark';
+                break
+            case 'dark':
+                theme = 'dark';
+                break
+            case 'light':
+                theme = 'light';
+                break
+            default:
+                theme = 'dark'
+        }
+        return theme
+    }
     return (<MediaQuery minWidth={unconstrainedWidth}>{isUnconstrained => {
         const stageSize = resolveStageSize(stageSizeMode, isUnconstrained);
 
@@ -265,6 +308,7 @@ const GUIComponent = props => {
                     />
                 )}
                 {previewExtVisible && <PreviewExt />}
+                {extensionEditorSettingsVisible && <ExtensionEditorSettings />}
             </React.Fragment>
         );
 
@@ -400,7 +444,7 @@ const GUIComponent = props => {
                 />
                 <Box className={styles.bodyWrapper}>
                     <Box className={styles.flexWrapper}>
-                        <Box className={styles.editorWrapper}>
+                        <Box className={classNames(styles.editorWrapper, onOpenExtensionEditor && styles.editorWrapperFull)}>
                             <Tabs
                                 forceRenderTabPanel
                                 className={tabClassNames.tabs}
@@ -410,9 +454,9 @@ const GUIComponent = props => {
                                 onSelect={onActivateTab}
                             >
                                 <TabList className={tabClassNames.tabList}>
-                                        <div className='HindToolBar'>
-                                            {/*这里是隐藏工具栏时提供的边距*/}
-                                        </div>
+                                    <div className='HindToolBar'>
+                                        {/*这里是隐藏工具栏时提供的边距*/}
+                                    </div>
                                     <Tab className={tabClassNames.tab}>
                                         <img
                                             draggable={false}
@@ -426,7 +470,6 @@ const GUIComponent = props => {
                                     </Tab>
                                     <Tab
                                         className={tabClassNames.tab}
-                                        onClick={onActivateCostumesTab}
                                     >
                                         <img
                                             draggable={false}
@@ -448,7 +491,6 @@ const GUIComponent = props => {
                                     </Tab>
                                     <Tab
                                         className={tabClassNames.tab}
-                                        onClick={onActivateSoundsTab}
                                     >
                                         <img
                                             draggable={false}
@@ -460,7 +502,20 @@ const GUIComponent = props => {
                                             id="gui.gui.soundsTab"
                                         />
                                     </Tab>
-                                        <div className='varM'>
+                                    <Tab
+                                        className={tabClassNames.tab}
+                                    >
+                                        <img
+                                            draggable={false}
+                                            src={extensionIcon()}
+                                        />
+                                        <FormattedMessage
+                                            defaultMessage='Extension Editor'
+                                            description='Title of the welcome screen'
+                                            id='tw.extensionEditorTabs.welcomeTitle'
+                                        />
+                                    </Tab>
+                                    <div className='varM'>
                                         {/*这里是变量Tab*/}
                                     </div>
                                     <div className='findBar' style={{
@@ -523,13 +578,20 @@ const GUIComponent = props => {
                                 <TabPanel className={tabClassNames.tabPanel}>
                                     {soundsTabVisible ? <SoundTab vm={vm} /> : null}
                                 </TabPanel>
+                                <TabPanel className={tabClassNames.tabPanel}>
+                                    <ExtensionEditorTabs
+                                        vm={vm}
+                                        onOpenExtensionEditorSettings={onOpenExtensionEditorSettings}
+                                        onFontSizeChange={onExtensionEditorFontSizeChange}
+                                    />
+                                </TabPanel>
                             </Tabs>
-                            {backpackVisible ? (
+                            {backpackVisible && !onOpenExtensionEditor ? (
                                 <Backpack host={backpackHost} />
                             ) : null}
                         </Box>
 
-                        <Box className={classNames(styles.stageAndTargetWrapper, styles[stageSize])}>
+                        <Box className={classNames(styles.stageAndTargetWrapper, styles[stageSize], onOpenExtensionEditor && styles.hidden)}>
                             <StageWrapper
                                 isFullScreen={isFullScreen}
                                 isRendererSupported={isRendererSupported()}
@@ -544,6 +606,8 @@ const GUIComponent = props => {
                                 />
                             </Box>
                         </Box>
+
+
                     </Box>
                 </Box>
                 <DragLayer />
@@ -553,6 +617,8 @@ const GUIComponent = props => {
 };
 const mapDispatchToProps = dispatch => ({
     onOpenReadme: () => dispatch(openReadme()),
+    onOpenExtensionEditorSettings: () => dispatch(openExtensionEditorSettings()),
+    onExtensionEditorFontSizeChange: (fontSize) => dispatch(updateFontSize(fontSize)),
     dispatch
 })
 GUIComponent.propTypes = {
@@ -647,7 +713,10 @@ GUIComponent.propTypes = {
     extensionManagerVisible: PropTypes.bool,
     onRequestCloseExtensionManager: PropTypes.func,
     onOpenExtensionLibrary: PropTypes.func,
-    previewExtVisible: PropTypes.bool
+    previewExtVisible: PropTypes.bool,
+    extensionEditorSettingsVisible: PropTypes.bool,
+    extensionEditorFontSize: PropTypes.number,
+    onExtensionEditorFontSizeChange: PropTypes.func
 };
 GUIComponent.defaultProps = {
     backpackHost: null,
@@ -682,7 +751,9 @@ const mapStateToProps = state => ({
     theme: state.scratchGui.theme.theme,
     customThemeVisible: state.scratchGui.modals.customtheme,
     readmeModalVisible: state.scratchGui.modals.readme,
-    previewExtVisible: state.scratchGui.modals.previewExt
+    previewExtVisible: state.scratchGui.modals.previewExt,
+    extensionEditorSettingsVisible: state.scratchGui.modals.extensionEditorSettings,
+    extensionEditorFontSize: state.scratchGui.extensionEditor.fontSize
 });
 
 export default injectIntl(connect(

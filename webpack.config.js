@@ -32,7 +32,10 @@ const base = {
     mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
     devtool: process.env.SOURCEMAP || (process.env.NODE_ENV === 'production' ? false : 'cheap-module-source-map'),
     devServer: {
-        contentBase: path.resolve(__dirname, 'build'),
+        contentBase: [
+            path.resolve(__dirname, 'build'),
+            path.resolve(__dirname, 'node_modules/scratch-extension-editor/dist')
+        ],
         host: '0.0.0.0',
         disableHostCheck: true,
         compress: true,
@@ -162,18 +165,18 @@ module.exports = [
             path: path.resolve(__dirname, 'build')
         },
         module: {
-            rules: base.module.rules.concat([
-                {
-                    test: /\.(svg|png|wav|mp3|gif|jpg|woff2|hex)$/,
-                    loader: 'url-loader',
-                    options: {
-                        limit: 2048,
-                        outputPath: 'static/assets/',
-                        esModule: false
-                    }
-                }
-            ])
-        },
+                    rules: base.module.rules.concat([
+                        {
+                                    test: /\.(svg|png|wav|mp3|gif|jpg|woff2|hex)$/,
+                                    loader: 'url-loader',
+                                    options: {
+                                        limit: 2048,
+                                        outputPath: 'static/assets/',
+                                        esModule: false
+                                    }
+                                }
+                    ])
+                },
         optimization: {
             splitChunks: {
                 chunks: 'all',

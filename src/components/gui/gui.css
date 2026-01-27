@@ -76,6 +76,12 @@
     flex-direction: column;
 }
 
+.editor-wrapper-full {
+    flex-basis: auto !important;
+    flex-grow: 1 !important;
+    width: 100% !important;
+}
+
 .tab-list {
     height: $stage-menu-height;
     width: 250px;
@@ -239,6 +245,10 @@
 
     /* this will only ever be as wide as the stage */
     flex-basis: 0;
+}
+
+.stage-and-target-wrapper.hidden {
+    display: none;
 }
 
 .target-wrapper {

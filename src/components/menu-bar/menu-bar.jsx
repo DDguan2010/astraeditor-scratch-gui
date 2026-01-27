@@ -497,7 +497,7 @@ class MenuBar extends React.Component {
                 )}
             >
                 <div className={styles.mainMenu}>
-                    <img src={aeLogo} style={{
+                    <img src={aeLogo} draggable={false} style={{
                         width: '25px',
                         marginLeft: '10px'
                     }} />

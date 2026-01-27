@@ -309,4 +309,5 @@
     "bookmark/go-to": "跳转",
     "bookmark/delete": "删除",
     "bookmark/close": "关闭",
-    "bookmark/delete-confirm": "确定要删除书签 \"{name}\" 吗？"}
+    "bookmark/delete-confirm": "确定要删除书签 \"{name}\" 吗？"
+}

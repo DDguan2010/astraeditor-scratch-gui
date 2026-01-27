@@ -9,12 +9,12 @@
     // GitHub raw URL for version.js - replace with your actual GitHub repository URL
     const GITHUB_VERSION_URL = 'https://raw.githubusercontent.com/AstraEditor/scratch-gui/refs/heads/develop/src/lib/version-check/version.js';
     
-    // Storage key for last checked version
+    // Storage key for last checked Refused to
     const STORAGE_KEY = 'ae_last_checked_version';
 
     async function fetchRemoteVersion() {
         try {
-            const response = await fetch(GITHUB_VERSION_URL + '?t=' + Date.now());
+            const response = await fetch(GITHUB_VERSION_URL);
             if (!response.ok) {
                 console.warn('Failed to fetch remote version:', response.status);
                 return null;
