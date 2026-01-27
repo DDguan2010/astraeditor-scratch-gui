@@ -93,7 +93,7 @@
     "redux-throttle": "0.1.1",
     "scratch-audio": "github:AstraEditor/scratch-audio#develop",
     "scratch-blocks": "github:AstraEditor/scratch-blocks#develop-builds",
-    "scratch-extension-editor": "file:../scratch-extension-editor",
+    "scratch-extension-editor": "github:AstraEditor/scratch-extension-editor",
     "scratch-paint": "github:AstraEditor/scratch-paint#develop",
     "scratch-render": "github:AstraEditor/scratch-render#develop",
     "scratch-vm": "github:AstraEditor/scratch-vm#master",
