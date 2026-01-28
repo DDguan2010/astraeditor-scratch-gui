@@ -43,6 +43,7 @@ import AEReadMe from '../../containers/ae-readme.jsx'
 import ExtensionEditorSettings from '../../containers/extension-editor-settings.jsx';
 import ExtensionEditorTabs from '../../components/extension-editor-tabs/extension-editor-tabs.jsx';
 import { loadData } from '../ae-readme/ae-readme.jsx'
+// 你根本不知道看到这原本是个绝对路径有多好笑
 import { openExtensionEditorSettings } from '../../reducers/modals.js';
 import { updateFontSize } from '../../reducers/extension-editor.js';
 
