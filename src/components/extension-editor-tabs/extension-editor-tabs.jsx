@@ -3,7 +3,7 @@ import React from 'react';
 import { defineMessages, FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import { connect } from 'react-redux';
 import { addTab, removeTab, activateTab, updateTabCode, setTabSaved } from '../../reducers/extension-editor-tabs';
-import ExtensionEditor, { extensionEditorStorage } from 'scratch-extension-editor';
+import ExtensionEditor, { extensionEditorStorage, ExtensionEditorStorageContent } from 'scratch-extension-editor';
 import VMScratchBlocks from '../../lib/blocks';
 import { manuallyTrustExtension } from '../../containers/tw-security-manager.jsx';
 import styles from './extension-editor-tabs.css';
@@ -795,6 +795,8 @@ class ExtensionEditorTabs extends React.Component {
             const extensions = await extensionEditorStorage.getAllExtensions();
             this.setState({
                 showStorageManager: true,
+                showCreateForm: false,
+                currentStep: 0,
                 savedExtensions: extensions
             });
         } catch (error) {
@@ -1356,62 +1358,13 @@ Scratch.extensions.register(new ${this.toClassName(id)}());
     renderStorageManager() {
         return (
             <div className={styles.createForm}>
-                <button
-                    className={styles.closeButton}
-                    onClick={this.handleCloseStorageManager}
-                    title={this.props.intl.formatMessage(messages.closeButton)}
-                >
-                    ✕
-                </button>
-
-                <div className={styles.createFormContent}>
-                    <h2><FormattedMessage {...messages.storedExtensions} /></h2>
-                    
-                    {this.state.savedExtensions.length === 0 ? (
-                        <div className={styles.emptyStorage}>
-                            <FormattedMessage {...messages.noStoredExtensions} />
-                        </div>
-                    ) : (
-                        <div className={styles.storageList}>
-                            {this.state.savedExtensions.map(extension => (
-                                <div key={extension.id} className={styles.storageItem}>
-                                    <div className={styles.storageItemInfo}>
-                                        <div className={styles.storageItemName}>{extension.name}</div>
-                                        <div className={styles.storageItemDate}>
-                                            <FormattedMessage {...messages.lastModified} />
-                                            {new Date(extension.updatedAt).toLocaleString()}
-                                        </div>
-                                    </div>
-                                    <div className={styles.storageItemActions}>
-                                        <button
-                                            className={styles.storageLoadButton}
-                                            onClick={() => this.handleLoadFromStorage(extension)}
-                                        >
-                                            Load
-                                        </button>
-                                        <button
-                                            className={styles.storageDeleteButton}
-                                            onClick={() => this.handleDeleteFromStorage(extension.id)}
-                                        >
-                                            <FormattedMessage {...messages.deleteExtension} />
-                                        </button>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                    
-                    {this.state.savedExtensions.length > 0 && (
-                        <div className={styles.storageActions}>
-                            <button
-                                className={styles.clearAllButton}
-                                onClick={this.handleClearAllStorage}
-                            >
-                                <FormattedMessage {...messages.clearAll} />
-                            </button>
-                        </div>
-                    )}
-                </div>
+                <ExtensionEditorStorageContent
+                    savedExtensions={this.state.savedExtensions}
+                    onClose={this.handleCloseStorageManager}
+                    onLoadFromStorage={this.handleLoadFromStorage}
+                    onDeleteFromStorage={this.handleDeleteFromStorage}
+                    onClearAllStorage={this.handleClearAllStorage}
+                />
             </div>
         );
     }

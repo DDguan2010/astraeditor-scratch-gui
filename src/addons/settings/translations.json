@@ -637,6 +637,7 @@
         "groupDanger": "危险（{number}）",
         "groupNew": "最新插件（{number}）",
         "groupOthers": "其他插件（{number}）",
+        "groupNotCompatible": "不兼容  ({number})",
         "import": "导入设置",
         "noCompiler": "这个插件只有在通过高级 > 禁用编译器选项或使用“在编辑器中禁用编译器”插件禁用编译器的情况下才能正常运行。",
         "noResults": "没有相符的结果。",
@@ -649,6 +650,7 @@
         "tagNew": "新的！",
         "tagRecommended": "推荐",
         "tagTheme": "外观",
+        "tagNotCompatible": "不兼容",
         "title": "插件设置",
         "unsupported": "某些插件在此浏览器中不可用："
     },
