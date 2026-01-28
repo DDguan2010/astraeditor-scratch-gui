@@ -1,14 +1,14 @@
 // Block Pinning
 // By: SharkPool
 
-export default async function({ addon }) {
+export default async function({ addon, msg }) {
   const Blockly = await addon.tab.traps.getBlockly();
   const vm = addon.tab.traps.vm;
 
   const categoryIcon = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MC42OTIiIGhlaWdodD0iNzAuNjkyIiB2aWV3Qm94PSIwIDAgNzAuNjkyIDcwLjY5MiI+PHBhdGggZD0iTTAgMzUuMzQ2QzAgMTUuODI1IDE1LjgyNSAwIDM1LjM0NiAwczM1LjM0NiAxNS44MjUgMzUuMzQ2IDM1LjM0Ni0xNS44MjUgMzUuMzQ2LTM1LjM0NiAzNS4zNDZTMCA1NC44NjcgMCAzNS4zNDYiIGZpbGw9IiNjNWJmOTYiLz48cGF0aCBkPSJNNC42NTYgMzUuMzQ2YzAtMTYuOTUgMTMuNzQtMzAuNjkgMzAuNjktMzAuNjlzMzAuNjkgMTMuNzQgMzAuNjkgMzAuNjktMTMuNzQgMzAuNjktMzAuNjkgMzAuNjktMzAuNjktMTMuNzQtMzAuNjktMzAuNjkiIGZpbGw9IiNmZmY3YzIiLz48cGF0aCBkPSJNNDguOTU2IDQ0LjAwMyA1MSA1MC4wMmwtNi4wMTctMi4wNDVMMzQuMTY4IDM3LjE2Yy0xLjg3MyAxLjY1NS02LjAwNyA1LjE1MS03LjMwMyA1LjAxOS0yLjM4Ny0uMjQ0LTEuODg5LTIuOTQ3LTIuMDQ4LTUuMzc2LS4xNTgtMi40MyAxLjQ3MS0zLjQ0IDEuNDcxLTMuNDRsLTUuODc5LTUuODhhMi40NSAyLjQ1IDAgMCAxIDAtMy40NjFsNC42MzMtNC42MzNhMi40NSAyLjQ1IDAgMCAxIDMuNDYxIDBsNi4wNyA2LjA3czIuMTQ5LTIuMDAzIDMuOTAyLTJjMS43NTMuMDAyIDUuNjY0LjA3NSA1LjMyMyAyLjAxMy0uMjM1IDEuMzMyLTQuMTExIDUuOTYtNS42MzkgNy43MzV6IiBmaWxsPSIjNDQ1MjczIi8+PC9zdmc+";
 
   const category = document.createElementNS("http://www.w3.org/1999/xml", "category");
-  category.setAttribute("name", "Pinned");
+  category.setAttribute("name", msg("pinned"));
   category.setAttribute("id", "pinned");
   category.setAttribute("colour", "#ffffff");
   category.setAttribute("secondaryColour", "#ffffff");
@@ -140,11 +140,11 @@ export default async function({ addon }) {
         }
       }
 
-      if (blocksXML.length === 0) blocksXML.push(createLabel("No Pinned Blocks!"));
-      else if (successes !== pins.length) blocksXML.push(createLabel("Some Pins Could Not Load!"));
+      if (blocksXML.length === 0) blocksXML.push(createLabel(msg("no_pinned_blocks")));
+      else if (successes !== pins.length) blocksXML.push(createLabel(msg("some_pins_could_not_load")));
       category.append(...blocksXML, gap);
     } else {
-      category.append(createLabel("No Pinned Blocks!"), gap);
+      category.append(createLabel(msg("no_pinned_blocks")), gap);
     }
   }
 
@@ -211,20 +211,20 @@ export default async function({ addon }) {
       if (pins.includes(specifyType(block))) {
         shouldPatchClasses = true;
         menuOptions.push(
-          createMenuItem("Move to Top", true, () => toggleBlockPin(block, true, "top")),
-          createMenuItem("Move to Bottom", true, () => toggleBlockPin(block, true, "bottom")),
-          createMenuItem("Organize by Category", true, () => toggleBlockPin("", true, "category")),
-          createMenuItem("Pin", false, () => {}),
-          createMenuItem("Unpin", true, () => toggleBlockPin(block, false))
+          createMenuItem(msg("move_to_top"), true, () => toggleBlockPin(block, true, "top")),
+          createMenuItem(msg("move_to_bottom"), true, () => toggleBlockPin(block, true, "bottom")),
+          createMenuItem(msg("organize_by_category"), true, () => toggleBlockPin("", true, "category")),
+          createMenuItem(msg("pin"), false, () => {}),
+          createMenuItem(msg("unpin"), true, () => toggleBlockPin(block, false))
         );
       } else {
         menuOptions.push(
-          createMenuItem("Pin", true, () => toggleBlockPin(block, true)),
-          createMenuItem("Unpin", false, () => {})
+          createMenuItem(msg("pin"), true, () => toggleBlockPin(block, true)),
+          createMenuItem(msg("unpin"), false, () => {})
         );
       }
 
-      menuOptions.push(createMenuItem("Unpin All", pins.length, () => {
+      menuOptions.push(createMenuItem(msg("unpin_all"), pins.length, () => {
         pins = [];
         updatePinCategory();
       }));

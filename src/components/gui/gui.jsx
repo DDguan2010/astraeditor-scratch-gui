@@ -40,7 +40,7 @@ import TWInvalidProjectModal from '../../containers/tw-invalid-project-modal.jsx
 import TWWindChimeSubmitter from '../../containers/tw-windchime-submitter.jsx';
 import CustomThemeModal from '../../containers/tw-custom-theme-modal.jsx';
 import AEReadMe from '../../containers/ae-readme.jsx'
-import ExtensionEditorSettings from '../../containers/extension-editor-settings.jsx';
+import ExtensionEditorSettings from '../extension-editor-settings';
 import ExtensionEditorTabs from '../../components/extension-editor-tabs/extension-editor-tabs.jsx';
 import { loadData } from '../ae-readme/ae-readme.jsx'
 // 你根本不知道看到这原本是个绝对路径有多好笑
