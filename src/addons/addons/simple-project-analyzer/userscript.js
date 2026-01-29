@@ -146,7 +146,7 @@ export default async function ({ addon, msg, safeMsg, console }) {
         // 更新UI
         this.updateAnalysisResults(analysis);
       } catch (error) {
-        console.error('分析项目时出错:', error);
+        console.error(msg('analysis-error', '分析项目时出错:'), error);
         document.getElementById('saAnalyzeLoading').innerHTML = `
           <p style="color: #d32f2f;">${msg('analysis-error')}</p>
         `;
@@ -214,19 +214,19 @@ export default async function ({ addon, msg, safeMsg, console }) {
 
     // 获取积木类型
     getBlockCategory(opcode, extensionNameMap = {}) {
-      if (opcode.startsWith('motion_')) return '运动';
-      if (opcode.startsWith('looks_')) return '外观';
-      if (opcode.startsWith('sound_')) return '声音';
-      if (opcode.startsWith('event_')) return '事件';
-      if (opcode.startsWith('control_')) return '控制';
-      if (opcode.startsWith('sensing_')) return '侦测';
-      if (opcode.startsWith('operator_')) return '运算';
-      if (opcode.startsWith('data_')) return '数据';
-      if (opcode.startsWith('video_')) return '视频';
+      if (opcode.startsWith('motion_')) return msg('motion', '运动');
+      if (opcode.startsWith('looks_')) return msg('looks', '外观');
+      if (opcode.startsWith('sound_')) return msg('sound', '声音');
+      if (opcode.startsWith('event_')) return msg('events', '事件');
+      if (opcode.startsWith('control_')) return msg('control', '控制');
+      if (opcode.startsWith('sensing_')) return msg('sensing', '侦测');
+      if (opcode.startsWith('operator_')) return msg('operators', '运算');
+      if (opcode.startsWith('data_')) return msg('data', '数据');
+      if (opcode.startsWith('video_')) return msg('video', '视频');
       
       // 自定义函数和参数
-      if (opcode.startsWith('procedures_')) return '自定义函数';
-      if (opcode.startsWith('argument_')) return '自定义函数';
+      if (opcode.startsWith('procedures_')) return msg('custom-functions', '自定义函数');
+      if (opcode.startsWith('argument_')) return msg('custom-functions', '自定义函数');
       
       // 扩展积木处理
       if (!this.isStandardBlock(opcode)) {
@@ -239,7 +239,7 @@ export default async function ({ addon, msg, safeMsg, console }) {
         return this.getExtensionNameFromId(extensionId);
       }
       
-      return '其他';
+      return msg('other', '其他');
     }
 
     // 检查是否为标准积木
@@ -265,11 +265,11 @@ export default async function ({ addon, msg, safeMsg, console }) {
     // 从扩展ID获取扩展名称
     getExtensionNameFromId(extensionId) {
       const defaultExtensionNames = {
-        'music': '音乐',
-        'pen': '画笔',
-        'videoSensing': '视频侦测',
-        'text2speech': '文字转语音',
-        'translate': '翻译',
+        'music': 'Music',
+        'pen': 'Pen',
+        'videoSensing': 'Video Sensing',
+        'text2speech': 'Text to Speech',
+        'translate': 'Translate',
         'makeymakey': 'Makey Makey',
         'microbit': 'micro:bit',
         'ev3': 'LEGO EV3',
@@ -309,8 +309,8 @@ export default async function ({ addon, msg, safeMsg, console }) {
       if (penBlocks.length > 0 && !extensions.includes('pen')) {
         const penExtensionInfo = {
           id: 'pen',
-          name: '画笔',
-          color: '#0fbd8c',
+          name: msg('extension-pen', '画笔'),
+          color: null,
           url: null,
           blocks: penBlocks
         };
@@ -389,13 +389,13 @@ export default async function ({ addon, msg, safeMsg, console }) {
     // 计算Dr.Scratch评分
     calculateDrScratchScores(projectData) {
       const scores = {
-        '抽象和问题分解': 0,
-        '并行性': 0,
-        '逻辑思维': 0,
-        '同步': 0,
-        '流程控制': 0,
-        '用户交互': 0,
-        '数据表示': 0
+        [msg('abstraction', '抽象和问题分解')]: 0,
+        [msg('parallelism', '并行性')]: 0,
+        [msg('logic', '逻辑思维')]: 0,
+        [msg('synchronization', '同步')]: 0,
+        [msg('flow-control', '流程控制')]: 0,
+        [msg('user-interactivity', '用户交互')]: 0,
+        [msg('data-representation', '数据表示')]: 0
       };
 
       const targets = projectData.targets || [];
@@ -476,13 +476,13 @@ export default async function ({ addon, msg, safeMsg, console }) {
       const hasClones = controlBlockTypes.has('control_create_clone_of') || controlBlockTypes.has('control_start_as_clone');
       
       if (hasMultipleSprites && hasMultipleScripts) {
-        scores['抽象和问题分解'] = 1; // Basic
+        scores[msg('abstraction', '抽象和问题分解')] = 1; // Basic
       }
       if (hasCustomBlocks) {
-        scores['抽象和问题分解'] = 2; // Developing
+        scores[msg('abstraction', '抽象和问题分解')] = 2; // Developing
       }
       if (hasClones) {
-        scores['抽象和问题分解'] = 3; // Proficiency
+        scores[msg('abstraction', '抽象和问题分解')] = 3; // Proficiency
       }
 
       // 2. 并行性 (Parallelism)
@@ -496,13 +496,13 @@ export default async function ({ addon, msg, safeMsg, console }) {
       const hasBackdropEvents = eventBlockTypes.has('event_whenbackdropswitchesto');
       
       if (hasGreenFlag && eventBlockTypes.size > 1) {
-        scores['并行性'] = 1; // Basic - 多个绿旗脚本
+        scores[msg('parallelism', '并行性')] = 1; // Basic - 多个绿旗脚本
       }
       if ((hasKeyEvents || hasClickEvents) && (eventBlockTypes.size > 2)) {
-        scores['并行性'] = 2; // Developing - 按键或点击事件
+        scores[msg('parallelism', '并行性')] = 2; // Developing - 按键或点击事件
       }
       if (hasMessageEvents || hasCloneEvents || hasSensorEvents || hasBackdropEvents) {
-        scores['并行性'] = 3; // Proficiency - 消息、克隆或传感器事件
+        scores[msg('parallelism', '并行性')] = 3; // Proficiency - 消息、克隆或传感器事件
       }
 
       // 3. 逻辑思维 (Logical thinking)
@@ -514,13 +514,13 @@ export default async function ({ addon, msg, safeMsg, console }) {
                          operatorBlockTypes.has('operator_not');
       
       if (hasIf) {
-        scores['逻辑思维'] = 1; // Basic
+        scores[msg('logic', '逻辑思维')] = 1; // Basic
       }
       if (hasIfElse) {
-        scores['逻辑思维'] = 2; // Developing
+        scores[msg('logic', '逻辑思维')] = 2; // Developing
       }
       if (hasLogicOps) {
-        scores['逻辑思维'] = 3; // Proficiency
+        scores[msg('logic', '逻辑思维')] = 3; // Proficiency
       }
 
       // 4. 同步 (Synchronization)
@@ -536,13 +536,13 @@ export default async function ({ addon, msg, safeMsg, console }) {
       const hasBroadcastAndWait = eventBlockTypes.has('event_broadcastandwait');
       
       if (hasWait) {
-        scores['同步'] = 1; // Basic
+        scores[msg('synchronization', '同步')] = 1; // Basic
       }
       if (hasBroadcast || hasReceiveMessage || hasStopAll || hasStopThis || hasStopOther) {
-        scores['同步'] = 2; // Developing
+        scores[msg('synchronization', '同步')] = 2; // Developing
       }
       if (hasWaitUntil || hasBackdropChange || hasBroadcastAndWait) {
-        scores['同步'] = 3; // Proficiency
+        scores[msg('synchronization', '同步')] = 3; // Proficiency
       }
 
       // 5. 流程控制 (Flow control)
@@ -552,13 +552,13 @@ export default async function ({ addon, msg, safeMsg, console }) {
       const hasRepeatUntil = controlBlockTypes.has('control_repeat_until');
       
       if (hasSequence) {
-        scores['流程控制'] = 1; // Basic
+        scores[msg('flow-control', '流程控制')] = 1; // Basic
       }
       if (hasRepeat) {
-        scores['流程控制'] = 2; // Developing
+        scores[msg('flow-control', '流程控制')] = 2; // Developing
       }
       if (hasRepeatUntil) {
-        scores['流程控制'] = 3; // Proficiency
+        scores[msg('flow-control', '流程控制')] = 3; // Proficiency
       }
 
       // 6. 用户交互 (User Interactivity)
@@ -577,13 +577,13 @@ export default async function ({ addon, msg, safeMsg, console }) {
                                  soundBlockTypes.has('sound_changevolumeby');
       
       if (hasGreenFlagEvent) {
-        scores['用户交互'] = 1; // Basic
+        scores[msg('user-interactivity', '用户交互')] = 1; // Basic
       }
       if (hasKeyPressedEvent || hasSpriteClickedEvent || hasAskWait || hasMouseBlocks) {
-        scores['用户交互'] = 2; // Developing
+        scores[msg('user-interactivity', '用户交互')] = 2; // Developing
       }
       if (hasSensorGreater || hasVideo || hasAudioInteraction) {
-        scores['用户交互'] = 3; // Proficiency
+        scores[msg('user-interactivity', '用户交互')] = 3; // Proficiency
       }
 
       // 7. 数据表示 (Data representation)
@@ -593,13 +593,13 @@ export default async function ({ addon, msg, safeMsg, console }) {
       const hasListOperations = listNames.size > 0 && Array.from(dataBlockTypes).some(type => type.includes('list'));
       
       if (hasSpriteModifiers) {
-        scores['数据表示'] = 1; // Basic
+        scores[msg('data-representation', '数据表示')] = 1; // Basic
       }
       if (hasVariableOperations) {
-        scores['数据表示'] = 2; // Developing
+        scores[msg('data-representation', '数据表示')] = 2; // Developing
       }
       if (hasListOperations) {
-        scores['数据表示'] = 3; // Proficiency
+        scores[msg('data-representation', '数据表示')] = 3; // Proficiency
       }
 
       return scores;
@@ -634,9 +634,9 @@ export default async function ({ addon, msg, safeMsg, console }) {
       });
 
       const scores = {
-        '运算复杂度': operatorCount,
-        '逻辑深度': controlCount,
-        '数据量级': dataCount
+        [msg('operation-complexity', 'Operation Complexity')]: operatorCount,
+        [msg('logic-depth', 'Logic Depth')]: controlCount,
+        [msg('data-magnitude', 'Data Magnitude')]: dataCount
       };
 
       return scores;
@@ -740,7 +740,7 @@ export default async function ({ addon, msg, safeMsg, console }) {
               <div class="sa-analyze-col-6">
                 <div class="sa-analyze-score-details" id="saMathLogicDetails">
                   <div class="sa-analyze-score-summary">
-                    <h4>${msg('math-total-score', '数学总分')}：<span id="saMathTotalScore">0</span> ${msg('blocks-count', '个积木')}</h4>
+                    <h4>${msg('math-total-score', '数学总分')}：<span id="saMathTotalScore">0</span> ${msg('blocks-count', '')}</h4>
                     <div class="sa-analyze-score-level" id="saMathScoreLevel">${msg('evaluation-level', '评估等级')}：${msg('calculating', '计算中...')}</div>
                   </div>
                 </div>
@@ -838,7 +838,17 @@ export default async function ({ addon, msg, safeMsg, console }) {
       const ctx = canvas.getContext('2d');
       
       // 定义标准类别的固定顺序
-      const standardOrder = ['运动', '外观', '声音', '事件', '控制', '侦测', '运算', '数据', '自定义函数'];
+      const standardOrder = [
+        msg('motion', '运动'),
+        msg('looks', '外观'),
+        msg('sound', '声音'),
+        msg('events', '事件'),
+        msg('control', '控制'),
+        msg('sensing', '侦测'),
+        msg('operators', '运算'),
+        msg('data', '数据'),
+        msg('custom-functions', '自定义函数')
+      ];
       
       // 分离标准和扩展类别
       const standardCategories = {};
@@ -873,15 +883,15 @@ export default async function ({ addon, msg, safeMsg, console }) {
       
       // 定义每个类别的颜色
       const categoryColors = {
-        '运动': '#4C97FF',
-        '外观': '#9966FF',
-        '声音': '#CF63CF',
-        '事件': '#FFBF00',
-        '控制': '#FFAB19',
-        '侦测': '#5CB1D6',
-        '运算': '#59C059',
-        '数据': '#FF8C1A',
-        '自定义函数': '#FF6680'
+        [msg('motion', '运动')]: '#4C97FF',
+        [msg('looks', '外观')]: '#9966FF',
+        [msg('sound', '声音')]: '#CF63CF',
+        [msg('events', '事件')]: '#FFBF00',
+        [msg('control', '控制')]: '#FFAB19',
+        [msg('sensing', '侦测')]: '#5CB1D6',
+        [msg('operators', '运算')]: '#59C059',
+        [msg('data', '数据')]: '#FF8C1A',
+        [msg('custom-functions', '自定义函数')]: '#FF6680'
       };
       
       // 为扩展生成默认颜色
@@ -1009,7 +1019,7 @@ export default async function ({ addon, msg, safeMsg, console }) {
         data: {
           labels: labels,
           datasets: [{
-            label: '计算思维评分',
+            label: msg('computational-thinking-score', '计算思维评分'),
             data: data,
             backgroundColor: 'rgba(77, 151, 255, 0.2)',
             borderColor: '#4d97ff',
@@ -1070,7 +1080,7 @@ export default async function ({ addon, msg, safeMsg, console }) {
       const detailsHTML = labels.map(label => `
         <div class="sa-analyze-score-item">
           <div class="sa-analyze-score-label">${label}</div>
-          <div class="sa-analyze-score-value">${scores[label]} 个积木</div>
+          <div class="sa-analyze-score-value">${scores[label]} </div>
         </div>
       `).join('');
       
@@ -1094,7 +1104,7 @@ export default async function ({ addon, msg, safeMsg, console }) {
         data: {
           labels: labels,
           datasets: [{
-            label: '相对强度',
+            label: msg('relative-intensity', '相对强度'),
             data: normalizedData,
             backgroundColor: 'rgba(230, 81, 0, 0.2)',
             borderColor: '#E65100',
@@ -1126,7 +1136,7 @@ export default async function ({ addon, msg, safeMsg, console }) {
                 label: function(context) {
                   const label = context.label || '';
                   const rawValue = data[context.dataIndex];
-                  return `${label}: ${rawValue} 个积木`;
+                  return `${label}: ${rawValue} `;
                 }
               }
             }
@@ -1152,7 +1162,7 @@ export default async function ({ addon, msg, safeMsg, console }) {
           <div class="sa-analyze-extension-item">
             <div class="sa-analyze-extension-color" style="background-color: ${color}"></div>
             <div class="sa-analyze-extension-name">${extension.name}</div>
-            <div class="sa-analyze-extension-count">${extension.blocks.length} ${msg('blocks-count', '个积木')}</div>
+            <div class="sa-analyze-extension-count">${extension.blocks.length} ${msg('blocks-count', '')}</div>
           </div>
         `;
       });
