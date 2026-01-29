@@ -13,7 +13,7 @@ async function loadChartJS() {
     document.head.appendChild(script);
   });
 }
-
+import icon from './SPA.svg'
 export default async function ({ addon, msg, safeMsg, console }) {
   // 加载Chart.js库
   await loadChartJS();
@@ -31,6 +31,13 @@ export default async function ({ addon, msg, safeMsg, console }) {
 
     // 创建分析按钮
     async createAnalyzeButton() {
+      const VSCodeLayout = JSON.parse(localStorage.getItem('AESettings')).EnableVSCodeLayout;
+
+      // 检测是否在 VSCodeLayout 下
+      const tabBar = await addon.tab.waitForElement('[class*="react-tabs_react-tabs__tab-list"]', {
+        markAsSeen: true
+      });
+
       // 尝试查找 find-bar 插件的位置
       const findBar = document.querySelector('.react-tabs');
       let targetElement;
@@ -39,10 +46,7 @@ export default async function ({ addon, msg, safeMsg, console }) {
         // 如果 find-bar 存在，在其右边添加按钮
         targetElement = findBar.parentElement;
       } else {
-        // 否则，在编辑器标签栏的最右方添加
-        const tabBar = await addon.tab.waitForElement('[class*="react-tabs_react-tabs__tab-list"]', {
-          markAsSeen: true
-        });
+        // 否则，使用标签栏
         targetElement = tabBar;
       }
 
@@ -52,7 +56,20 @@ export default async function ({ addon, msg, safeMsg, console }) {
       this.analyzeButton.className = addon.tab.scratchClass('menu-bar_menu-bar-button', {
         others: 'sa-analyze-button'
       });
-      this.analyzeButton.textContent = msg('analyze-button');
+
+      if (VSCodeLayout) {
+        // VSCodeLayout 下使用 SVG 图标
+        const img = document.createElement('img');
+        img.src = icon;
+        img.marginTop = '5px';
+        img.width = 24;
+        img.height = 24;
+        img.alt = '分析';
+        this.analyzeButton.appendChild(img);
+      } else {
+        // 普通布局下使用文字
+        this.analyzeButton.textContent = msg('analyze-button');
+      }
       this.analyzeButton.title = msg('analyze-tooltip');
 
       // 禁用时隐藏按钮
@@ -61,7 +78,10 @@ export default async function ({ addon, msg, safeMsg, console }) {
       this.analyzeButton.addEventListener('click', () => this.showAnalysisModal());
 
       // 将按钮添加到目标位置
-      if (findBar) {
+      if (VSCodeLayout) {
+        // VSCodeLayout 下，按钮应该插入到标签栏（TabList）中
+        tabBar.appendChild(this.analyzeButton);
+      } else if (findBar) {
         // 在 find-bar 右边添加
         targetElement.insertBefore(this.analyzeButton, findBar.nextSibling);
       } else {

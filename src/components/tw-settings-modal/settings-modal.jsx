@@ -477,7 +477,7 @@ const EnableExtensionPreview = props => (
         {...props}
         label={
             <FormattedMessage
-                defaultMessage="Enable extension preview when load extension"
+                defaultMessage="Enable extension preview when load extension (Deprecated)"
                 description="extension preview label"
                 id="tw.settingsModal.enableextensionpreview"
             />
@@ -497,7 +497,7 @@ const EnableVSCodeLayout = props => (
         {...props}
         label={
             <FormattedMessage
-                defaultMessage="Enable VSCode Layout"
+                defaultMessage="Enable VSCode Layout (Need Refresh)"
                 description="EnableVSCodeLayout label"
                 id="tw.settingsModal.enablevscodelayout"
             />

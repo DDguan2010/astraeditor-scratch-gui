@@ -1,4 +1,3 @@
-import { func } from 'prop-types';
 
 export default async function ({ addon, msg, Window }) {
         const topBar = await addon.tab.waitForElement("[class^='gui_menu-bar-position']", {
@@ -19,10 +18,13 @@ export default async function ({ addon, msg, Window }) {
                 ],
                 reduxCondition: (state) => !state.scratchGui.mode.isPlayerOnly,
         });
-        
+        const VSCodeLayout = JSON.parse(localStorage.getItem('AESettings')).EnableVSCodeLayout
         const hind = document.getElementsByClassName('HindToolBar')[0];
-        hind.style.width = '40px';
-
+        if (!VSCodeLayout) {
+                hind.style.width = '40px';
+        } else {
+                hind.style.height = '30px';
+        }
 
         const CHECK_AREA_HEIGHT = 60;
         const BACK_AREA_HEIGHT = 10;
@@ -35,7 +37,6 @@ export default async function ({ addon, msg, Window }) {
         let isLock = false;
         let topBarHeight = topBar.offsetHeight //插件可以更改
         let isTouchingAnyMenu = false;
-        let isToolbarVisible = false;
         let oldCheck = isTouching;
 
         button.className = "hide-switch"
@@ -46,7 +47,7 @@ export default async function ({ addon, msg, Window }) {
         topBar.style.transition = 'top 0.5s ease'
         button.style.setProperty('--traslate', `-10px`);
         button.style.opacity = '50%'
-        
+
         text.style.setProperty('--rotate', '0')
 
         updateWorkSpace()
@@ -56,10 +57,10 @@ export default async function ({ addon, msg, Window }) {
                 text.style.setProperty('--rotate', '180deg');
                 button.style.setProperty('--traslate', `${40 + (topBarHeight - 48)}px`);
                 topBar.style.top = '0';
-                
+
         }
-        
-        function updateWorkSpace(){
+
+        function updateWorkSpace() {
                 window.dispatchEvent(new Event('resize'));
         }
 
@@ -92,7 +93,7 @@ export default async function ({ addon, msg, Window }) {
 
                 oldCheck = isTouching
 
-                
+
 
         }
         document.addEventListener('mouseenter', (e) => {
@@ -113,5 +114,5 @@ export default async function ({ addon, msg, Window }) {
         button.appendChild(text)
         gui.appendChild(button)
 
-        
+
 }

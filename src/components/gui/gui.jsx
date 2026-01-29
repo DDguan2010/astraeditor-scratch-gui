@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import omit from 'lodash.omit';
 import PropTypes from 'prop-types';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { defineMessages, FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import { connect, dispatch } from 'react-redux';
 import MediaQuery from 'react-responsive';
@@ -62,10 +62,13 @@ import codeIcon from '!../../lib/tw-recolor/build!./icon--code.svg';
 import costumesIcon from '!../../lib/tw-recolor/build!./icon--costumes.svg';
 import soundsIcon from '!../../lib/tw-recolor/build!./icon--sounds.svg';
 import extensionIcon from '!../../lib/tw-recolor/build!./icon--extension.svg'
+import readmeIcon from './readme.svg'
 import { openReadme } from '../../reducers/modals.js';
 
 import { AESettings } from '../../lib/settings.js'
 const Settings = new AESettings();
+const vscodeLayoutRef = JSON.parse(localStorage.getItem('AESettings')).EnableVSCodeLayout
+
 const messages = defineMessages({
     addExtension: {
         id: 'gui.gui.addExtension',
@@ -208,6 +211,8 @@ const GUIComponent = props => {
         });
         return readMe.length != 0;
     };
+    
+
     const [canShowReadme, setCanShowReadme] = useState(() => { updateCanShowReadme })
     const [onOpenExtensionEditor, setOpenExtensionEditor] = useState(false)
     useEffect(() => {
@@ -451,7 +456,7 @@ const GUIComponent = props => {
                             <Tabs
                                 forceRenderTabPanel
                                 className={
-                                    Settings.get('EnableVSCodeLayout')  
+                                    vscodeLayoutRef
                                         ? `${tabClassNames.tabs} ${tabClassNames.vscodeList}`
                                         : tabClassNames.tabs
                                 }
@@ -461,7 +466,7 @@ const GUIComponent = props => {
                                 onSelect={onActivateTab}
                             >
                                 <TabList className={
-                                    Settings.get('EnableVSCodeLayout')  
+                                    vscodeLayoutRef
                                         ? `${tabClassNames.tabList} ${tabClassNames.vscode}`
                                         : tabClassNames.tabList
                                 }>
@@ -529,10 +534,10 @@ const GUIComponent = props => {
                                     <div className='varM'>
                                         {/*这里是变量Tab*/}
                                     </div>
-                                    <div className='findBar' style={{
+                                    <div className='findBar' style={!vscodeLayoutRef ? {
                                         marginTop: "auto",
-                                        marginBottom: "auto",//垂直居中
-                                    }}>
+                                        marginBottom: "auto",
+                                    } : {}}>
                                         {/*这里是搜索栏*/}
                                     </div>
                                     {canShowReadme &&
@@ -544,7 +549,13 @@ const GUIComponent = props => {
                                             }}
                                             onClick={onOpenReadme}
                                         >
-                                            README
+                                            {vscodeLayoutRef ? (
+                                                    <img src={readmeIcon} alt="readme" style={{
+                                                        width: "30px"
+                                                    }} />
+                                            ) : (
+                                                "README"
+                                            )}
                                         </button>}
 
                                 </TabList>

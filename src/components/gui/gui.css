@@ -33,8 +33,31 @@
     transition: border-color 0.2s ease
 }
 
-.readmeButton:hover {
-    border-color:$motion-primary
+
+/* VSCode layout: README button as icon */
+.tab-list.vscode .readmeButton {
+    width: 40px;
+    height: 30px;
+    font-size: 0;
+    background-color: #00000000;
+    border: 0;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+.tab-list.vscode .readmeButton svg {
+    width: 2rem;
+    height: 2rem;
+}
+
+.tab-list.vscode .readmeButton:hover {
+    background-color: $ui-white;
+    box-shadow: 0 0 0 2px $looks-secondary;
 }
 
 .flex-wrapper {
@@ -245,13 +268,13 @@
     font-size: 0 !important;
     background-color: #00000000;
     border: 0;
+    margin-bottom: 10px !important;
 }
 
 .vscode .tab img {
     width: 2rem;
     height: 2rem;
     margin: 0 !important;
-    filter: grayscale(100%);
 }
 
 [dir="rtl"] .vscode .tab img {
@@ -262,10 +285,6 @@
 .vscode .tab.is-selected {
     background-color: $ui-white;
     box-shadow: 0 0 0 2px $looks-secondary;
-}
-
-.vscode .tab.is-selected img {
-    filter: none;
 }
 
 /* 重置 RTL 下的镜像效果 */
