@@ -3,7 +3,7 @@ import React from 'react';
 import { defineMessages, FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import { connect } from 'react-redux';
 import { addTab, removeTab, activateTab, updateTabCode, setTabSaved } from '../../reducers/extension-editor-tabs';
-import ExtensionEditor, { extensionEditorStorage, ExtensionEditorStorageContent } from 'scratch-extension-editor';
+import ExtensionEditor, { extensionEditorStorage, ExtensionEditorStorageContent, ExtensionEditorWizardPanel } from 'scratch-extension-editor';
 import VMScratchBlocks from '../../lib/blocks';
 import { manuallyTrustExtension } from '../../containers/tw-security-manager.jsx';
 import styles from './extension-editor-tabs.css';
@@ -108,6 +108,11 @@ const messages = defineMessages({
         defaultMessage: 'Please enter a name',
         description: 'Error message when name is empty',
         id: 'tw.extensionEditorTabs.nameError'
+    },
+    nameErrorInvalidClassName: {
+        defaultMessage: 'Name must be a valid JavaScript class name (letters, numbers, underscores, dollar signs, not a reserved word)',
+        description: 'Error message when name is not a valid JavaScript class name',
+        id: 'tw.extensionEditorTabs.nameErrorInvalidClassName'
     },
     idError: {
         defaultMessage: 'Please enter a valid ID (lowercase letters, numbers, and underscores only)',
@@ -228,6 +233,11 @@ const messages = defineMessages({
         defaultMessage: 'Back',
         description: 'Back button',
         id: 'tw.extensionEditorTabs.back'
+    },
+    wizardTitle: {
+        defaultMessage: 'Wizard',
+        description: 'Wizard title',
+        id: 'tw.extensionEditorTabs.wizardTitle'
     }
 });
 
@@ -252,7 +262,8 @@ class ExtensionEditorTabs extends React.Component {
             isLoadingExtension: false,
             loadError: null,
             loadedExtensionIds: {}, // 记录每个标签卡已加载的扩展ID {tabId: extensionId}
-            showStorageManager: false // 显示存储管理器
+            showStorageManager: false, // 显示存储管理器
+            blocksPanelMode: 'preview' // blocksPanel 显示模式: 'preview' (积木预览) 或 'wizard' (向导)
         };
         this.flyoutContainer = React.createRef();
         this.previewWorkspace = null;
@@ -261,238 +272,118 @@ class ExtensionEditorTabs extends React.Component {
         this.runExtensionDebounce = null;
         this.fileInputRef = React.createRef();
     }
-
     componentDidMount() {
-
-            this.loadSavedExtensions();
-
-    
-
-            if (this.props.vm && !this.blocksInfoListenerAdded) {
-
-                this.props.vm.addListener('BLOCKSINFO_UPDATE', this.renderBlockPreviewFromVM);
-
-                this.blocksInfoListenerAdded = true;
-
-            }
-
+        this.loadSavedExtensions();
+        if (this.props.vm && !this.blocksInfoListenerAdded) {
+            this.props.vm.addListener('BLOCKSINFO_UPDATE', this.renderBlockPreviewFromVM);
+            this.blocksInfoListenerAdded = true;
         }
-
-    
-
-        componentDidUpdate(prevProps, prevState) {
-
-            // When switching to extension editor tab
-
-            if (prevProps.activeTabIndex !== this.props.activeTabIndex && this.props.activeTabIndex === 3) {
-
-                this.renderBlockPreviewFromVM();
-
-            }
-
-    
-
-            // When create form state changes or active tab changes
-
-            if (prevState.showCreateForm !== this.state.showCreateForm ||
-
-                prevState.currentStep !== this.state.currentStep ||
-
-                prevProps.activeTabId !== this.props.activeTabId) {
-
-                this.renderBlockPreviewFromVM();
-
-            }
-
+    }
+    componentDidUpdate(prevProps, prevState) {
+        // When switching to extension editor tab
+        if (prevProps.activeTabIndex !== this.props.activeTabIndex && this.props.activeTabIndex === 3) {
+            this.renderBlockPreviewFromVM();
         }
-
-    
-
-        componentWillUnmount() {
-
-            if (this.flyoutUpdateTimeout) {
-
-                clearTimeout(this.flyoutUpdateTimeout);
-
-            }
-
-            if (this.runExtensionDebounce) {
-                clearTimeout(this.runExtensionDebounce);
-            }
-
-            this.disposeFlyout();
-
+        // When create form state changes or active tab changes
+        if (prevState.showCreateForm !== this.state.showCreateForm ||
+            prevState.currentStep !== this.state.currentStep ||
+            prevProps.activeTabId !== this.props.activeTabId) {
+            this.renderBlockPreviewFromVM();
         }
-
-    
-
-        disposeFlyout = () => {
+    }
+    componentWillUnmount() {
+        if (this.flyoutUpdateTimeout) {
+            clearTimeout(this.flyoutUpdateTimeout);
+        }
+        if (this.runExtensionDebounce) {
+            clearTimeout(this.runExtensionDebounce);
+        }
+        this.disposeFlyout();
+    }
+    disposeFlyout = () => {
         // 先清理flyout引用
         if (this.previewFlyout) {
             this.previewFlyout = null;
         }
-
         // 清理workspace
         if (this.previewWorkspace) {
             this.previewWorkspace.dispose();
             this.previewWorkspace = null;
         }
-
         // 清理容器内容
         if (this.flyoutContainer.current) {
             this.flyoutContainer.current.innerHTML = '';
         }
     };
-
     renderBlockPreviewFromVM = () => {
-
-            const { vm } = this.props;
-
-            const container = this.flyoutContainer.current;
-
-            if (!vm || !vm.runtime || !container) return;
-
-    
-
-            // 如果正在加载扩展，显示加载状态
-
-            if (this.state.isLoadingExtension) {
-
-                const loadingText = this.getTranslation(messages.loadingExtension.id, messages.loadingExtension.defaultMessage);
-
-                const waitText = this.getTranslation(messages.loadingPleaseWait.id, messages.loadingPleaseWait.defaultMessage);
-
-                container.innerHTML = `
-
+        const { vm } = this.props;
+        const container = this.flyoutContainer.current;
+        if (!vm || !vm.runtime || !container) return;
+        // 如果正在加载扩展，显示加载状态
+        if (this.state.isLoadingExtension) {
+            const loadingText = this.getTranslation(messages.loadingExtension.id, messages.loadingExtension.defaultMessage);
+            const waitText = this.getTranslation(messages.loadingPleaseWait.id, messages.loadingPleaseWait.defaultMessage);
+            container.innerHTML = `
                     <div style="padding: 20px; text-align: center; color: rgba(255,255,255,0.7);">
-
                         <div style="font-size: 14px; margin-bottom: 10px;">${loadingText}</div>
-
                         <div style="font-size: 12px;">${waitText}</div>
-
                     </div>
-
                 `;
-
-                return;
-
-            }
-
-    
-
-            // 如果有加载错误，显示错误信息
-
-            if (this.state.loadError) {
-
-                const loadFailedText = this.getTranslation(messages.loadFailed.id, messages.loadFailed.defaultMessage);
-
-                const checkSyntaxText = this.getTranslation(messages.checkSyntax.id, messages.checkSyntax.defaultMessage);
-
-                container.innerHTML = `
-
+            return;
+        }
+        // 如果有加载错误，显示错误信息
+        if (this.state.loadError) {
+            const loadFailedText = this.getTranslation(messages.loadFailed.id, messages.loadFailed.defaultMessage);
+            const checkSyntaxText = this.getTranslation(messages.checkSyntax.id, messages.checkSyntax.defaultMessage);
+            container.innerHTML = `
                     <div style="padding: 20px; text-align: center; color: rgba(255,100,100,0.9);">
-
                         <div style="font-size: 14px; margin-bottom: 10px;">✕ ${loadFailedText}</div>
-
                         <div style="font-size: 12px; margin-bottom: 8px;">${this.state.loadError}</div>
-
                         <div style="font-size: 11px; opacity: 0.7;">${checkSyntaxText}</div>
-
                     </div>
-
                 `;
-
-                return;
-
-            }
-
-    
-
-            // Show loading state if no extension has been loaded yet
-
-            if (!vm.runtime._blockInfo || vm.runtime._blockInfo.length === 0) {
-
-                const runExtensionText = this.getTranslation(messages.runExtensionFirst.id, messages.runExtensionFirst.defaultMessage);
-
-                const runButtonHint = this.getTranslation(messages.runExtensionButton.id, messages.runExtensionButton.defaultMessage);
-
-                container.innerHTML = `
-
+            return;
+        }
+        // Show loading state if no extension has been loaded yet
+        if (!vm.runtime._blockInfo || vm.runtime._blockInfo.length === 0) {
+            const runExtensionText = this.getTranslation(messages.runExtensionFirst.id, messages.runExtensionFirst.defaultMessage);
+            const runButtonHint = this.getTranslation(messages.runExtensionButton.id, messages.runExtensionButton.defaultMessage);
+            container.innerHTML = `
                     <div style="padding: 20px; text-align: center; color: rgba(255,255,255,0.7);">
-
                         <div style="font-size: 14px; margin-bottom: 10px;">🔄 ${runExtensionText}</div>
-
                         <div style="font-size: 12px;">${runButtonHint}</div>
-
                     </div>
-
                 `;
-
-                return;
-
-            }
-
-    
-
-            this.disposeFlyout();
-
-    
-
-            const activeTab = this.getActiveTab();
-
-            if (!activeTab) return;
-
-    
-
-            const idMatch = activeTab.code.match(/id:\s*['"]([^'"]+)['"]/);
-
-            if (!idMatch) return;
-
-            const extensionId = idMatch[1];
-
-    
-
-            const blockInfo = vm.runtime._blockInfo;
-
-            if (!blockInfo) return;
-
-    
-
-            const extensionInfo = blockInfo.find(b => b.id === extensionId);
-
-            if (!extensionInfo || !extensionInfo.blocks) {
-
-                const notLoadedText = this.getTranslation(messages.extensionNotLoaded.id, messages.extensionNotLoaded.defaultMessage);
-
-                const runButtonHint = this.getTranslation(messages.runExtensionButton.id, messages.runExtensionButton.defaultMessage);
-
-                container.innerHTML = `
-
+            return;
+        }
+        this.disposeFlyout();
+        const activeTab = this.getActiveTab();
+        if (!activeTab) return;
+        const idMatch = activeTab.code.match(/id:\s*['"]([^'"]+)['"]/);
+        if (!idMatch) return;
+        const extensionId = idMatch[1];
+        const blockInfo = vm.runtime._blockInfo;
+        if (!blockInfo) return;
+        const extensionInfo = blockInfo.find(b => b.id === extensionId);
+        if (!extensionInfo || !extensionInfo.blocks) {
+            const notLoadedText = this.getTranslation(messages.extensionNotLoaded.id, messages.extensionNotLoaded.defaultMessage);
+            const runButtonHint = this.getTranslation(messages.runExtensionButton.id, messages.runExtensionButton.defaultMessage);
+            container.innerHTML = `
                     <div style="padding: 20px; text-align: center; color: rgba(255,255,255,0.7);">
-
                         <div style="font-size: 14px; margin-bottom: 10px;">${notLoadedText}</div>
-
                         <div style="font-size: 12px;">${runButtonHint}</div>
-
                     </div>
-
                 `;
-
-                console.warn('Extension info not found:', extensionId);
-
-                return;
-
-            }
-
+            console.warn('Extension info not found:', extensionId);
+            return;
+        }
         const ScratchBlocks = VMScratchBlocks(vm, false);
         if (!ScratchBlocks) return;
-
         try {
             /* ===== 定义 block json ===== */
             const jsonBlocks = extensionInfo.blocks
                 .filter(b => b.json)
                 .map(b => b.json);
-
             if (!jsonBlocks.length) {
                 const noBlocksText = this.getTranslation(messages.noBlocksDefined.id, messages.noBlocksDefined.defaultMessage);
                 container.innerHTML = `
@@ -503,26 +394,23 @@ class ExtensionEditorTabs extends React.Component {
                 console.warn('No blocks to define');
                 return;
             }
-
             ScratchBlocks.defineBlocksWithJsonArray(jsonBlocks);
-
             /* ===== 准备 toolbox XML ===== */
             // 参考make-toolbox-xml.js的方式构建category XML
             const extensionBlocksXML = extensionInfo.blocks
-                            .filter(b => b.xml)
-                            .map(b => b.xml)
-                            .join('');
-            
-                        if (!extensionBlocksXML) {
-                            const noXMLText = this.getTranslation(messages.noBlocksXML.id, messages.noBlocksXML.defaultMessage);
-                            container.innerHTML = `
+                .filter(b => b.xml)
+                .map(b => b.xml)
+                .join('');
+            if (!extensionBlocksXML) {
+                const noXMLText = this.getTranslation(messages.noBlocksXML.id, messages.noBlocksXML.defaultMessage);
+                container.innerHTML = `
                                 <div style="padding: 20px; text-align: center; color: rgba(255,255,255,0.7);">
                                     <div style="font-size: 14px;">${noXMLText}</div>
                                 </div>
                             `;
-                            console.warn('No blocks XML');
-                            return;
-                        }
+                console.warn('No blocks XML');
+                return;
+            }
             // 构建完整的toolbox XML
             // 添加图标支持
             let iconURI = '';
@@ -530,7 +418,6 @@ class ExtensionEditorTabs extends React.Component {
                 iconURI = `iconURI="${extensionInfo.blockIconURI}"`;
             }
             const toolboxXML = `<xml><category name="${extensionInfo.name}" id="${extensionInfo.id}" colour="${extensionInfo.color1}" secondaryColour="${extensionInfo.color2}" ${iconURI}>${extensionBlocksXML}</category></xml>`;
-
             /* ===== Workspace ===== */
             const workspace = ScratchBlocks.inject(container, {
                 rtl: false,
@@ -546,7 +433,6 @@ class ExtensionEditorTabs extends React.Component {
                     minScale: 0.85
                 }
             });
-
             if (workspace) {
                 // 获取flyout
                 const flyout = workspace.getFlyout();
@@ -569,7 +455,6 @@ class ExtensionEditorTabs extends React.Component {
                     console.warn('Flyout not created');
                 }
             }
-
             this.previewWorkspace = workspace;
         } catch (error) {
             console.error('Error rendering block preview:', error);
@@ -585,7 +470,6 @@ class ExtensionEditorTabs extends React.Component {
             `;
         }
     };
-
     async loadSavedExtensions() {
         try {
             const extensions = await extensionEditorStorage.getAllExtensions();
@@ -619,7 +503,6 @@ class ExtensionEditorTabs extends React.Component {
             });
         }
     }
-
     createNewTab = () => {
         this.setState({
             showCreateForm: true,
@@ -634,24 +517,51 @@ class ExtensionEditorTabs extends React.Component {
             errors: { name: '', id: '' }
         });
     };
-
     handleNextStep = () => {
         if (this.validateCurrentStep()) {
             this.setState({ currentStep: this.state.currentStep + 1 });
         }
     };
-
     handlePrevStep = () => {
         if (this.state.currentStep > 0) {
             this.setState({ currentStep: this.state.currentStep - 1 });
         }
     };
-
+    isValidClassName(name) { // 复制的
+        if (!/^[A-Z_a-z$][\w$]*$/.test(name)) {
+            return false;
+        }
+        const reservedWords = [
+            'abstract', 'arguments', 'await', 'boolean', 'break', 'byte', 'case', 'catch',
+            'char', 'class', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+            'double', 'else', 'enum', 'eval', 'export', 'extends', 'false', 'final',
+            'finally', 'float', 'for', 'function', 'goto', 'if', 'implements', 'import',
+            'in', 'instanceof', 'int', 'interface', 'let', 'long', 'native', 'new',
+            'null', 'package', 'private', 'protected', 'public', 'return', 'short',
+            'static', 'super', 'switch', 'synchronized', 'this', 'throw', 'throws',
+            'transient', 'true', 'try', 'typeof', 'var', 'void', 'volatile', 'while',
+            'with', 'yield'
+        ];
+        if (reservedWords.includes(name)) {
+            return false;
+        }
+        const futureReservedWords = [
+            'enum', 'implements', 'interface', 'let', 'package', 'private',
+            'protected', 'public', 'static', 'yield'
+        ];
+        if (futureReservedWords.includes(name)) {
+            return false;
+        }
+        return true;
+    }
     validateCurrentStep = () => {
         if (this.state.currentStep === 1) {
             // Step 2: Name
             if (!this.state.createForm.name.trim()) {
                 this.setState({ errors: { name: this.props.intl.formatMessage(messages.nameError), id: '' } });
+                return false;
+            } else if (!this.isValidClassName(this.state.createForm.name)) {
+                this.setState({ errors: { name: this.props.intl.formatMessage(messages.nameErrorInvalidClassName), id: '' } });
                 return false;
             }
         } else if (this.state.currentStep === 2) {
@@ -666,7 +576,6 @@ class ExtensionEditorTabs extends React.Component {
         }
         return true;
     };
-
     handleCreateFormChange = (field, value) => {
         if (field === 'name') {
             // Auto-generate ID from name when name changes
@@ -684,7 +593,6 @@ class ExtensionEditorTabs extends React.Component {
             this.setState({ createForm: { ...this.state.createForm, [field]: value } });
         }
     };
-
     handleCreateExtension = () => {
         if (this.validateCurrentStep()) {
             const id = extensionEditorStorage.generateId();
@@ -715,7 +623,6 @@ class ExtensionEditorTabs extends React.Component {
             });
         }
     };
-
     generateSecondaryColor(hex) {
         // Generate a darker shade of the primary color
         const r = parseInt(hex.slice(1, 3), 16);
@@ -723,7 +630,6 @@ class ExtensionEditorTabs extends React.Component {
         const b = parseInt(hex.slice(5, 7), 16);
         return `#${Math.max(0, r - 30).toString(16).padStart(2, '0')}${Math.max(0, g - 30).toString(16).padStart(2, '0')}${Math.max(0, b - 30).toString(16).padStart(2, '0')}`;
     }
-
     generateTertiaryColor(hex) {
         // Generate an even darker shade of the primary color
         const r = parseInt(hex.slice(1, 3), 16);
@@ -731,7 +637,6 @@ class ExtensionEditorTabs extends React.Component {
         const b = parseInt(hex.slice(5, 7), 16);
         return `#${Math.max(0, r - 60).toString(16).padStart(2, '0')}${Math.max(0, g - 60).toString(16).padStart(2, '0')}${Math.max(0, b - 60).toString(16).padStart(2, '0')}`;
     }
-
     handleCancelCreate = () => {
         this.setState({
             showCreateForm: false,
@@ -746,50 +651,34 @@ class ExtensionEditorTabs extends React.Component {
             errors: { name: '', id: '' }
         });
     };
-
     handleLoadExtension = () => {
-        // 触发文件选择
         if (this.fileInputRef.current) {
             this.fileInputRef.current.click();
         }
     };
-
     handleFileSelect = async (event) => {
         const file = event.target.files[0];
         if (!file) return;
-
         try {
             const content = await file.text();
-            
-            // 尝试从代码中提取扩展信息
             const idMatch = content.match(/id:\s*['"]([^'"]+)['"]/);
             const nameMatch = content.match(/Name:\s*([^\n]+)/);
-            
             const extensionId = idMatch ? idMatch[1] : `ext_${Date.now()}`;
             const extensionName = nameMatch ? nameMatch[1].trim() : file.name.replace('.js', '');
-
-            // 创建新标签卡并添加扩展代码
             this.props.addTab({
                 id: extensionId,
                 name: extensionName,
                 code: content,
                 isSaved: true
             });
-
-            // 切换到新标签卡
             this.props.activateTab(extensionId);
-            
-            // 隐藏创建表单
             this.setState({ showCreateForm: false });
         } catch (error) {
             console.error('Failed to load extension file:', error);
             alert(this.props.intl.formatMessage(messages.loadFailed) || 'Failed to load extension file');
         }
-
-        // 清除文件输入，以便可以再次选择同一个文件
         event.target.value = '';
     };
-
     handleOpenStorageManager = async () => {
         try {
             const extensions = await extensionEditorStorage.getAllExtensions();
@@ -803,94 +692,81 @@ class ExtensionEditorTabs extends React.Component {
             console.error('Failed to load saved extensions:', error);
         }
     };
-
     handleCloseStorageManager = () => {
         this.setState({ showStorageManager: false });
     };
-
     handleLoadFromStorage = async (extension) => {
         try {
             console.log('Loading extension from storage:', extension);
-            
-            // 验证extension对象
             if (!extension || !extension.id || !extension.name || !extension.code) {
                 console.error('Invalid extension object:', extension);
                 alert('Invalid extension data');
                 return;
             }
-
-            // 检查是否已存在相同ID的标签卡，如果存在则生成新ID
             let newExtensionId = extension.id;
             let existingTab = this.props.tabs.find(tab => tab.id === newExtensionId);
             let counter = 1;
-            
             while (existingTab) {
                 newExtensionId = `${extension.id}_${counter}`;
                 existingTab = this.props.tabs.find(tab => tab.id === newExtensionId);
                 counter++;
             }
-
-            // 如果需要修改ID，也要更新代码中的ID
             let finalCode = extension.code;
             if (newExtensionId !== extension.id) {
-                // 替换代码中的ID定义
                 finalCode = finalCode.replace(
                     /id:\s*['"]([^'"]+)['"]/,
                     `id: '${newExtensionId}'`
                 );
                 console.log('Updated extension ID in code from', extension.id, 'to', newExtensionId);
             }
-
-            // 创建新标签卡并添加扩展代码
             this.props.addTab({
                 id: newExtensionId,
                 name: extension.name,
                 code: finalCode,
                 isSaved: true
             });
-
-            // 切换到新标签卡
             this.props.activateTab(newExtensionId);
-            
-            // 隐藏存储管理器
             this.setState({ showStorageManager: false });
-            
             console.log('Extension loaded successfully with ID:', newExtensionId);
         } catch (error) {
             console.error('Failed to load extension from storage:', error);
             alert('Failed to load extension: ' + error.message);
         }
     };
-
     handleDeleteFromStorage = async (extensionId) => {
         try {
             await extensionEditorStorage.deleteExtension(extensionId);
-            
-            // 重新加载列表
             const extensions = await extensionEditorStorage.getAllExtensions();
             this.setState({ savedExtensions: extensions });
         } catch (error) {
             console.error('Failed to delete extension:', error);
         }
     };
-
     handleClearAllStorage = async () => {
         if (!confirm(this.props.intl.formatMessage(messages.clearAll) + '?')) {
             return;
         }
-
         try {
-            // 删除所有存储的扩展
             for (const extension of this.state.savedExtensions) {
                 await extensionEditorStorage.deleteExtension(extension.id);
             }
-            
             this.setState({ savedExtensions: [] });
         } catch (error) {
             console.error('Failed to clear storage:', error);
         }
     };
-
+    handleToggleWizardPanel = () => {
+        this.setState(prevState => ({
+            blocksPanelMode: prevState.blocksPanelMode === 'wizard' ? 'preview' : 'wizard'
+        }), () => {
+            if (this.state.blocksPanelMode === 'preview') {
+                this.renderBlockPreviewFromVM();
+            }
+        });
+    };
+    renderWizardPanel = () => {
+        return <ExtensionEditorWizardPanel />;
+    };
     generateExtensionCode = (config) => {
         const { name, id, color1, color2, color3 } = config;
         return `// Name: ${name}
@@ -900,7 +776,6 @@ class ${this.toClassName(id)} {
   constructor(runtime) {
     this.runtime = runtime;
   }
-
   getInfo() {
     return {
       id: '${id}',
@@ -912,18 +787,18 @@ class ${this.toClassName(id)} {
         {
           opcode: 'hello',
           blockType: 'command',
-          text: '你好 [MESSAGE]',
+          text: 'Hello [MESSAGE]',
           arguments: {
             MESSAGE: {
               type: 'string',
-              defaultValue: '世界'
+              defaultValue: 'World'
             }
           }
         },
         {
           opcode: 'getRandomNumber',
           blockType: 'reporter',
-          text: '随机数 [MIN] 到 [MAX]',
+          text: 'Random [MIN] 到 [MAX]',
           arguments: {
             MIN: {
               type: 'number',
@@ -938,11 +813,9 @@ class ${this.toClassName(id)} {
       ]
     };
   }
-
   hello(args) {
     console.log('Hello, ' + args.MESSAGE);
   }
-
   getRandomNumber(args) {
     const min = args.MIN;
     const max = args.MAX;
@@ -953,7 +826,6 @@ class ${this.toClassName(id)} {
 Scratch.extensions.register(new ${this.toClassName(id)}());
 `;
     };
-
     toClassName(id) {
         // Convert ID to class name (e.g., 'my_extension' -> 'MyExtension')
         return id
@@ -961,7 +833,6 @@ Scratch.extensions.register(new ${this.toClassName(id)}());
             .map(word => word.charAt(0).toUpperCase() + word.slice(1))
             .join('');
     }
-
     handleTabClick = (tabId) => {
         if (tabId !== this.props.activeTabId) {
             // 在切换标签卡之前，卸载当前标签卡的扩展
@@ -969,19 +840,15 @@ Scratch.extensions.register(new ${this.toClassName(id)}());
             this.props.activateTab(tabId);
         }
     };
-
     unloadCurrentTabExtension = () => {
         const activeTab = this.getActiveTab();
         if (!activeTab) return;
-
         const extensionId = this.state.loadedExtensionIds[activeTab.id];
         if (!extensionId) return;
-
         if (this.props.vm && this.props.vm.extensionManager) {
             if (this.props.vm.extensionManager.isExtensionLoaded(extensionId)) {
                 console.log('Unloading extension when switching tab:', extensionId);
                 this.props.vm.extensionManager.unloadExtension(extensionId);
-
                 // 清理VM内部状态
                 if (this.props.vm.runtime && this.props.vm.runtime._blockInfo) {
                     this.props.vm.runtime._blockInfo = this.props.vm.runtime._blockInfo.filter(
@@ -992,17 +859,14 @@ Scratch.extensions.register(new ${this.toClassName(id)}());
             }
         }
     };
-
     handleTabClose = (tabId, event) => {
         event.stopPropagation();
-        
         // 卸载该标签卡的扩展
         const extensionId = this.state.loadedExtensionIds[tabId];
         if (extensionId && this.props.vm && this.props.vm.extensionManager) {
             if (this.props.vm.extensionManager.isExtensionLoaded(extensionId)) {
                 console.log('Unloading extension when closing tab:', extensionId);
                 this.props.vm.extensionManager.unloadExtension(extensionId);
-
                 // 清理VM内部状态
                 if (this.props.vm.runtime && this.props.vm.runtime._blockInfo) {
                     this.props.vm.runtime._blockInfo = this.props.vm.runtime._blockInfo.filter(
@@ -1012,18 +876,14 @@ Scratch.extensions.register(new ${this.toClassName(id)}());
                 }
             }
         }
-
         // 从记录中删除
         const newLoadedIds = { ...this.state.loadedExtensionIds };
         delete newLoadedIds[tabId];
         this.setState({ loadedExtensionIds: newLoadedIds });
-
         this.props.removeTab(tabId);
     };
-
     handleCodeChange = (code) => {
         this.props.updateTabCode(this.props.activeTabId, code);
-
         // Auto-save to IndexedDB
         const activeTab = this.getActiveTab();
         if (activeTab) {
@@ -1039,7 +899,6 @@ Scratch.extensions.register(new ${this.toClassName(id)}());
                 console.error('Failed to auto-save extension:', error);
             });
         }
-
         // 防抖延迟执行，避免频繁重新加载扩展
         if (this.runExtensionDebounce) {
             clearTimeout(this.runExtensionDebounce);
@@ -1048,11 +907,9 @@ Scratch.extensions.register(new ${this.toClassName(id)}());
             this.handleRunExtension();
         }, 100);
     };
-
     handleExport = async () => {
         const activeTab = this.getActiveTab();
         if (!activeTab) return;
-
         const blob = new Blob([activeTab.code], { type: 'text/javascript' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -1063,23 +920,18 @@ Scratch.extensions.register(new ${this.toClassName(id)}());
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
     };
-
     handleRunExtension = async () => {
         const activeTab = this.getActiveTab();
         if (!activeTab || !activeTab.code) return;
-
         // Parse extension ID from code
         const idMatch = activeTab.code.match(/id:\s*['"]([^'"]+)['"]/);
         const newExtensionId = idMatch ? idMatch[1] : `ext_${Date.now()}`;
-
         console.log('Running extension:', newExtensionId);
-
         // 显示加载状态
         this.setState({ isLoadingExtension: true, loadError: null }, () => {
             this.renderBlockPreviewFromVM();
         });
         this.disposeFlyout();
-
         // Unload existing extension if loaded
         if (this.props.vm && this.props.vm.extensionManager) {
             // 先卸载之前记录的扩展ID（如果用户修改了id，这个ID可能与新的不同）
@@ -1087,7 +939,6 @@ Scratch.extensions.register(new ${this.toClassName(id)}());
             if (oldExtensionId && this.props.vm.extensionManager.isExtensionLoaded(oldExtensionId)) {
                 console.log('Unloading previously loaded extension:', oldExtensionId);
                 this.props.vm.extensionManager.unloadExtension(oldExtensionId);
-
                 // 清理VM内部状态
                 if (this.props.vm.runtime && this.props.vm.runtime._blockInfo) {
                     this.props.vm.runtime._blockInfo = this.props.vm.runtime._blockInfo.filter(
@@ -1096,12 +947,10 @@ Scratch.extensions.register(new ${this.toClassName(id)}());
                     console.log('Cleaned up blockInfo for old extension:', oldExtensionId);
                 }
             }
-
             // 再检查新的扩展ID是否已加载（防止重复加载）
             if (this.props.vm.extensionManager.isExtensionLoaded(newExtensionId)) {
                 console.log('Unloading extension with same ID:', newExtensionId);
                 this.props.vm.extensionManager.unloadExtension(newExtensionId);
-
                 // 清理VM内部状态
                 if (this.props.vm.runtime && this.props.vm.runtime._blockInfo) {
                     this.props.vm.runtime._blockInfo = this.props.vm.runtime._blockInfo.filter(
@@ -1109,7 +958,6 @@ Scratch.extensions.register(new ${this.toClassName(id)}());
                     );
                     console.log('Cleaned up blockInfo for extension:', newExtensionId);
                 }
-
                 // 清理workerURLs数组中的data URL引用
                 const wrappedCode = `
                     (function() {
@@ -1127,12 +975,10 @@ Scratch.extensions.register(new ${this.toClassName(id)}());
                     console.log('Data URL not found in workerURLs');
                 }
                 console.log('Worker URLs after cleanup:', workerURLs);
-
                 // 等待一段时间让VM完全清理
                 await new Promise(resolve => setTimeout(resolve, 100));
             }
         }
-
         // Load the extension using data URL (standard flow)
         if (this.props.vm && this.props.vm.extensionManager) {
             try {
@@ -1142,17 +988,13 @@ Scratch.extensions.register(new ${this.toClassName(id)}());
                         ${activeTab.code}
                     })();
                 `;
-                
                 // 使用data URL格式，与原版自定义扩展加载保持一致
                 const dataUrl = `data:application/javascript,${encodeURIComponent(wrappedCode)}`;
                 console.log('Loading extension from data URL...');
-
                 // 信任此扩展URL，使其使用无沙箱模式加载
                 manuallyTrustExtension(dataUrl);
-
                 await this.props.vm.extensionManager.loadExtensionURL(dataUrl);
                 console.log('Extension loaded successfully');
-
                 // 记录新加载的扩展ID
                 this.setState({
                     loadedExtensionIds: {
@@ -1162,7 +1004,6 @@ Scratch.extensions.register(new ${this.toClassName(id)}());
                     isLoadingExtension: false,
                     loadError: null
                 });
-
                 // Update flyout after extension is loaded
                 requestAnimationFrame(() => {
                     this.renderBlockPreviewFromVM();
@@ -1170,7 +1011,7 @@ Scratch.extensions.register(new ${this.toClassName(id)}());
             } catch (error) {
                 console.error('Failed to load extension:', error);
                 // 加载失败时显示错误信息
-                this.setState({ 
+                this.setState({
                     isLoadingExtension: false,
                     loadError: error.message || '加载扩展失败'
                 }, () => {
@@ -1179,11 +1020,9 @@ Scratch.extensions.register(new ${this.toClassName(id)}());
             }
         }
     };
-
     getActiveTab() {
         return this.props.tabs.find(tab => tab.id === this.props.activeTabId);
     }
-
     // Helper function to get translated message
     getTranslation(id, defaultMessage, values = {}) {
         return this.props.intl.formatMessage(
@@ -1191,11 +1030,9 @@ Scratch.extensions.register(new ${this.toClassName(id)}());
             values
         );
     }
-
     render() {
         const activeTab = this.getActiveTab();
         const code = activeTab ? activeTab.code : '';
-
         return (
             <div className={styles.container}>
                 <div className={styles.tabBar}>
@@ -1210,14 +1047,12 @@ Scratch.extensions.register(new ${this.toClassName(id)}());
                                     {tab.name}
                                     {!tab.isSaved && <span className={styles.unsavedIndicator}>●</span>}
                                 </span>
-
                                 <button
                                     className={styles.tabCloseButton}
                                     onClick={(e) => this.handleTabClose(tab.id, e)}
                                 >
                                     ✕
                                 </button>
-
                             </div>
                         ))}
                         <button
@@ -1264,8 +1099,14 @@ Scratch.extensions.register(new ${this.toClassName(id)}());
                         ) : null}
                         {!this.state.showCreateForm && !this.state.showStorageManager && (
                             <div className={styles.workArea}>
-                                <div className={styles.blocksPanel} ref={this.flyoutContainer}>
-                                    {/* Flyout will be moved here */}
+                                <div className={styles.blocksPanel}>
+                                    {this.state.blocksPanelMode === 'wizard' ? (
+                                        this.renderWizardPanel()
+                                    ) : (
+                                        <div ref={this.flyoutContainer}>
+                                            {/* Flyout will be moved here */}
+                                        </div>
+                                    )}
                                 </div>
                                 <div className={styles.codePanel}>
                                     {activeTab ? (
@@ -1277,6 +1118,8 @@ Scratch.extensions.register(new ${this.toClassName(id)}());
                                             onOpenExtensionEditorSettings={this.props.onOpenExtensionEditorSettings}
                                             fontSize={this.props.fontSize}
                                             onFontSizeChange={this.props.onFontSizeChange}
+                                            onToggleWizard={this.handleToggleWizardPanel}
+                                            wizardActive={this.state.blocksPanelMode === 'wizard'}
                                         />
                                     ) : (
                                         <div className={styles.emptyState}>
@@ -1291,7 +1134,6 @@ Scratch.extensions.register(new ${this.toClassName(id)}());
             </div>
         );
     }
-
     renderCreateForm() {
         return (
             <div className={styles.createForm}>
@@ -1302,7 +1144,6 @@ Scratch.extensions.register(new ${this.toClassName(id)}());
                 >
                     ✕
                 </button>
-
                 <div className={styles.createFormContent}>
                     <div className={styles.stepsProgress}>
                         <div
@@ -1310,10 +1151,8 @@ Scratch.extensions.register(new ${this.toClassName(id)}());
                             style={{ width: `${this.state.currentStep === 0 ? 0 : this.state.currentStep === 1 ? 25 : this.state.currentStep === 2 ? 50 : this.state.currentStep === 3 ? 75 : 100}%` }}
                         />
                     </div>
-
                     {this.renderStepContent()}
                 </div>
-
                 <div className={styles.createFormActions}>
                     {this.state.currentStep > 0 && this.state.currentStep !== 4 && (
                         <button
@@ -1354,7 +1193,6 @@ Scratch.extensions.register(new ${this.toClassName(id)}());
             </div>
         );
     }
-
     renderStorageManager() {
         return (
             <div className={styles.createForm}>
@@ -1368,7 +1206,6 @@ Scratch.extensions.register(new ${this.toClassName(id)}());
             </div>
         );
     }
-
     renderStepContent() {
         switch (this.state.currentStep) {
             case 0:

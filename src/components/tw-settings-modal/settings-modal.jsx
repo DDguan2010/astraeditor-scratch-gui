@@ -492,6 +492,26 @@ const EnableExtensionPreview = props => (
         }
     />
 );
+const EnableVSCodeLayout = props => (
+    <BooleanSetting
+        {...props}
+        label={
+            <FormattedMessage
+                defaultMessage="Enable VSCode Layout"
+                description="EnableVSCodeLayout label"
+                id="tw.settingsModal.enablevscodelayout"
+            />
+        }
+        help={
+            <FormattedMessage
+                // eslint-disable-next-line max-len
+                defaultMessage="Change the interface layout to a style similar to VSCode."
+                description="EnableVSCodeLayout help"
+                id="tw.settingsModal.enablevscodelayouthelp"
+            />
+        }
+    />
+);
 const AEsettings = new AESettings();
 
 const SettingsModalComponent = props => {
@@ -627,16 +647,20 @@ const SettingsModalComponent = props => {
                             value={AEsettings.get('skipExtWarn')}
                             onChange={(e) => { AEsettings.set("skipExtWarn", e.target.checked); update() }}
                         />
-                        <Header>
-                            <FormattedMessage
-                                defaultMessage="Extensions Settings"
-                                description="Settings modal Extensions settings"
-                                id="tw.settingsModal.extSetings"
-                            />
-                        </Header>
                         <EnableExtensionPreview
                             value={AEsettings.get('EnableExtensionPreview')}
                             onChange={(e) => { AEsettings.set("EnableExtensionPreview", e.target.checked); update() }}
+                        />
+                        <Header>
+                            <FormattedMessage
+                                defaultMessage="Interface Settings"
+                                description="Settings modal interface. settings"
+                                id="tw.settingsModal.interfaceSettings"
+                            />
+                        </Header>
+                        <EnableVSCodeLayout
+                            value={AEsettings.get('EnableVSCodeLayout')}
+                            onChange={(e) => { AEsettings.set("EnableVSCodeLayout", e.target.checked); update() }}
                         />
                     </>}
 

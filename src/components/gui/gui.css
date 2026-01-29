@@ -213,6 +213,67 @@
     flex-direction: column;
 }
 
+.vscode {
+    flex-direction: column !important;
+    height: 100% !important;
+}
+
+.vscodeList {
+    flex-direction: row !important;
+}
+
+.tab-list.vscode {
+    height: 100% !important;
+    width: 40px;
+    flex-direction: column !important;
+    align-items: center;
+    justify-content: flex-start;
+    border-right: 1px solid $ui-black-transparent;
+    border-bottom: none;
+}
+
+.vscode .tab {
+    width: 40px;
+    height: 30px;
+    flex-grow: 0;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 0 !important;
+    background-color: #00000000;
+    border: 0;
+}
+
+.vscode .tab img {
+    width: 2rem;
+    height: 2rem;
+    margin: 0 !important;
+    filter: grayscale(100%);
+}
+
+[dir="rtl"] .vscode .tab img {
+    margin: 0 0 0.25rem 0 !important;
+    transform: none;
+}
+
+.vscode .tab.is-selected {
+    background-color: $ui-white;
+    box-shadow: 0 0 0 2px $looks-secondary;
+}
+
+.vscode .tab.is-selected img {
+    filter: none;
+}
+
+/* 重置 RTL 下的镜像效果 */
+.vscode .tab:nth-of-type(1) img,
+.vscode .tab:nth-of-type(3) img {
+    transform: none;
+}
+
 .tab-panel {
     position: relative;
     flex-grow: 1;
