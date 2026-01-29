@@ -13,7 +13,7 @@ async function loadChartJS() {
     document.head.appendChild(script);
   });
 }
-import icon from './SPA.svg'
+import icon from '!../../../lib/tw-recolor/build!./SPA.svg'
 export default async function ({ addon, msg, safeMsg, console }) {
   // 加载Chart.js库
   await loadChartJS();
@@ -60,7 +60,8 @@ export default async function ({ addon, msg, safeMsg, console }) {
       if (VSCodeLayout) {
         // VSCodeLayout 下使用 SVG 图标
         const img = document.createElement('img');
-        img.src = icon;
+        img.src = icon();
+        img.style.filter = "grayscale(100%)"
         img.marginTop = '5px';
         img.width = 24;
         img.height = 24;

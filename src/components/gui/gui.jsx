@@ -62,7 +62,7 @@ import codeIcon from '!../../lib/tw-recolor/build!./icon--code.svg';
 import costumesIcon from '!../../lib/tw-recolor/build!./icon--costumes.svg';
 import soundsIcon from '!../../lib/tw-recolor/build!./icon--sounds.svg';
 import extensionIcon from '!../../lib/tw-recolor/build!./icon--extension.svg'
-import readmeIcon from './readme.svg'
+import readmeIcon from '!../../lib/tw-recolor/build!./readme.svg'
 import { openReadme } from '../../reducers/modals.js';
 
 import { AESettings } from '../../lib/settings.js'
@@ -550,8 +550,9 @@ const GUIComponent = props => {
                                             onClick={onOpenReadme}
                                         >
                                             {vscodeLayoutRef ? (
-                                                    <img src={readmeIcon} alt="readme" style={{
-                                                        width: "30px"
+                                                    <img src={readmeIcon()} draggable={false} alt="readme" style={{
+                                                        width: "30px",
+                                                        filter: 'grayscale(100%)'
                                                     }} />
                                             ) : (
                                                 "README"

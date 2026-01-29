@@ -1,7 +1,7 @@
 import BlockItem from "./blockly/BlockItem.js";
 import BlockInstance from "./blockly/BlockInstance.js";
 import Utils from "./blockly/Utils.js";
-import icon from "./icon.svg"
+import icon from "!../../../lib/tw-recolor/build!./icon.svg"
 
 export default async function ({ addon, msg, console }) {
   const Blockly = await addon.tab.traps.getBlockly();
@@ -59,7 +59,8 @@ export default async function ({ addon, msg, console }) {
       this.findBarButton = document.createElement("Button");
       this.findBarButtonText = document.createElement("img");
       this.findBarButtonText.className = "sa-find-bar-button-text";
-      this.findBarButtonText.src = icon;
+      this.findBarButtonText.src = icon();
+      this.findBarButtonText.style.filter = "grayscale(100%)";
       this.findBarButton.appendChild(this.findBarButtonText)
       this.findBarButton.className = "sa-find-bar-button";
       this.findBarButton.addEventListener("click", () => {
