@@ -43,7 +43,7 @@ import AEReadMe from '../../containers/ae-readme.jsx'
 import ExtensionEditorSettings from '../extension-editor-settings';
 import ExtensionEditorTabs from '../../components/extension-editor-tabs/extension-editor-tabs.jsx';
 import { loadData } from '../ae-readme/ae-readme.jsx'
-// 你根本不知道看到这原本是个绝对路径有多好笑
+
 import { openExtensionEditorSettings } from '../../reducers/modals.js';
 import { updateFontSize } from '../../reducers/extension-editor.js';
 
@@ -61,7 +61,7 @@ import addExtensionIcon from './icon--extensions.svg';
 import codeIcon from '!../../lib/tw-recolor/build!./icon--code.svg';
 import costumesIcon from '!../../lib/tw-recolor/build!./icon--costumes.svg';
 import soundsIcon from '!../../lib/tw-recolor/build!./icon--sounds.svg';
-import extensionIcon from '!../../lib/tw-recolor/build!./icon--code.svg'
+import extensionIcon from '!../../lib/tw-recolor/build!./icon--extension.svg'
 import { openReadme } from '../../reducers/modals.js';
 
 import { AESettings } from '../../lib/settings.js'
@@ -258,7 +258,9 @@ const GUIComponent = props => {
         tabList: classNames(tabStyles.reactTabsTabList, styles.tabList),
         tabPanel: classNames(tabStyles.reactTabsTabPanel, styles.tabPanel),
         tabPanelSelected: classNames(tabStyles.reactTabsTabPanelSelected, styles.isSelected),
-        tabSelected: classNames(tabStyles.reactTabsTabSelected, styles.isSelected)
+        tabSelected: classNames(tabStyles.reactTabsTabSelected, styles.isSelected),
+        vscode: styles.vscode,
+        vscodeList: styles.vscodeList
     };
 
     const unconstrainedWidth = (
@@ -448,13 +450,21 @@ const GUIComponent = props => {
                         <Box className={classNames(styles.editorWrapper, onOpenExtensionEditor && styles.editorWrapperFull)}>
                             <Tabs
                                 forceRenderTabPanel
-                                className={tabClassNames.tabs}
+                                className={
+                                    Settings.get('EnableVSCodeLayout')  
+                                        ? `${tabClassNames.tabs} ${tabClassNames.vscodeList}`
+                                        : tabClassNames.tabs
+                                }
                                 selectedIndex={activeTabIndex}
                                 selectedTabClassName={tabClassNames.tabSelected}
                                 selectedTabPanelClassName={tabClassNames.tabPanelSelected}
                                 onSelect={onActivateTab}
                             >
-                                <TabList className={tabClassNames.tabList}>
+                                <TabList className={
+                                    Settings.get('EnableVSCodeLayout')  
+                                        ? `${tabClassNames.tabList} ${tabClassNames.vscode}`
+                                        : tabClassNames.tabList
+                                }>
                                     <div className='HindToolBar'>
                                         {/*这里是隐藏工具栏时提供的边距*/}
                                     </div>

@@ -6,7 +6,8 @@ export class AESettings {
                 this.initset = {
                         enableREADMEAutoDisplay: true,
                         skipExtWarn: false,
-                        EnableExtensionPreview: false
+                        EnableExtensionPreview: false,
+                        EnableVSCodeLayout: false
                 };
         }
 

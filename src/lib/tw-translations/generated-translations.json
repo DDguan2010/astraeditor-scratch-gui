@@ -24,7 +24,13 @@
         "tw.extensionEditorTabs.closeButton": "Close",
         "tw.extensionEditorTabs.color3Label": "Tertiary",
         "tw.extensionEditorTabs.export": "Export",
-        "tw.extensionEditorTabs.runExtension": "Run Extension"
+        "tw.extensionEditorTabs.runExtension": "Run Extension",
+        "tw.extensionEditorTabs.wizardTitle": "Wizard",
+        "tw.extensionEditorTabs.basicTutorial": "Basic Tutorial",
+        "tw.extensionEditorTabs.blockTypes": "Block Types",
+        "tw.extensionEditorTabs.arguments": "Arguments",
+        "tw.extensionEditorTabs.advanced": "Advanced",
+        "tw.extensionEditorTabs.comingSoon": "Coming Soon"
     },
     "ar": {
         "tw.footer.credits": "الاعتمادات",
@@ -5028,7 +5034,13 @@
                 "tw.extensionEditorTabs.closeButton": "关闭",
                 "tw.extensionEditorTabs.color3Label": "第三色调",
                 "tw.extensionEditorTabs.export": "导出",
-                "tw.extensionEditorTabs.runExtension": "运行扩展"
+                "tw.extensionEditorTabs.runExtension": "运行扩展",
+                "tw.extensionEditorTabs.wizardTitle": "制作向导",
+                "tw.extensionEditorTabs.basicTutorial": "基础教程",
+                "tw.extensionEditorTabs.blockTypes": "积木类型",
+                "tw.extensionEditorTabs.arguments": "参数定义",
+                "tw.extensionEditorTabs.advanced": "高级功能",
+                "tw.extensionEditorTabs.comingSoon": "内容即将推出"
         
         
             },
@@ -5154,6 +5166,12 @@
         "tw.extensionEditorTabs.closeButton": "關閉",
         "tw.extensionEditorTabs.color3Label": "第三色調",
         "tw.extensionEditorTabs.export": "導出",
-        "tw.extensionEditorTabs.runExtension": "運行擴充"
+        "tw.extensionEditorTabs.runExtension": "運行擴充",
+        "tw.extensionEditorTabs.wizardTitle": "製作嚮導",
+        "tw.extensionEditorTabs.basicTutorial": "基礎教程",
+        "tw.extensionEditorTabs.blockTypes": "積木類型",
+        "tw.extensionEditorTabs.arguments": "參數定義",
+        "tw.extensionEditorTabs.advanced": "高級功能",
+        "tw.extensionEditorTabs.comingSoon": "內容即將推出"
     }
 }
