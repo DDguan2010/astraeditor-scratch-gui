@@ -522,14 +522,10 @@ const GUIComponent = props => {
                                         className={tabClassNames.tab}
                                     >
                                         <img
-                                            draggable={false}
+                                            alt={intl.formatMessage(messages.extensionEditorTab)}
                                             src={extensionIcon()}
                                         />
-                                        <FormattedMessage
-                                            defaultMessage='Extension Editor'
-                                            description='Title of the welcome screen'
-                                            id='tw.extensionEditorTabs.welcomeTitle'
-                                        />
+                                        <FormattedMessage {...messages.extensionEditorTab} />
                                     </Tab>
                                     <div className='varM'>
                                         {/*这里是变量Tab*/}

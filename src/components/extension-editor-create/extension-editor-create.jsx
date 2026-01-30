@@ -23,7 +23,7 @@ const messages = defineMessages({
         description: 'Error message when ID is invalid',
         id: 'tw.extensionEditorCreate.idError'
     }
-};
+});
 
 class ExtensionEditorCreate extends React.Component {
     constructor(props) {

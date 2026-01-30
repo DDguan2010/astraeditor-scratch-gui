@@ -63,8 +63,8 @@ export default async function ({ addon, msg, safeMsg, console }) {
         img.src = icon();
         img.style.filter = "grayscale(100%)"
         img.marginTop = '5px';
-        img.width = 24;
-        img.height = 24;
+        img.width = '20px';
+        img.height = '20px';
         img.alt = '分析';
         this.analyzeButton.appendChild(img);
       } else {
