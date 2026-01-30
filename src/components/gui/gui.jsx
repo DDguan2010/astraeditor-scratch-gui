@@ -67,7 +67,8 @@ import { openReadme } from '../../reducers/modals.js';
 
 import { AESettings } from '../../lib/settings.js'
 const Settings = new AESettings();
-const vscodeLayoutRef = JSON.parse(localStorage.getItem('AESettings')).EnableVSCodeLayout
+const storedSettings = localStorage.getItem('AESettings');
+const vscodeLayoutRef = storedSettings ? JSON.parse(storedSettings).EnableVSCodeLayout : false;
 
 const messages = defineMessages({
     addExtension: {

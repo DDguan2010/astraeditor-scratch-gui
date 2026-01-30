@@ -15,12 +15,12 @@ const theme = (() => {
     try {
         const themeStr = localStorage.getItem('tw:theme');
         if (!themeStr || themeStr === 'undefined' || themeStr === 'null') {
-            return { gui: 'dark', accent: 'purple' };
+            return { gui: 'light', accent: 'astraeditor' };
         }
         return JSON.parse(themeStr);
     } catch (e) {
         console.warn('Failed to parse theme from localStorage:', e);
-        return { gui: 'dark', accent: 'purple' };
+        return { gui: 'light', accent: 'astraeditor' };
     }
 })();
 
