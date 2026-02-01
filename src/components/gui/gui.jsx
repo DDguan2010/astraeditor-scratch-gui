@@ -68,20 +68,12 @@ import { openReadme } from '../../reducers/modals.js';
 import { AESettings } from '../../lib/settings.js'
 const Settings = new AESettings();
 const storedSettings = localStorage.getItem('AESettings');
-const vscodeLayoutRef = storedSettings ? JSON.parse(storedSettings).EnableVSCodeLayout : false;
-
-const messages = defineMessages({
-    addExtension: {
-        id: 'gui.gui.addExtension',
-        description: 'Button to add an extension in the target pane',
-        defaultMessage: 'Add Extension'
-    },
-    extensionEditorTab: {
-        id: 'gui.gui.extensionEditorTab',
-        description: 'Button to get to the extension editor panel',
-        defaultMessage: 'Extension Editor'
-    }
-});
+let vscodeLayoutRef = false;
+try {
+    vscodeLayoutRef = JSON.parse(storedSettings).EnableVSCodeLayout;
+} catch (e) {
+    vscodeLayoutRef = false;
+}
 
 const getFullscreenBackgroundColor = () => {
     const params = new URLSearchParams(location.search);
@@ -212,7 +204,7 @@ const GUIComponent = props => {
         });
         return readMe.length != 0;
     };
-    
+
 
     const [canShowReadme, setCanShowReadme] = useState(() => { updateCanShowReadme })
     const [onOpenExtensionEditor, setOpenExtensionEditor] = useState(false)
@@ -523,10 +515,14 @@ const GUIComponent = props => {
                                         className={tabClassNames.tab}
                                     >
                                         <img
-                                            alt={intl.formatMessage(messages.extensionEditorTab)}
+                                            draggable={false}
                                             src={extensionIcon()}
                                         />
-                                        <FormattedMessage {...messages.extensionEditorTab} />
+                                        <FormattedMessage
+                                            id='gui.gui.extensionEditorTab'
+                                            description='Button to get to the extension editor panel'
+                                            defaultMessage='Extension Editor'
+                                        />
                                     </Tab>
                                     <div className='varM'>
                                         {/*这里是变量Tab*/}
@@ -547,10 +543,10 @@ const GUIComponent = props => {
                                             onClick={onOpenReadme}
                                         >
                                             {vscodeLayoutRef ? (
-                                                    <img src={readmeIcon()} draggable={false} alt="readme" style={{
-                                                        width: "30px",
-                                                        filter: 'grayscale(100%)'
-                                                    }} />
+                                                <img src={readmeIcon()} draggable={false} alt="readme" style={{
+                                                    width: "30px",
+                                                    filter: 'grayscale(100%)'
+                                                }} />
                                             ) : (
                                                 "README"
                                             )}
@@ -576,7 +572,6 @@ const GUIComponent = props => {
                                     <Box className={styles.extensionButtonContainer}>
                                         <button
                                             className={styles.extensionButton}
-                                            title={intl.formatMessage(messages.addExtension)}
                                             onClick={onExtensionButtonClick}
                                         >
                                             <img
