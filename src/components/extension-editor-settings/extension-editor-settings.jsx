@@ -7,6 +7,7 @@ import { updateFontSize } from '../../reducers/extension-editor';
 import Modal from '../modal/modal.jsx';
 import Box from '../box/box.jsx';
 import { ExtensionEditorSettingsContent } from 'scratch-extension-editor';
+import styles from './extension-editor-settings.css'
 
 const messages = defineMessages({
     editorOptions: {
@@ -21,8 +22,9 @@ class ExtensionEditorSettings extends React.Component {
         return (
             <Modal
                 contentLabel={this.props.intl.formatMessage(messages.editorOptions)}
-                id="extensionEditorSettings"
+                className={styles.extensionEditorSettings}
                 onRequestClose={this.props.onClose}
+                id="extensionEditorSettings"
             >
 
                 <Box grow={1}>

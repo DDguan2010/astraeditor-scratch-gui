@@ -253,15 +253,6 @@ module.exports = [
                         context: 'src/examples'
                     }
                 ]
-            }),
-            // Copy version-check files for automatic cache clearing
-            new CopyWebpackPlugin({
-                patterns: [
-                    {
-                        from: 'src/lib/version-check/**',
-                        to: 'lib/version-check/[name].[ext]'
-                    }
-                ]
             })
         ])
     })

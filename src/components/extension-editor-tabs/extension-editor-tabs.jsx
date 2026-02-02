@@ -527,59 +527,60 @@ class ExtensionEditorTabs extends React.Component {
         const { name, id, color1, color2, color3 } = config;
         return `// Name: ${name}
 // ID: ${id}
-
-class ${this.toClassName(id)} {
-  constructor(runtime) {
-    this.runtime = runtime;
-  }
-  getInfo() {
-    return {
-      id: '${id}',
-      name: '${name}',
-      color1: '${color1}',
-      color2: '${color2}',
-      color3: '${color3}',
-      blocks: [
-        {
-          opcode: 'hello',
-          blockType: 'command',
-          text: 'Hello [MESSAGE]',
-          arguments: {
-            MESSAGE: {
-              type: 'string',
-              defaultValue: 'World'
-            }
-          }
-        },
-        {
-          opcode: 'getRandomNumber',
-          blockType: 'reporter',
-          text: 'Random [MIN] 到 [MAX]',
-          arguments: {
-            MIN: {
-              type: 'number',
-              defaultValue: 1
-            },
-            MAX: {
-              type: 'number',
-              defaultValue: 100
-            }
-          }
+(function (Scratch) {
+    "use strict";
+    class ${this.toClassName(id)} {
+        constructor(runtime) {
+            this.runtime = runtime;
         }
-      ]
-    };
-  }
-  hello(args) {
-    console.log('Hello, ' + args.MESSAGE);
-  }
-  getRandomNumber(args) {
-    const min = args.MIN;
-    const max = args.MAX;
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
-}
-
-Scratch.extensions.register(new ${this.toClassName(id)}());
+        getInfo() {
+            return {
+                id: '${id}',
+                name: '${name}',
+                color1: '${color1}',
+                color2: '${color2}',
+                color3: '${color3}',
+                blocks: [
+                    {
+                    opcode: 'hello',
+                    blockType: 'command',
+                    text: 'Hello [MESSAGE]',
+                    arguments: {
+                        MESSAGE: {
+                        type: 'string',
+                        defaultValue: 'World'
+                        }
+                    }
+                    },
+                    {
+                    opcode: 'getRandomNumber',
+                    blockType: 'reporter',
+                    text: 'Random [MIN] 到 [MAX]',
+                    arguments: {
+                        MIN: {
+                        type: 'number',
+                        defaultValue: 1
+                        },
+                        MAX: {
+                        type: 'number',
+                        defaultValue: 100
+                        }
+                    }
+                    }
+                ]
+            };
+        }
+        hello(args) {
+            console.log('Hello, ' + args.MESSAGE);
+        }
+        getRandomNumber(args) {
+            const min = args.MIN;
+            const max = args.MAX;
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+    }
+    Scratch.extensions.register(new ${this.toClassName(id)}());
+})(Scratch);
 `;
     };
     toClassName(id) {
@@ -604,23 +605,21 @@ Scratch.extensions.register(new ${this.toClassName(id)}());
         if (this.props.vm && this.props.vm.extensionManager && this.props.vm.runtime) {
             if (this.props.vm.extensionManager.isExtensionLoaded(extensionId)) {
                 console.log('Unloading extension when switching tab:', extensionId);
-                this.props.vm.extensionManager.unloadExtension(extensionId);
-                // 停止所有线程
+                // 停止所有线程，防止运行中的积木引用已卸载的扩展
                 const threads = [...this.props.vm.runtime.threads];
                 for (const thread of threads) {
                     this.props.vm.runtime.stopThread(thread);
                 }
-                // 清理VM内部状态
-                if (this.props.vm.runtime._blockInfo) {
-                    this.props.vm.runtime._blockInfo = this.props.vm.runtime._blockInfo.filter(
-                        info => info.id !== extensionId
-                    );
-                }
-                // 清理积木缓存
-                if (this.props.vm.runtime.flyoutBlocks && typeof this.props.vm.runtime.flyoutBlocks === 'object') {
-                    this.props.vm.runtime.flyoutBlocks = {};
-                }
-                console.log('Cleaned up for extension:', extensionId);
+                // 卸载扩展，让VM自动处理内部状态的清理
+                this.props.vm.extensionManager.unloadExtension(extensionId);
+                // 触发主编辑器的workspace更新
+                setTimeout(() => {
+                    if (this.props.vm) {
+                        this.props.vm.refreshWorkspace();
+                        this.props.vm.emitWorkspaceUpdate();
+                    }
+                }, 100);
+                console.log('Unloaded extension:', extensionId);
             }
         }
     };
@@ -631,23 +630,21 @@ Scratch.extensions.register(new ${this.toClassName(id)}());
         if (extensionId && this.props.vm && this.props.vm.extensionManager && this.props.vm.runtime) {
             if (this.props.vm.extensionManager.isExtensionLoaded(extensionId)) {
                 console.log('Unloading extension when closing tab:', extensionId);
-                this.props.vm.extensionManager.unloadExtension(extensionId);
-                // 停止所有线程
+                // 停止所有线程，防止运行中的积木引用已卸载的扩展
                 const threads = [...this.props.vm.runtime.threads];
                 for (const thread of threads) {
                     this.props.vm.runtime.stopThread(thread);
                 }
-                // 清理VM内部状态
-                if (this.props.vm.runtime._blockInfo) {
-                    this.props.vm.runtime._blockInfo = this.props.vm.runtime._blockInfo.filter(
-                        info => info.id !== extensionId
-                    );
-                }
-                // 清理积木缓存
-                if (this.props.vm.runtime.flyoutBlocks && typeof this.props.vm.runtime.flyoutBlocks === 'object') {
-                    this.props.vm.runtime.flyoutBlocks = {};
-                }
-                console.log('Cleaned up for extension:', extensionId);
+                // 卸载扩展，让VM自动处理内部状态的清理
+                this.props.vm.extensionManager.unloadExtension(extensionId);
+                // 触发主编辑器的workspace更新
+                setTimeout(() => {
+                    if (this.props.vm) {
+                        this.props.vm.refreshWorkspace();
+                        this.props.vm.emitWorkspaceUpdate();
+                    }
+                }, 100);
+                console.log('Unloaded extension:', extensionId);
             }
         }
         // 从记录中删除
@@ -731,22 +728,10 @@ Scratch.extensions.register(new ${this.toClassName(id)}());
                     this.props.vm.extensionManager.unloadExtension(newExtensionId);
                 }
 
-                // 彻底清理VM内部状态
-                if (this.props.vm.runtime._blockInfo) {
-                    this.props.vm.runtime._blockInfo = this.props.vm.runtime._blockInfo.filter(
-                        info => info.id !== newExtensionId && info.id !== oldExtensionId
-                    );
-                }
-
                 // 停止所有线程，防止运行中的积木引用已卸载的扩展
                 const threads = [...this.props.vm.runtime.threads];
                 for (const thread of threads) {
                     this.props.vm.runtime.stopThread(thread);
-                }
-
-                // 清理积木缓存
-                if (this.props.vm.runtime.flyoutBlocks && typeof this.props.vm.runtime.flyoutBlocks === 'function') {
-                    this.props.vm.runtime.flyoutBlocks = {};
                 }
 
                 // 等待VM完全清理
@@ -768,6 +753,13 @@ Scratch.extensions.register(new ${this.toClassName(id)}());
                 manuallyTrustExtension(dataUrl);
                 await this.props.vm.extensionManager.loadExtensionURL(dataUrl);
                 console.log('Extension loaded successfully');
+                // 触发主编辑器的workspace更新
+                setTimeout(() => {
+                    if (this.props.vm) {
+                        this.props.vm.refreshWorkspace();
+                        this.props.vm.emitWorkspaceUpdate();
+                    }
+                }, 100);
                 // 记录新加载的扩展ID
                 this.setState({
                     loadedExtensionIds: {

@@ -88,13 +88,13 @@ const manifest = {
       }
     }
   ],
-  "settings": [
+    "settings": [
     {
       "dynamic": true,
       "name": "motion",
       "id": "motion-color",
       "type": "color",
-      "default": "#2461B7",
+      "default": "#4C97FF",
       "allowTransparency": true
     },
     {
@@ -102,7 +102,7 @@ const manifest = {
       "name": "looks",
       "id": "looks-color",
       "type": "color",
-      "default": "#633EAC",
+      "default": "#9966FF",
       "allowTransparency": true
     },
     {
@@ -118,7 +118,7 @@ const manifest = {
       "name": "events",
       "id": "events-color",
       "type": "color",
-      "default": "#AE8500",
+      "default": "#FFBF00",
       "allowTransparency": true
     },
     {
@@ -126,7 +126,7 @@ const manifest = {
       "name": "control",
       "id": "control-color",
       "type": "color",
-      "default": "#B07200",
+      "default": "#FFAB19",
       "allowTransparency": true
     },
     {
@@ -134,7 +134,7 @@ const manifest = {
       "name": "sensing",
       "id": "sensing-color",
       "type": "color",
-      "default": "#468CAF",
+      "default": "#5CB1D6",
       "allowTransparency": true
     },
     {
@@ -142,7 +142,7 @@ const manifest = {
       "name": "operators",
       "id": "operators-color",
       "type": "color",
-      "default": "#438C43",
+      "default": "#59C059",
       "allowTransparency": true
     },
     {
@@ -150,7 +150,7 @@ const manifest = {
       "name": "variables",
       "id": "data-color",
       "type": "color",
-      "default": "#B46313",
+      "default": "#FF8C1A",
       "allowTransparency": true
     },
     {
@@ -158,7 +158,7 @@ const manifest = {
       "name": "lists",
       "id": "data-lists-color",
       "type": "color",
-      "default": "#A84210",
+      "default": "#FF661A",
       "allowTransparency": true
     },
     {
@@ -166,7 +166,7 @@ const manifest = {
       "name": "custom",
       "id": "custom-color",
       "type": "color",
-      "default": "#973545",
+      "default": "#FF6680",
       "allowTransparency": true
     },
     {
@@ -174,7 +174,7 @@ const manifest = {
       "name": "extensions",
       "id": "Pen-color",
       "type": "color",
-      "default": "#2A7468",
+      "default": "#0FBD8C",
       "allowTransparency": true
     },
     {
@@ -182,7 +182,7 @@ const manifest = {
       "name": "Addon blocks",
       "id": "sa-color",
       "type": "color",
-      "default": "#2A797C",
+      "default": "#29BEB8",
       "allowTransparency": true,
       "if": {
         "addonEnabled": [
@@ -190,46 +190,6 @@ const manifest = {
         ]
       }
     },
-    {
-      "dynamic": true,
-      "name": "Block inputs",
-      "id": "input-color",
-      "type": "color",
-      "default": "#FFFFFF",
-      "allowTransparency": true
-    },
-    {
-      "dynamic": true,
-      "name": "Comments",
-      "id": "comment-color",
-      "type": "color",
-      "default": "#FEF49C"
-    },
-    {
-      "dynamic": true,
-      "name": "Text color",
-      "id": "text",
-      "type": "select",
-      "default": "white",
-      "potentialValues": [
-        {
-          "id": "white",
-          "name": "White"
-        },
-        {
-          "id": "black",
-          "name": "Black"
-        },
-        {
-          "id": "colorOnWhite",
-          "name": "Colored on white background"
-        },
-        {
-          "id": "colorOnBlack",
-          "name": "Colored on black background"
-        }
-      ]
-    }
   ],
   "tags": [
     "theme"
