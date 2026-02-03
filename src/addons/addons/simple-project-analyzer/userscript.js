@@ -952,8 +952,6 @@ export default async function ({ addon, msg, safeMsg, console }) {
           datasets: [{
             data: sortedData,
             backgroundColor: assignedColors,
-            borderColor: '#ffffff',
-            borderWidth: 2
           }]
         },
         options: {

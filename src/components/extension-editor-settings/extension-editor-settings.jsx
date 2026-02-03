@@ -14,6 +14,16 @@ const messages = defineMessages({
         defaultMessage: 'Editor Options',
         description: 'Section header for editor options',
         id: 'tw.extensionEditorSettings.editorOptions'
+    },
+    fontSize: {
+        defaultMessage: 'Font Size',
+        description: 'Label for font size setting',
+        id: 'tw.extensionEditorSettings.fontSize'
+    },
+    done: {
+        defaultMessage: 'Done',
+        description: 'Button text to close settings',
+        id: 'tw.extensionEditorSettings.done'
     }
 });
 
@@ -29,9 +39,15 @@ class ExtensionEditorSettings extends React.Component {
 
                 <Box grow={1}>
                     <ExtensionEditorSettingsContent
+                        messages={messages}
                         fontSize={this.props.fontSize}
                         onFontSizeChange={this.props.onFontSizeChange}
                         onClose={this.props.onClose}
+                        FormattedMessage={(id) => (
+                            <FormattedMessage
+                                {...messages[id]}
+                            />
+                        )}
                     />
                 </Box>
 

@@ -5034,7 +5034,9 @@
         "tw.settingsModal.enablevscodelayout": "启用VSCode布局(需刷新)",
         "tw.settingsModal.enablevscodelayouthelp":"修改界面布局使它类似VSCode",
         "tw.settingsModal.interfaceSettings":"界面设置",
-        "tw.extensionEditorSettings.editorOptions":"编辑器设置"
+        "tw.extensionEditorSettings.editorOptions":"编辑器设置",
+        "tw.extensionEditorSettings.fontSize":"字体大小",
+        "tw.extensionEditorSettings.done":"完成"
     },
     "zh-tw": {
         "tw.alerts.lostPeripheralConnection": "與{extensionName}的連線中斷了。",
