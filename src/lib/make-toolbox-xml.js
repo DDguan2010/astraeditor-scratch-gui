@@ -472,7 +472,7 @@ const control = function (isInitialSetup, isStage, targetId, colors) {
             <value name="VALUE"><shadow type="math_whole_number"><field name="NUM">10</field></shadow></value>
         </block>
         ${blockSeparator}
-        <block type="control_get_counter"/>
+        <block id="control_get_counter" type="control_get_counter"/>
         <block type="control_incr_counter"/>
         <block type="control_clear_counter"/>
 
@@ -554,6 +554,7 @@ const sensing = function (isInitialSetup, isStage, targetId, colors) {
         <block id="current" type="sensing_current"/>
         <block type="sensing_dayssince2000"/>
         ${blockSeparator}
+        <block id="online" type="sensing_online"/>
         <block type="sensing_username"/>
         ${categorySeparator}
     </category>
