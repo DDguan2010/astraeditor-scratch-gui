@@ -5036,7 +5036,9 @@
         "tw.settingsModal.interfaceSettings":"界面设置",
         "tw.extensionEditorSettings.editorOptions":"编辑器设置",
         "tw.extensionEditorSettings.fontSize":"字体大小",
-        "tw.extensionEditorSettings.done":"完成"
+        "tw.extensionEditorSettings.done":"完成",
+        "tw.settingsModal.enablecoblielayouthelp":"调整舞台和角色区位置让它稍微适合手机编辑",
+        "tw.settingsModal.enablecoblielayout":"启用手机布局（需刷新）"
     },
     "zh-tw": {
         "tw.alerts.lostPeripheralConnection": "與{extensionName}的連線中斷了。",

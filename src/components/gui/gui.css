@@ -68,7 +68,7 @@
         a) for the blocks + workspace panes, and
         b) for combined stage menu + stage + sprite/stage selectors
     */
-    flex-direction: row;
+    /* flex-direction: row; Move to JSX */
     height: 100%;
 
     /*
@@ -76,7 +76,7 @@
         https://github.com/LLK/scratch-gui/issues/318
         TW: and also fix double horizontal scrollbar at some screen sizes in paint editor
     */
-    overflow: hidden;
+    /* overflow: hidden; Move to JSX */
 }
 
 .editor-wrapper {
@@ -318,7 +318,7 @@
         goes to full vertical height of the window
     */
     display: flex;
-    flex-direction: column;
+    /* flex-direction: column; Move to JSX*/
     /* pad entire wrapper to the left and right; allow children to fill width */
     padding-left: $space;
     padding-right: $space;
@@ -419,6 +419,7 @@ $fade-out-distance: 15px;
 .menu-bar-position {
     position: relative;
     z-index: $z-index-menu-bar;
+    min-width: 1024px /*保证开插件时显示正确*/
 }
 
 /* Alerts */

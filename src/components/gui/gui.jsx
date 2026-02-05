@@ -482,7 +482,13 @@ const GUIComponent = props => {
                     onToggleLoginOpen={onToggleLoginOpen}
                 />
                 <Box className={styles.bodyWrapper}>
-                    <Box className={styles.flexWrapper}>
+                    <Box className={styles.flexWrapper} style={Settings.get('EnableMobileLayout') ? {
+                        flexDirection: 'column',
+                        overflow: 'visible'
+                    } : {
+                        flexDirection: 'row',
+                        overflow: 'hidden'
+                    }}>
                         <Box className={classNames(styles.editorWrapper, onOpenExtensionEditor && styles.editorWrapperFull)}>
                             <Tabs
                                 forceRenderTabPanel
@@ -644,7 +650,13 @@ const GUIComponent = props => {
                             ) : null}
                         </Box>
 
-                        <Box className={classNames(styles.stageAndTargetWrapper, styles[stageSize], onOpenExtensionEditor && styles.hidden)}>
+                        <Box className={classNames(styles.stageAndTargetWrapper, styles[stageSize], onOpenExtensionEditor && styles.hidden)}
+                            style={Settings.get('EnableMobileLayout') ? {
+                                flexDirection: 'row'
+                            } : {
+                                flexDirection: 'column'
+                            }}
+                        >
                             <StageWrapper
                                 isFullScreen={isFullScreen}
                                 isRendererSupported={isRendererSupported()}

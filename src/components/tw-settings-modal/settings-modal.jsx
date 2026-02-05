@@ -512,6 +512,26 @@ const EnableVSCodeLayout = props => (
         }
     />
 );
+const EnableMobileLayout = props => (
+    <BooleanSetting
+        {...props}
+        label={
+            <FormattedMessage
+                defaultMessage="Enable Mobile Layout (Need Refresh)"
+                description="EnableMobileLayout label"
+                id="tw.settingsModal.enablecoblielayout"
+            />
+        }
+        help={
+            <FormattedMessage
+                // eslint-disable-next-line max-len
+                defaultMessage="Adjust the stage and sprite area positions to make them slightly more suitable for Mobile editing."
+                description="EnableMobileLayout help"
+                id="tw.settingsModal.enablecoblielayouthelp"
+            />
+        }
+    />
+);
 const AEsettings = new AESettings();
 
 const SettingsModalComponent = props => {
@@ -660,7 +680,11 @@ const SettingsModalComponent = props => {
                         </Header>
                         <EnableVSCodeLayout
                             value={AEsettings.get('EnableVSCodeLayout')}
-                            onChange={(e) => { AEsettings.set("EnableVSCodeLayout", e.target.checked); update() }}
+                            onChange={(e) => { AEsettings.set("EnableVSCodeLayout", e.target.checked); location.reload(); update() }}
+                        />
+                        <EnableMobileLayout
+                            value={AEsettings.get('EnableMobileLayout')}
+                            onChange={(e) => { AEsettings.set("EnableMobileLayout", e.target.checked); location.reload(); update() }}
                         />
                     </>}
 
