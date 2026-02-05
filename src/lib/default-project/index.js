@@ -57,20 +57,20 @@ const getThemeColor = () => {
 
 const getBG = () => {
     try {
-        if (theme.gui == 'light') return '#ffffff'
-        if (theme.gui == 'dark') return '#000000'
-        else return '#000000'
+        if (theme.gui == 'light') return '#fff'
+        if (theme.gui == 'dark') return '#000'
+        else return '#fff'
     } catch {
-        return '#000000'
+        return '#fff'
     }
 }
 const getTextBG = () => {
     try {
-        if (theme.gui == 'light') return '#000000'
-        if (theme.gui == 'dark') return '#ffffff'
-        else return '#ffffff'
+        if (theme.gui == 'light') return '#000'
+        if (theme.gui == 'dark') return '#fff'
+        else return '#000'
     } catch {
-        return '#ffffff'
+        return '#000'
     }
 }
 const costume = `

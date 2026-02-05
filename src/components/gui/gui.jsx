@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import omit from 'lodash.omit';
 import PropTypes from 'prop-types';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useLayoutEffect, useState, useEffect, useRef } from 'react';
 import { defineMessages, FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import { connect, dispatch } from 'react-redux';
 import MediaQuery from 'react-responsive';
@@ -208,6 +208,7 @@ const GUIComponent = props => {
 
     const [canShowReadme, setCanShowReadme] = useState(() => { updateCanShowReadme })
     const [onOpenExtensionEditor, setOpenExtensionEditor] = useState(false)
+    const [loaderExiting, setLoaderExiting] = useState(false)
     useEffect(() => {
         if (!vm) return;
 
@@ -245,6 +246,44 @@ const GUIComponent = props => {
             setOpenExtensionEditor(false);
         }
     }, [activeTabIndex]);
+
+    const prevLoadingRef = useRef(Boolean(loading));
+    const loaderExitTimeoutRef = useRef(null);
+
+    // Use a layout effect so we don't "unmount then remount" the loader for one frame.
+    useLayoutEffect(() => {
+        const isLoadingNow = Boolean(loading);
+        const wasLoading = prevLoadingRef.current;
+        prevLoadingRef.current = isLoadingNow;
+
+        // When loading starts again, cancel any pending fade-out.
+        if (isLoadingNow) {
+            if (loaderExitTimeoutRef.current) {
+                clearTimeout(loaderExitTimeoutRef.current);
+                loaderExitTimeoutRef.current = null;
+            }
+            if (loaderExiting) setLoaderExiting(false);
+            return;
+        }
+
+        // Trigger fade-out only on the true -> false transition.
+        if (wasLoading && !isLoadingNow) {
+            setLoaderExiting(true);
+            if (loaderExitTimeoutRef.current) clearTimeout(loaderExitTimeoutRef.current);
+            // 500ms matches loader.css animation-duration
+            loaderExitTimeoutRef.current = setTimeout(() => {
+                setLoaderExiting(false);
+                loaderExitTimeoutRef.current = null;
+            }, 500);
+        }
+    }, [loading, loaderExiting]);
+
+    useEffect(() => () => {
+        if (loaderExitTimeoutRef.current) {
+            clearTimeout(loaderExitTimeoutRef.current);
+            loaderExitTimeoutRef.current = null;
+        }
+    }, []);
 
     if (children) {
         return <Box {...componentProps}>{children}</Box>;
@@ -363,10 +402,9 @@ const GUIComponent = props => {
                         onShowPrivacyPolicy={onShowPrivacyPolicy}
                     />
                 ) : null}
-                {loading ? (
-                    <Loader isFullScreen />
-                ) : null}
-                {isCreating ? (
+                {(loading || loaderExiting) ? (
+                    <Loader isFullScreen isExiting={loaderExiting} />
+                ) : isCreating ? (
                     <Loader
                         isFullScreen
                         messageId="gui.loader.creating"

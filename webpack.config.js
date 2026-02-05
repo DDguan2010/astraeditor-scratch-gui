@@ -65,7 +65,13 @@ const base = {
         symlinks: false,
         alias: {
             'text-encoding$': path.resolve(__dirname, 'src/lib/tw-text-encoder'),
-            'scratch-render-fonts$': path.resolve(__dirname, 'src/lib/tw-scratch-render-fonts')
+            'scratch-render-fonts$': path.resolve(__dirname, 'src/lib/tw-scratch-render-fonts'),
+
+            // Ensure there is exactly one React instance in the bundle.
+            // scratch-extension-editor is often symlinked during development which can otherwise
+            // cause it to resolve a second copy of React from its own node_modules -> invalid hook call.
+            'react$': path.resolve(__dirname, 'node_modules/react'),
+            'react-dom$': path.resolve(__dirname, 'node_modules/react-dom')
         }
     },
     module: {
@@ -242,6 +248,17 @@ module.exports = [
                     {
                         from: 'static',
                         to: ''
+                    }
+                ]
+            }),
+            // scratch-extension-editor ships code-split chunks/workers in its own dist/ directory.
+            // In dev, CopyWebpackPlugin also makes them available from the dev server output.
+            // In a production build, we copy them into build/extension-editor/ to match that URL.
+            new CopyWebpackPlugin({
+                patterns: [
+                    {
+                        from: path.resolve(__dirname, 'node_modules/scratch-extension-editor/dist'),
+                        to: 'extension-editor'
                     }
                 ]
             }),

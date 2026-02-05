@@ -247,6 +247,7 @@
     padding: 2rem;
     background: $ui-modal-background;
     overflow-y: auto;
+    position: relative;
 }
 
 .createForm .closeButton {
