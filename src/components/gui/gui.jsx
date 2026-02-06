@@ -46,6 +46,7 @@ import { loadData } from '../ae-readme/ae-readme.jsx'
 
 import { openExtensionEditorSettings } from '../../reducers/modals.js';
 import { updateFontSize } from '../../reducers/extension-editor.js';
+import { setDimensions } from '../../reducers/tw.js';
 
 import ExtensionManager from '../extension-chooser/extension-chooser.jsx';
 import PreviewExt from '../../containers/ae-preview-ext.jsx';
@@ -240,10 +241,18 @@ const GUIComponent = props => {
         // 当切换标签时，检查是否是扩展编辑器标签
         // 扩展编辑器是第4个标签（索引3）
         console.log('activeTabIndex:', activeTabIndex);
+        const wasExtensionEditor = onOpenExtensionEditor;
         if (activeTabIndex === 3) {
             setOpenExtensionEditor(true);
         } else {
             setOpenExtensionEditor(false);
+            // StageWrapper uses `display: none` while extension editor is open.
+            // Force a stage re-measure after it becomes visible again to avoid a 0x0 canvas (white stage).
+            if (wasExtensionEditor) {
+                requestAnimationFrame(() => {
+                    if (dispatch) dispatch(setDimensions([window.innerWidth, window.innerHeight]));
+                });
+            }
         }
     }, [activeTabIndex]);
 
@@ -642,6 +651,7 @@ const GUIComponent = props => {
                                         vm={vm}
                                         onOpenExtensionEditorSettings={onOpenExtensionEditorSettings}
                                         onFontSizeChange={onExtensionEditorFontSizeChange}
+                                        blocksMediaPath={`${basePath}static/${theme.getBlocksMediaFolder()}/`}
                                     />
                                 </TabPanel>
                             </Tabs>

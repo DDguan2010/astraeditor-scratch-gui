@@ -26,7 +26,7 @@ const messages = defineMessages({
     }
 });
 
-// 图片加载失败的子组件
+
 const ExtensionImage = ({ src, alt, style, fallbackSrc, onLoad }) => {
     const [imageError, setImageError] = useState(false);
     const [loading, setLoading] = useState(true);
