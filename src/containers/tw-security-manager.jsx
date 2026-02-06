@@ -28,6 +28,10 @@ const isTrustedExtension = url => (
     // Always trust our official extension repostiory.
     url.startsWith('https://extensions.turbowarp.org/') ||
 
+    // AstraEditor
+    url.startsWith('https://raw.githubusercontent.com/AstraEditor/extensions/') ||
+
+
     // For development.
     url.startsWith('http://localhost:8000/') ||
 
@@ -131,6 +135,7 @@ let allowedGeolocation = false;
 
 const SECURITY_MANAGER_METHODS = [
     'getSandboxMode',
+    'rewriteExtensionURL',
     'canLoadExtensionFromProject',
     'canLoadMultipleExtensionsFromProject',
     'canFetch',
@@ -247,6 +252,36 @@ class TWSecurityManagerComponent extends React.Component {
             return 'unsandboxed';
         }
         return 'iframe';
+    }
+
+    /**
+     * Rewrite GitHub raw URLs to jsDelivr CDN to fix MIME type issues
+     * GitHub raw returns text/plain which browsers reject for script tags
+     * @param {string} extensionURL The original extension URL
+     * @returns {Promise<string>} The rewritten URL
+     */
+    async rewriteExtensionURL(extensionURL) {
+        try {
+            const url = new URL(extensionURL);
+            // Convert GitHub raw URLs to jsDelivr CDN
+            if (url.hostname === 'raw.githubusercontent.com') {
+                const pathParts = url.pathname.split('/');
+                // Format: /username/repository/branch/path/to/file
+                if (pathParts.length >= 4) {
+                    const username = pathParts[1];
+                    const repository = pathParts[2];
+                    const branch = pathParts[3];
+                    const filePath = pathParts.slice(4).join('/');
+                    
+                    const cdnURL = `https://cdn.jsdelivr.net/gh/${username}/${repository}@${branch}/${filePath}`;
+                    log.info(`Rewrote GitHub raw URL to jsDelivr CDN: ${cdnURL}`);
+                    return cdnURL;
+                }
+            }
+        } catch (e) {
+            log.warn(`Failed to parse URL for rewriting: ${extensionURL}`, e);
+        }
+        return extensionURL;
     }
 
     handleChangeUnsandboxed(e) {

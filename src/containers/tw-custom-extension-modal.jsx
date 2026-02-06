@@ -131,31 +131,55 @@ class CustomExtensionModal extends React.Component {
 
     async handleLoadExtension() {
         try {
-            if (this.state.urls == '') this.state.urls = await this.getExtensionURLs();
+            const urls = await this.getExtensionURLs();
+
             if (this.state.type !== 'url') {
                 setPersistedUnsandboxed(this.state.unsandboxed);
                 if (this.state.unsandboxed) {
-                    for (const url of this.state.urls) {
+                    for (const url of urls) {
                         manuallyTrustExtension(url);
                     }
                 }
             }
 
-            const TIMEOUT_MS = 3000; // 3秒超时
+            const TIMEOUT_MS = 15000; // 15秒超时（GitHub Raw 等可能较慢/不稳定）
             const loadedExtensions = [];
 
-            for (const url of this.state.urls) {
-                try {
-                    const loadPromise = this.props.vm.extensionManager.loadExtensionURL(url);
-                    const timeoutPromise = new Promise((_, reject) => {
-                        setTimeout(() => reject(new Error("Timeout")), TIMEOUT_MS);
-                    });
+            const rawGitHubPrefix = 'https://raw.githubusercontent.com/';
+            const toTrampolineProxy = originalUrl => (
+                `https://trampoline.turbowarp.org/proxy/${originalUrl}`
+            );
 
-                    await Promise.race([loadPromise, timeoutPromise]);
-                    loadedExtensions.push(url);
-                } catch (err) {
-                    alert(`Failed to load extension(s): ${url}.`);
-                    console.error('Failed to load extension(s):', url, err);
+            for (const originalUrl of urls) {
+                const candidateUrls = [originalUrl];
+                if (originalUrl.startsWith(rawGitHubPrefix)) {
+                    candidateUrls.push(toTrampolineProxy(originalUrl));
+                }
+
+                let loaded = false;
+                let lastError = null;
+                for (const candidateUrl of candidateUrls) {
+                    try {
+                        const loadPromise = this.props.vm.extensionManager.loadExtensionURL(candidateUrl);
+                        const timeoutPromise = new Promise((_, reject) => {
+                            setTimeout(() => reject(new Error('Timeout')), TIMEOUT_MS);
+                        });
+
+                        await Promise.race([loadPromise, timeoutPromise]);
+                        loadedExtensions.push(candidateUrl);
+                        loaded = true;
+                        break;
+                    } catch (err) {
+                        lastError = err;
+                    }
+                }
+
+                if (!loaded) {
+                    const mirrorHint = originalUrl.startsWith(rawGitHubPrefix) ?
+                        `\nTip: Your network may block raw.githubusercontent.com. Try:\n${toTrampolineProxy(originalUrl)}` :
+                        '';
+                    alert(`Failed to load extension: ${originalUrl}\n${String(lastError || '')}${mirrorHint}`);
+                    console.error('Failed to load extension:', originalUrl, lastError);
                 }
             }
         } catch (err) {

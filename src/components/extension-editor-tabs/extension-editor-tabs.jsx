@@ -880,6 +880,7 @@ class ExtensionEditorTabs extends React.Component {
                                             intl={this.props.intl}
                                             vm={this.props.vm}
                                             ScratchBlocks={this.getScratchBlocks()}
+                                            blocksMediaPath={this.props.blocksMediaPath}
                                             extensionCode={code}
                                             isLoading={this.state.isLoadingExtension}
                                             loadError={this.state.loadError}
@@ -1075,6 +1076,7 @@ class ExtensionEditorTabs extends React.Component {
 ExtensionEditorTabs.propTypes = {
     intl: intlShape.isRequired,
     vm: PropTypes.object,
+    blocksMediaPath: PropTypes.string,
     tabs: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired,

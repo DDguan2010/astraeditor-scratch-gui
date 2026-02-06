@@ -3,5 +3,5 @@
 export default [
     {tag: 'scratch', intlLabel: 'Scratch'},
     {tag: 'tw', intlLabel: 'TurboWarp' },
-    {tag: 'ae', intlLabel: 'AstraEditor'}
+    { tag: 'ae', intlLabel: 'AstraEditor' }
 ];
