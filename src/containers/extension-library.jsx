@@ -80,26 +80,28 @@ const fetchLibrary = async () => {
                 descriptionTranslations: extension.descriptionTranslations || {},
                 extensionId: extension.id,
                 extensionURL: `${link}/${extension.slug}.js`,
-                iconURL: `${(link + '/' + extension.image) || 'https://extensions.turbowarp.org/images/unknown.svg'}`,
+                iconURL: extension.image ? `${link}/${extension.image}` : 'https://extensions.turbowarp.org/images/unknown.svg',
                 tags: [tag],
                 credits: [
                     ...(extension.original || []),
                     ...(extension.by || [])
-                ].map(credit => {
-                    if (credit.link) {
-                        return (
-                            <a
-                                href={credit.link}
-                                target="_blank"
-                                rel="noreferrer"
-                                key={credit.name}
-                            >
-                                {credit.name}
-                            </a>
-                        );
-                    }
-                    return credit.name;
-                }),
+                ]
+                    .filter(credit => credit && typeof credit === 'object')
+                    .map(credit => {
+                        if (credit.link) {
+                            return (
+                                <a
+                                    href={credit.link}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    key={credit.name}
+                                >
+                                    {credit.name}
+                                </a>
+                            );
+                        }
+                        return credit.name;
+                    }),
                 docsURI: extension.docs ? `${link}/${extension.slug}` : null,
                 samples: extension.samples ? extension.samples.map(sample => ({
                     href: `${process.env.ROOT}editor?project_url=${link}/samples/${encodeURIComponent(sample)}.sb3`,
@@ -152,6 +154,11 @@ class ExtensionLibrary extends React.PureComponent {
         }
     }
     handleItemSelect(item) {
+        if (!item) {
+            log.error('handleItemSelect received undefined item');
+            return;
+        }
+
         if (item.href) {
             return;
         }
@@ -160,6 +167,11 @@ class ExtensionLibrary extends React.PureComponent {
 
         if (extensionId === 'custom_extension') {
             this.props.onOpenCustomExtensionModal();
+            return;
+        }
+
+        if (extensionId === 'upload_extension') {
+            window.open("./upload.html", "_blank");
             return;
         }
 

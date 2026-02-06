@@ -49,6 +49,8 @@ import gdxforInsetIconURL from './gdxfor/gdxfor-small.svg';
 import gdxforConnectionIconURL from './gdxfor/gdxfor-illustration.svg';
 import gdxforConnectionSmallIconURL from './gdxfor/gdxfor-small.svg';
 
+import uploadURL from './upload/upload_extension.png'
+
 import twIcon from './tw/tw.svg';
 import customExtensionIcon from './custom/custom.svg';
 import returnIcon from './custom/return.svg';
@@ -423,6 +425,26 @@ export default [
         tags: ['tw'],
         featured: true
         // Not marked as incompatible with Scratch so that clicking on it doesn't show a prompt
+    },
+    {
+        name: (
+            <FormattedMessage
+                defaultMessage="Upload Your Extension"
+                description="Name of library item to let user add extension"
+                id="tw.addTourExtension.name"
+            />
+        ),
+                extensionId: 'upload_extension',
+        iconURL: uploadURL,
+        description: (
+            <FormattedMessage
+                defaultMessage="Upload your own extension to the AstraEditor extension library!"
+                description="Description of library item to let user add extension"
+                id="tw.addTourExtension.description"
+            />
+        ),
+        tags: ['ae'],
+        featured: true
     }
 ];
 
