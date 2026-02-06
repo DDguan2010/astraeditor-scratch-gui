@@ -408,7 +408,6 @@
     "tw-straighten-comments/@description": "确保注释始终通过一条水平的直线与其对应的源代码块相连，而不产生任何角度。",
     "simple-project-analyzer/@name": "SPA 简易作品分析器",
     "simple-project-analyzer/@description": "使用简单的算法在编辑器中分析您的作品！",
-    "simple-project-analyzer/@info-warning":"此插件仍在开发中，某些功能可能无法正常工作。",
     "hide-menubar/@name":"隐藏工具栏",
     "hide-menubar/@description": "将工具栏隐藏，且当鼠标靠近时可自动弹出。您也可将其锁定，恢复为常驻显示。",
     "toolbox-category-drag/@name": "拖动调整工具箱分类",
@@ -417,5 +416,9 @@
     "block-pins/@name": "固定积木",
     "block-pins/@description": "将您最喜爱的积木固定在工具箱的顶部。",
     "block-pins/@info-checkbox-notice": "当固定带有复选框的积木时可能会出现BUG",
-    "block-pins/@settings-autoLoadEXTs": "自动加载固定积木中的扩展"
+    "block-pins/@settings-autoLoadEXTs": "自动加载固定积木中的扩展",
+    "bookmark/@name": "书签",
+    "bookmark/@description": "放置一个锚点，然后随时传送到这里！",
+    "tw-comment-markdown-editor/@name": "Markdown注释编辑器",
+    "tw-comment-markdown-editor/@description": "为注释框添加Markdown编辑和预览功能，支持标题、粗体、斜体、代码和链接等语法。使用快捷键 Ctrl+M 快速切换编辑/预览模式"
 }

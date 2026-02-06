@@ -12,13 +12,6 @@ const manifest = {
       link: "https://github.com/KOSHINOawa"
     }
   ],
-  "info": [
-    {
-      "type": "warning",
-      "text": "This addon is still in development. Some features may not work as expected.",
-      "id": "warning"
-    }
-  ],
   "tags": [
     "recommended",
     "new",

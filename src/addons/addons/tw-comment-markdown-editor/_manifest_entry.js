@@ -6,9 +6,9 @@
 const manifest = {
     editorOnly: true,
     noTranslations: true,
-    name: 'Markdown注释编辑器',
-    description: '为注释框添加Markdown编辑和预览功能，支持标题、粗体、斜体、代码和链接等语法。使用快捷键 Ctrl+M 快速切换编辑/预览模式',
-    tags: ["new",'editor', 'comments', 'markdown'],
+    name: 'Comment Markdown Editor',
+    description: 'Add Markdown editing and preview functions to the annotation boxes, supporting syntax such as headings, bold, italic, code and links. Use the shortcut key Ctrl+M to quickly switch between editing and preview modes.',
+    tags: ["new"],
     credits: [
         {
             name: 'NeuronPulse',

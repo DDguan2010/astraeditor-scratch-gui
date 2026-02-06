@@ -87,4 +87,5 @@ export default {
   "show-fps": () => import(/* webpackChunkName: "addon-entry-tw-show-fps" */ "../addons/show-fps/_runtime_entry.js"),
   "toolbox-category-drag": () => import(/* webpackChunkName: "addon-entry-toolbox-category-drag" */ "../addons/toolbox-category-drag/_runtime_entry.js"),
   "block-pins": () => import(/* webpackChunkName: "addon-entry-block-pins" */ "../addons/block-pins/_runtime_entry.js"),
+  "bookmark": () => import(/* webpackChunkName: "addon-entry-block-pins" */ "../addons/bookmark/_runtime_entry.js"),
 };
