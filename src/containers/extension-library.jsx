@@ -16,7 +16,7 @@ import LibraryComponent from '../components/library/library.jsx';
 import extensionIcon from '../components/action-menu/icon--sprite.svg';
 const extensionsLibs = [
     { id: "tw", url: "https://extensions.turbowarp.org/" },
-    { id: "ae", url: "https://raw.githubusercontent.com/AstraEditor/extensions/refs/heads/Develop/build" }
+    { id: "ae", url: "https://raw.githubusercontent.com/AstraEditor/extensions/refs/heads/master/build" }
 ]
 const messages = defineMessages({
     extensionTitle: {
