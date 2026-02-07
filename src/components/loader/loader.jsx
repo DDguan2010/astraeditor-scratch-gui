@@ -116,6 +116,9 @@ componentDidMount() {
     }
     
     render() {
+        const circle1Id = styles.circle_1 || styles.circle1 || 'circle_1';
+        const circle2Id = styles.circle_2 || styles.circle2 || 'circle_2';
+        const circle3Id = styles.circle_3 || styles.circle3 || 'circle_3';
         return (
             <div
                 className={classNames(styles.background, {
@@ -127,9 +130,9 @@ componentDidMount() {
                 <div className={styles.container}>
 
                     <div className={styles.logoLoader}>
-                        <div className={styles.circle} id="circle_1"></div>
-                        <div className={styles.circle} id="circle_2"></div>
-                        <div className={styles.circle} id="circle_3"></div>
+                        <div className={styles.circle} id={circle1Id}></div>
+                        <div className={styles.circle} id={circle2Id}></div>
+                        <div className={styles.circle} id={circle3Id}></div>
                     </div>
                     <div style={{
                         textAlign: "right"
