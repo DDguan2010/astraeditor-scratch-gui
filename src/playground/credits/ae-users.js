@@ -5,6 +5,7 @@ import luotianyi from './AE_images/luotianyi.jpg'
 import np from './AE_images/np.jpg'
 import msw from './AE_images/msw.jpg'
 import cat from './AE_images/cat.jpg'
+import nangua from './AE_images/nangua.jpg'
 
 const shuffle = list => {
     for (let i = list.length - 1; i > 0; i--) {
@@ -57,6 +58,11 @@ const website = [
         image: cat,
         text: "世界第一可爱傲娇汉堡小猫",
         href: ""
+    },
+    {
+        image: nangua,
+        text: "Itz_NanGua",
+        href: "https://github.com/NanGua-QWQ"
     }
 ];
 
