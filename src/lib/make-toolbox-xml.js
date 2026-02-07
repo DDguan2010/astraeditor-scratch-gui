@@ -467,8 +467,6 @@ const control = function (isInitialSetup, isStage, targetId, colors) {
         <label text="${hiddenBlocksTitle}"></label>
         <label text="${hiddenBlocksIntro}"></label>
         <block type="control_for_each">
-            ///气死我了这个"i"是哪里蹦出来的，我给你改成空白了不用谢
-            <field name="VARIABLE"> </field>
             <value name="VALUE"><shadow type="math_whole_number"><field name="NUM">10</field></shadow></value>
         </block>
         ${blockSeparator}
