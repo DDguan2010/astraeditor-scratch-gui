@@ -8,7 +8,7 @@ import VMScratchBlocks from '../../lib/blocks';
 import { manuallyTrustExtension } from '../../containers/tw-security-manager.jsx';
 import styles from './extension-editor-tabs.css';
 
-import settingICON from './icon--settings.svg'
+import settingICON from '!../../lib/tw-recolor/build!./icon--settings.svg'
 
 const messages = defineMessages({
     newTab: {
@@ -848,7 +848,10 @@ class ExtensionEditorTabs extends React.Component {
                                 onClick={this.props.onOpenExtensionEditorSettings}
                                 title={this.props.intl.formatMessage(messages.settings)}
                             >
-                                <img src={settingICON} />
+                                <img style={{
+                                    filter: 'grayscale(100%)'
+                                }}
+                                src={settingICON()} draggable={false} />
                             </button>
                         </div>
                     )}

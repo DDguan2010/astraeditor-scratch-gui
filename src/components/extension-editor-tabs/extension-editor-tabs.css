@@ -234,7 +234,7 @@
     align-items: center;
     justify-content: center;
     height: 100%;
-    color: $ui-secondary;
+    color: $ui-modal-foreground;
 }
 
 /* Create Form */
@@ -290,7 +290,7 @@
 .stepsProgressText {
     margin-top: 0.5rem;
     font-size: 0.75rem;
-    color: $ui-secondary;
+    color: $ui-modal-foreground;
     text-align: center;
 }
 
@@ -365,7 +365,7 @@
 
 .noExtensions {
     text-align: center;
-    color: $ui-secondary;
+    color: $ui-modal-foreground;
     padding: 2rem;
 }
 
@@ -547,7 +547,7 @@
 
 .emptyStorage {
     text-align: center;
-    color: $ui-secondary;
+    color: $ui-modal-foreground;
     padding: 2rem;
 }
 
