@@ -87,6 +87,7 @@ import _show_fps from "../addons/show-fps/_manifest_entry.js";
 import _toolbox_category_drag from "../addons/toolbox-category-drag/_manifest_entry.js";
 import _block_pins from "../addons/block-pins/_manifest_entry.js";
 import _bookmark from "../addons/bookmark/_manifest_entry.js";
+// import _Terminal from "../addons/Terminal/_manifest_entry.js";
 export default {
   "cat-blocks": _cat_blocks,
   "editor-devtools": _editor_devtools,
@@ -176,4 +177,5 @@ export default {
   "toolbox-category-drag": _toolbox_category_drag,
   "block-pins": _block_pins,
   "bookmark": _bookmark,
+  // "Terminal": _Terminal,
 };
