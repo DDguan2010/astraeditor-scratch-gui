@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
 import { defineMessages, injectIntl, intlShape, FormattedMessage } from 'react-intl';
 
-import add from './add.svg'
+import add from './add.svg';
+import custom from './custom.png';
 import Modal from '../../containers/modal.jsx';
 import Box from '../box/box.jsx';
 import AddonHooks from '../../addons/hooks';
@@ -67,7 +68,7 @@ ExtensionImage.propTypes = {
 };
 
 const ExtensionChooser = props => {
-    const { intl, onRequestClose, onOpenExtensionLibrary, vm, dispatch } = props;
+    const { intl, onRequestClose, onOpenExtensionLibrary, onOpenCustomExtensionModal, vm, dispatch } = props;
     const [extensions, setExtensions] = useState([]);
     const [updateExts, setUpdateExts] = useState(false);
     const [galleryData, setGalleryData] = useState({});
@@ -81,7 +82,6 @@ const ExtensionChooser = props => {
     *这里下载的文件实际上为html
     */
     const TurboWarp_IncludeExts = ['ev3', 'makeymakey', 'translate', 'music', 'pen', 'videoSensing', 'text2speech', 'translate', 'microbit', 'boost', 'wedo2', 'gdxfor', 'tw']
-
     // 删除扩展
     const handleRemoveExtension = (extensionId) => {
         if (!vm || !vm.extensionManager) return;
@@ -90,6 +90,15 @@ const ExtensionChooser = props => {
 
     };
 
+    const getAllDisplayExtensions = (Exts) => {
+        let Total = 0;
+        Exts.map((item) => {
+            if (!TurboWarp_Exts.includes(item.id)) {
+                Total += 1;
+            }
+        })
+        return Total
+    }
     useEffect(() => {
         const fetchGallery = async () => {
             try {
@@ -188,6 +197,10 @@ const ExtensionChooser = props => {
         onOpenExtensionLibrary();
     };
 
+    const handleOpenCustomExtension = () => {
+        onOpenCustomExtensionModal();
+    };
+
     const getExt = (extensionId) => {
         // 获取扩展的下载 URL
         let url = null;
@@ -212,9 +225,10 @@ const ExtensionChooser = props => {
         const color = Ext.color1 || '#0099ff'
         Ext.blocks.forEach((item, index) => {
             if (item.info.opcode == undefined) return;
-            if (item.info.blockType == "label") {AllOpcode.push({
-                isSVG: true,
-                data: `
+            if (item.info.blockType == "label") {
+                AllOpcode.push({
+                    isSVG: true,
+                    data: `
                 <svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
                     <g>
                         <text xml:space="preserve" text-anchor="start" font-family="Consolas, 'Courier New', monospace, 'MiSans'" font-size="24" id="svg_1" y="20" x="-380" stroke-width="0" stroke="#888" fill=${color}>
@@ -224,7 +238,8 @@ const ExtensionChooser = props => {
                     </g>
                 </svg>
                 `
-            });return};
+                }); return
+            };
             AllOpcode.push(Ext.id + "_" + item.info.opcode) //获取完整的opcode
         });
 
@@ -238,7 +253,7 @@ const ExtensionChooser = props => {
         const opcodes = Opcodes.AllOpcode;
         opcodes.forEach((item, index) => {
             console.log(item)
-            try{
+            try {
                 if (item.isSVG) {
                     blocksSVG.push(item.data);
                 } else {
@@ -249,10 +264,10 @@ const ExtensionChooser = props => {
                     // 删除积木
                     blockSVGgen.dispose();
                 };
-            } catch(e) {
+            } catch (e) {
                 console.warn("Can't spawn blocks")
             }
-            
+
         })
         console.log(blocksSVG)
         return blocksSVG
@@ -270,17 +285,34 @@ const ExtensionChooser = props => {
                         className={styles.openLibraryButton}
                         onClick={handleOpenLibrary}
                     >
-                        <img src={add} className={styles.openLibraryButtonIcon} />
+                        <img src={add} draggable={false} className={styles.openLibraryButtonIcon} />
+                    </button>
+                    <button
+                        className={styles.openCustomExtension}
+                        onClick={handleOpenCustomExtension}
+                    >
+                        <img src={custom} draggable={false} className={styles.openLibraryButtonIcon} />
                     </button>
                 </Box>
                 <div className={styles.content}>
                     <>
-                        {extensions.filter(item => !TurboWarp_Exts.includes(item.id)).length == 0 && (
+                        {extensions.filter(item => !TurboWarp_Exts.includes(item.id)).length == 0 ? (
                             <span className={styles.tip}>
                                 <FormattedMessage
                                     defaultMessage="Nothing... Try loading some extensions"
                                     description="Loaded extensions is empty"
                                     id="tw.extensionManager.tip"
+                                />
+                            </span>
+                        ) : (
+                            <span className={styles.allExts}>
+                                <FormattedMessage
+                                    defaultMessage="Loaded {LENGTH} extensions in total."
+                                    description="Loaded extensions isn't empty"
+                                    id="tw.extensionManager.total"
+                                    values={{
+                                        LENGTH: getAllDisplayExtensions(extensions)
+                                    }}
                                 />
                             </span>
                         )}
@@ -417,6 +449,7 @@ ExtensionChooser.propTypes = {
     intl: intlShape.isRequired,
     onRequestClose: PropTypes.func,
     onOpenExtensionLibrary: PropTypes.func,
+    onOpenCustomExtensionModal: PropTypes.func,
     visible: PropTypes.bool,
     vm: PropTypes.object,
     dispatch: PropTypes.func.isRequired

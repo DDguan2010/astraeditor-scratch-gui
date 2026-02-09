@@ -23,7 +23,7 @@
     font-weight: bold;
 }
 
-.openLibraryButton {
+.openLibraryButton, .openCustomExtension {
     justify-content: center;
     background-color: $looks-secondary;
     border: none;
@@ -39,8 +39,11 @@
     align-items: center;
     
 }
-
-.openLibraryButton:hover {
+.openCustomExtension{
+    bottom: 100px;
+    font-size: 16px;
+}
+.openLibraryButton:hover , .openCustomExtension:hover {
     filter: brightness(1.2);
 }
 

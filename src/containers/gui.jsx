@@ -24,7 +24,8 @@ import {
     closeTelemetryModal,
     openExtensionLibrary,
     openExtensionManager,
-    closeExtensionManager
+    closeExtensionManager,
+    openCustomExtensionModal
 } from '../reducers/modals';
 
 import FontLoaderHOC from '../lib/font-loader-hoc.jsx';
@@ -193,7 +194,8 @@ const mapDispatchToProps = dispatch => ({
     onRequestCloseCostumeLibrary: () => dispatch(closeCostumeLibrary()),
     onRequestCloseTelemetryModal: () => dispatch(closeTelemetryModal()),
     onRequestCloseExtensionManager: () => dispatch(closeExtensionManager()),
-    onOpenExtensionLibrary: () => dispatch(openExtensionLibrary())
+    onOpenExtensionLibrary: () => dispatch(openExtensionLibrary()),
+    onOpenCustomExtensionModal: () => dispatch(openCustomExtensionModal()),
 });
 
 const ConnectedGUI = injectIntl(connect(

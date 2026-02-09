@@ -89,4 +89,5 @@ export default {
   "block-pins": () => import(/* webpackChunkName: "addon-entry-block-pins" */ "../addons/block-pins/_runtime_entry.js"),
   "bookmark": () => import(/* webpackChunkName: "addon-entry-block-pins" */ "../addons/bookmark/_runtime_entry.js"),
   "Terminal": () => import(/* webpackChunkName: "addon-entry-terminal" */ "../addons/Terminal/_runtime_entry.js"),
+  "my-blocks-plus": () => import(/* webpackChunkName: "addon-entry-my-blocks-plus" */ "../addons/my-blocks-plus/_runtime_entry.js")
 };

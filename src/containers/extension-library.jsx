@@ -112,7 +112,6 @@ const fetchLibrary = async () => {
             })
         }
     })
-    console.log(returnData)
     return returnData
 };
 
