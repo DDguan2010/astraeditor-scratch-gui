@@ -37,13 +37,15 @@
     overflow: hidden;
     display: flex;
     align-items: center;
-    
+    z-index: 1000;
 }
-.openCustomExtension{
+
+.openCustomExtension {
     bottom: 100px;
     font-size: 16px;
 }
-.openLibraryButton:hover , .openCustomExtension:hover {
+
+.openLibraryButton:hover, .openCustomExtension:hover {
     filter: brightness(1.2);
 }
 
@@ -107,7 +109,35 @@
     box-shadow: 0 0 0 3px $looks-transparent;
 }
 
-.openLibraryButtonIcon{
+.openLibraryButtonIcon {
     width: 16px;
     height: 16px;
+}
+
+@media (max-width: 768px) {
+    .openLibraryButton, .openCustomExtension {
+        position: fixed;
+        left: 20px;
+        width: 65px;
+        height: 65px;
+        z-index: 1000;
+    }
+    
+    .openLibraryButton {
+        bottom: 100px;
+    }
+    
+    .openCustomExtension {
+        bottom: 20px;
+    }
+    
+    .openLibraryButtonIcon {
+        width: 24px;
+        height: 24px;
+    }
+    
+    .content {
+        padding-bottom: 180px;
+    }
+    /*koshino我喜欢你喵~*/
 }
