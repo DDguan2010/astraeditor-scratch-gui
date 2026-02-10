@@ -5,8 +5,12 @@ import icon from "!../../../lib/tw-recolor/build!./icon.svg"
 
 export default async function ({ addon, msg, console }) {
   const Blockly = await addon.tab.traps.getBlockly();
-  const VSCodeLayout = JSON.parse(localStorage.getItem('AESettings')).EnableVSCodeLayout
-
+  let VSCodeLayout
+  try {
+    VSCodeLayout = JSON.parse(localStorage.getItem('AESettings')).EnableVSCodeLayout;
+  } catch (e) {
+    VSCodeLayout = false;
+  }
   class FindBar {
     constructor() {
       this.utils = new Utils(addon);
