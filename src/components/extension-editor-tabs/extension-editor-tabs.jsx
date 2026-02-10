@@ -1005,7 +1005,7 @@ class ExtensionEditorTabs extends React.Component {
                         <input
                             ref={this.fileInputRef}
                             type="file"
-                            accept=".js"
+                            accept=".js, application/javascript, text/javascript"
                             style={{ display: 'none' }}
                             onChange={this.handleFileSelect}
                         />
