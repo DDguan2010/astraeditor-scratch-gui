@@ -422,5 +422,7 @@
     "tw-comment-markdown-editor/@name": "Markdown注释编辑器",
     "tw-comment-markdown-editor/@description": "为注释框添加Markdown编辑和预览功能，支持标题、粗体、斜体、代码和链接等语法。使用快捷键 Ctrl+M 快速切换编辑/预览模式",
     "my-blocks-plus/@name":"自制积木+",
-    "my-blocks-plus/@description":"创建带有自定义输入、颜色等的私有或全局自定义积木！我们通过将扩展插件化，让您的体验更上一层楼。"
+    "my-blocks-plus/@description":"创建带有自定义输入、颜色等的私有或全局自定义积木！我们通过将扩展插件化，让您的体验更上一层楼。",
+    "my-blocks-plus/@info-info":"这个插件会在创建项目时自动加载“自制积木+”扩展",
+    "my-blocks-plus/@info-warn":"警告：它会加载新的扩展，且无法在扩展管理器中删除。"
 }

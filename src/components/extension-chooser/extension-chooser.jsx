@@ -75,9 +75,13 @@ const ExtensionChooser = props => {
     const [backgroundLoaded, setBackgroundLoaded] = useState({});
     const [search, setSearch] = useState("");
     /*
-    * a-b = debugger扩展
+    * a-b : debugger扩展
     */
     const TurboWarp_Exts = ['a-b'];
+    /**
+     * SPmbpCST无法通过删除方法移除，它不仅仅是个简单扩展
+     */
+    const RemoveExpect_Exts = ['SPmbpCST']
     /*
     *这里下载的文件实际上为html
     */
@@ -417,20 +421,22 @@ const ExtensionChooser = props => {
                                                         />
                                                     </button>
                                                 )}
+                                                {!RemoveExpect_Exts.includes(item.id) && (
+                                                    <button
+                                                        className={styles.button}
+                                                        style={{
+                                                            color: item.color2 == undefined ? item.color1 : item.color2
+                                                        }}
+                                                        onClick={() => { handleRemoveExtension(item.id) }}
+                                                    >
+                                                        <FormattedMessage
+                                                            defaultMessage="Remove"
+                                                            description="text of Remove "
+                                                            id="tw.extensionManager.remove"
+                                                        />
+                                                    </button>
+                                                )}
 
-                                                <button
-                                                    className={styles.button}
-                                                    style={{
-                                                        color: item.color2 == undefined ? item.color1 : item.color2
-                                                    }}
-                                                    onClick={() => { handleRemoveExtension(item.id) }}
-                                                >
-                                                    <FormattedMessage
-                                                        defaultMessage="Remove"
-                                                        description="text of Remove "
-                                                        id="tw.extensionManager.remove"
-                                                    />
-                                                </button>
                                             </div>
                                         </div>
                                     </div>

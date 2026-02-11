@@ -1,5 +1,5 @@
 div[class="scratchCategoryMenuRow"][data-dragger="true"] > div {
-    background: white;
+    background: var(--ui-secondary);
     font-size: 0.65rem;
 }
 

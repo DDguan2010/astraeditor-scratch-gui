@@ -9,15 +9,27 @@ const manifest = {
       "url": "userscript.js"
     }
   ],
+  "info": [
+    {
+      "type": "info",
+      "text": "This addon will automatically load the \"My Blocks+\" extension when creating a project",
+      "id": "info"
+    },
+    {
+      "type": "info",
+      "text": "Warning: It will load new extension and can't remove in extension manager.",
+      "id": "warn"
+    }
+  ],
   "credits": [
     {
-      "name":"SharkPool"
+      "name": "SharkPool"
     },
     {
-      "name":"CST1229"
+      "name": "CST1229"
     },
     {
-      "name":"0znzw"
+      "name": "0znzw"
     },
     {
       "name": "KOSHINO",
