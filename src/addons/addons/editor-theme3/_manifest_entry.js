@@ -191,6 +191,22 @@ const manifest = {
       }
     },
     {
+        "dynamic": true,
+        "name": "input color",
+        "id": "input-color",
+        "type": "color",
+        "default": "#FFFFFF",
+        "allowTransparency": true
+    },
+    {
+        "dynamic": true,
+        "name": "comment color",
+        "id": "comment-color",
+        "type": "color",
+        "default": "#FEF49C",
+        "allowTransparency": true
+    },
+    {
       "name": "text",
       "id": "text",
       "type": "select",
@@ -201,23 +217,7 @@ const manifest = {
         {"id": "colorOnWhite", "name": "Color on White"},
         {"id": "colorOnBlack", "name": "Color on Black"}
       ]
-    },
-    {
-      "dynamic": true,
-      "name": "input color",
-      "id": "input-color",
-      "type": "color",
-      "default": "#FFFFFF",
-      "allowTransparency": true
-    },
-    {
-      "dynamic": true,
-      "name": "comment color",
-      "id": "comment-color",
-      "type": "color",
-      "default": "#FEF49C",
-      "allowTransparency": true
-    },
+    }
   ],
   "tags": [
     "theme"

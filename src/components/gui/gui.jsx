@@ -493,7 +493,7 @@ const GUIComponent = props => {
                 />
                 <Box className={styles.bodyWrapper}>
                     <Box className={styles.flexWrapper} style={Settings.get('EnableMobileLayout') ? {
-                        flexDirection: 'column',
+                        flexDirection: 'column-reverse',
                         overflow: 'visible'
                     } : {
                         flexDirection: 'row',
@@ -598,7 +598,7 @@ const GUIComponent = props => {
                                         >
                                             {vscodeLayoutRef ? (
                                                 <img src={readmeIcon()} draggable={false} alt="readme" style={{
-                                                    width: "30px",
+                                                    width: "25px",
                                                     filter: 'grayscale(100%)'
                                                 }} />
                                             ) : (

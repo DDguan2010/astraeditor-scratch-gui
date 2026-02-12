@@ -41,9 +41,9 @@
     font-size: 0;
     background-color: #00000000;
     border: 0;
-    border-radius: 0 !important;
+    border-radius: 0px !important;
     margin: 0 !important;
-    padding: 0 !important;
+    padding: 20px !important;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -57,7 +57,7 @@
 
 .tab-list.vscode .readmeButton:hover {
     background-color: $ui-white;
-    box-shadow: 0 0 0 2px $looks-secondary;
+    box-shadow: inset 3px 0px 0px 0px $looks-secondary
 }
 
 .flex-wrapper {
@@ -247,11 +247,10 @@
 
 .tab-list.vscode {
     height: 100% !important;
-    width: 40px;
+    width: 41px;
     flex-direction: column !important;
     align-items: center;
     justify-content: flex-start;
-    border-right: 1px solid $ui-black-transparent;
     border-bottom: none;
 }
 
@@ -259,16 +258,15 @@
     width: 40px;
     height: 30px;
     flex-grow: 0;
-    border-radius: 0 !important;
+    border-radius: 0px !important;
     margin: 0 !important;
-    padding: 0 !important;
+    padding: 20px 0 !important;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     font-size: 0 !important;
     background-color: #00000000;
     border: 0;
-    margin-bottom: 10px !important;
 }
 
 .vscode .tab img {
@@ -284,7 +282,7 @@
 
 .vscode .tab.is-selected {
     background-color: $ui-white;
-    box-shadow: 0 0 0 2px $looks-secondary;
+    box-shadow: inset 3px 0px 0px 0px $looks-secondary
 }
 
 /* 重置 RTL 下的镜像效果 */

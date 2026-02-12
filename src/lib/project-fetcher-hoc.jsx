@@ -101,8 +101,8 @@ const ProjectFetcherHOC = function (WrappedComponent) {
             }
         }
         fetchProject (projectId, loadingState) {
-    // tw: clear and stop the VM before fetching
-    // these will also happen later after the project is fetched, but fetching may take a while and
+            // tw: clear and stop the VM before fetching
+            // these will also happen later after the project is fetched, but fetching may take a while and
             // the project shouldn't be running while fetching the new project
             this.props.vm.clear();
             this.props.vm.quit();
@@ -146,9 +146,9 @@ const ProjectFetcherHOC = function (WrappedComponent) {
                             storage.setProjectToken(token);
                             if (token === null) {
                                 // If token is null (project is unshared), load default project directly
-                                const defaultAssets = defaultProjectAssets(() => 'Project');
+                                const defaultAssets = defaultProjectAssets(this.props.intl.formatMessage);
                                 const projectAsset = defaultAssets.find(a => a.assetType === 'Project');
-                                return projectAsset ? { data: projectAsset.data } : null;
+                                return projectAsset ? {data: projectAsset.data} : null;
                             }
                             return storage.load(storage.AssetType.Project, projectId, storage.DataFormat.JSON);
                         });

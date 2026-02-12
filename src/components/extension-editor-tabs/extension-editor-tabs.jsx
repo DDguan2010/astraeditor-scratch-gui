@@ -528,7 +528,11 @@ class ExtensionEditorTabs extends React.Component {
     generateExtensionCode = (config) => {
         const { name, id, color1, color2, color3 } = config;
         return `// Name: ${name}
+// Description: A Extensions named ${name}
 // ID: ${id}
+// By: You Name <Personal Web>
+// License: MPL-2.0
+
 (function (Scratch) {
     "use strict";
     class ${this.toClassName(id)} {
