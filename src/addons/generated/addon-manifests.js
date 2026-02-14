@@ -89,6 +89,7 @@ import _block_pins from "../addons/block-pins/_manifest_entry.js";
 import _bookmark from "../addons/bookmark/_manifest_entry.js";
 import _Terminal from "../addons/Terminal/_manifest_entry.js";
 import _myblocksplus from '../addons/my-blocks-plus/_manifest_entry.js';
+import _astras_copilot from '../addons/astras-copilot/_manifest_entry.js'
 export default {
   "cat-blocks": _cat_blocks,
   "editor-devtools": _editor_devtools,
@@ -179,5 +180,6 @@ export default {
   "block-pins": _block_pins,
   "bookmark": _bookmark,
   // "Terminal": _Terminal,
-  "my-blocks-plus": _myblocksplus
+  "my-blocks-plus": _myblocksplus,
+  "astras-copilot": _astras_copilot
 };

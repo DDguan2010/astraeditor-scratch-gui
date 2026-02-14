@@ -146,6 +146,28 @@ class ExtensionEditorStorage {
     }
 
     /**
+     * Delete all extensions
+     * @returns {Promise<void>}
+     */
+    async clearAllExtensions() {
+        await this.init();
+
+        return new Promise((resolve, reject) => {
+            const transaction = this.db.transaction([STORE_NAME], 'readwrite');
+            const store = transaction.objectStore(STORE_NAME);
+            const request = store.clear();
+
+            request.onsuccess = () => {
+                resolve();
+            };
+
+            request.onerror = () => {
+                reject(new Error('Failed to clear extensions'));
+            };
+        });
+    }
+
+    /**
      * Generate a unique ID for a new extension
      * @returns {string} Unique ID
      */

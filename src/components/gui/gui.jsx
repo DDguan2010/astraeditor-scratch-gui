@@ -598,7 +598,7 @@ const GUIComponent = props => {
                                         >
                                             {vscodeLayoutRef ? (
                                                 <img src={readmeIcon()} draggable={false} alt="readme" style={{
-                                                    width: "25px",
+                                                    width: "30px",
                                                     filter: 'grayscale(100%)'
                                                 }} />
                                             ) : (
